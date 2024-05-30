@@ -1,0 +1,19 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: dockerfile.dev
+    volumes:
+      - ./api:/app
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+  client:
+    build:
+      context: ./client
+      dockerfile: dockerfile.dev
+    volumes:
+      - ./client:/app
+    restart: unless-stopped
+    ports:
+      - 5173:5173
