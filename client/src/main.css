@@ -1,0 +1,46 @@
+* {
+  box-sizing: border-box;
+  --bg-prim: #05a805;
+  --text-prim: #fffefef1;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: block;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: var(--text-prim);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.appbar-container {
+  display: flex;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  background-color: var(--bg-prim);
+  padding: 0 10px;
+  border-bottom: 1px solid black;
+  align-items: baseline;
+}
+
+nav li {
+  list-style: none;
+}
+
+.signup-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: red;
+}

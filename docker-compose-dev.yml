@@ -17,3 +17,17 @@ services:
     restart: unless-stopped
     ports:
       - 5173:5173
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: showcase
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

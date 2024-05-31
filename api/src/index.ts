@@ -10,7 +10,7 @@ const port: string | undefined = process.env.PORT;
 app.use("/signup", SignUpRouter);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Express + Typescript Server.");
+  res.send("Express + Typescript Server!.");
 });
 
 app.listen(port, () => {
