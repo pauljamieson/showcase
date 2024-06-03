@@ -1,5 +1,5 @@
-import { createHmac, createSign } from "crypto";
-
+import { createHmac, createSign, generateKey, generateKeySync } from "crypto";
+import { ALGORITHMS, sign } from "jws";
 const SECRET = process.env.SECRET || "this is not good enough";
 
 type JWTHeader = {
@@ -61,11 +61,9 @@ function buildJWTPayload(
 }
 
 function buildSignature(header: string, payload: string, algo: ALGO) {
-  const hmac = createHmac(algo.toLocaleLowerCase(), SECRET);
-  console.log([header, payload, SECRET].join("."));
-  const ret = hmac.update([header, payload, SECRET].join(".")).digest("hex");
-  console.log(ret);
-  return ret;
+  const data = [header, payload, SECRET].join(".");
+  const hmac = createHmac("sha256", SECRET).update(data).digest("base64url");
+  return hmac;
 }
 
 function compareSignatures(header: string, payload: string, signature: string) {

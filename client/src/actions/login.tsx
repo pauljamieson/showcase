@@ -18,8 +18,9 @@ export default async ({ request }: { request: Request }) => {
         if (data.status === "success") {
           const token = fetchData.headers.get("Authorization");
           if (!token) throw "JWT header is missing";
-          localStorage.setItem("showcase", token);
-          return redirect("/");
+          localStorage.setItem("showcase", token.substring(7));
+          
+          return redirect("/", 1);
         }
         if (data.status === "failure") throw data.error;
         return {};
