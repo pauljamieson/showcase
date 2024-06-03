@@ -4,14 +4,19 @@ export default function AppBar() {
   return (
     <div className="appbar-container">
       <Link to={"/"}>
-        <h1>Showcase</h1>
+        <p className="title">Showcase</p>
       </Link>
       <div className="grow" />
       <nav>
         <ol>
           <li>
+            <Link to={"/login"}>
+              <p>Login</p>
+            </Link>
+          </li>
+          <li>
             <Link to={"/signup"}>
-              <h3>Signup</h3>
+              <p>Signup</p>
             </Link>
           </li>
         </ol>

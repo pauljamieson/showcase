@@ -1,13 +1,17 @@
+require("./lib/bigint");
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import SignUpRouter from "./routes/signup";
+import AuthRouter from "./routes/auth";
+import cors from "cors";
 
 dotenv.config();
 
 const app: Express = express();
 const port: string | undefined = process.env.PORT;
 
-app.use("/signup", SignUpRouter);
+app.use(cors({ exposedHeaders: ["Authorization"] }));
+app.use(express.json());
+app.use("/auth", AuthRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + Typescript Server!.");
