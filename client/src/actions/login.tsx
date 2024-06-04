@@ -4,6 +4,7 @@ export default async ({ request }: { request: Request }) => {
   switch (request.method) {
     case "POST": {
       const formData = await request.formData();
+      console.log("here");
       const body = {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
@@ -14,13 +15,15 @@ export default async ({ request }: { request: Request }) => {
           body: JSON.stringify(body),
           headers: { "Content-Type": "application/json" },
         });
+
         const data = await fetchData.json();
+
         if (data.status === "success") {
           const token = fetchData.headers.get("Authorization");
           if (!token) throw "JWT header is missing";
           localStorage.setItem("showcase", token.substring(7));
           
-          return redirect("/", 1);
+          return redirect("/");
         }
         if (data.status === "failure") throw data.error;
         return {};

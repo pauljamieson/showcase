@@ -1,10 +1,14 @@
-import { Form, useActionData } from "react-router-dom";
+import { Form, Navigate, useActionData } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 type Data = {
   error: string;
 };
 
 export default function Login() {
+  const isAuthed = useAuth();
+
+  if (isAuthed) <Navigate to="/" />;
   const actionData: Data = useActionData() as Data;
   return (
     <div className="login-container">

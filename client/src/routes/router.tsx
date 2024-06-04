@@ -5,13 +5,15 @@ import SignUp from "./SignUp";
 import signup from "../actions/signup";
 import Login from "./Login";
 import loginAction from "../actions/login";
+import Home from "./Home";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <ErrorPage />, 
+    errorElement: <ErrorPage />,
     children: [
+      { path: "/", element: <Home /> },
       {
         path: "/signup",
         element: <SignUp />,
