@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma";
+import prisma from "../../lib/prisma";
 import { hash } from "bcrypt";
 import { Request, Response } from "express";
 
@@ -23,4 +23,4 @@ async function POST(req: Request, res: Response) {
   }
 }
 
-export { GET, POST };
+export default { GET, POST };

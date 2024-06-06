@@ -24,6 +24,10 @@ export const router = createBrowserRouter([
         element: <Login />,
         action: loginAction,
       },
+      {
+        path: "/admin",
+        element: <div>Hello</div>,
+      },
     ],
   },
 ]);

@@ -9,6 +9,7 @@ export default async ({ request }: { request: Request }) => {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
       };
+      console.log(body);
       try {
         const fetchData = await fetch("http://localhost:5000/auth/login/", {
           method: "post",
@@ -17,12 +18,12 @@ export default async ({ request }: { request: Request }) => {
         });
 
         const data = await fetchData.json();
-
+        console.log(data);
         if (data.status === "success") {
           const token = fetchData.headers.get("Authorization");
+          console.log(token);
           if (!token) throw "JWT header is missing";
           localStorage.setItem("showcase", token.substring(7));
-          
           return redirect("/");
         }
         if (data.status === "failure") throw data.error;

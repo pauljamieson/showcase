@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { useContext } from "react";
+import AuthContext from "../contexts/AuthContext";
 
 export default function AppBar() {
-  const isAuthed = useAuth();
-
-
-
+  const isAuthed = useAuth(); //  useContext(AuthContext);
+  console.log(isAuthed);
   function clickSignOut() {
     localStorage.removeItem("showcase");
   }

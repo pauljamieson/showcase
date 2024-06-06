@@ -1,5 +1,5 @@
-import { buildJwtToken } from "../lib/jwt";
-import prisma from "../lib/prisma";
+import { buildJwtToken } from "../../lib/jwt";
+import prisma from "../../lib/prisma";
 import { compare } from "bcrypt";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -13,13 +13,17 @@ async function POST(req: Request, res: Response) {
     if (user === null) throw "Invalid login\\password combination.";
     const isGoodPassword = await compare(password, user!.password);
     if (!isGoodPassword) throw "Invalid login\\password combination.";
+    // res.setHeader(
+    //   "Authorization",
+    //   `Bearer ${jwt.sign(
+    //     { sub: user.id, admin: user.role === "ADMIN" },
+    //     SECRET,
+    //     { algorithm: "HS256", expiresIn: "1w" }
+    //   )}`
+    // );
     res.setHeader(
       "Authorization",
-      `Bearer ${jwt.sign(
-        { sub: user.id, admin: user.role === "ADMIN" },
-        SECRET,
-        { algorithm: "HS256", expiresIn: "1w" }
-      )}`
+      `Bearer ${buildJwtToken(String(user.id), "P", 60000, true)}`
     );
     res.json({ status: "success" });
   } catch (error) {
@@ -27,4 +31,4 @@ async function POST(req: Request, res: Response) {
   }
 }
 
-export { POST };
+export default { POST };

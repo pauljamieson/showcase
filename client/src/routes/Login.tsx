@@ -17,9 +17,11 @@ export default function Login() {
         <label htmlFor="email">Email</label>
         <input type="email" name="email" />
         <label htmlFor="password">Password</label>
-        <input type="password" name="password" />
+        <input type="password" name="password" autoComplete="true" />
         <button type="submit">LOGIN</button>
-        {actionData && actionData?.error && <p>{actionData?.error}</p>}
+        {actionData &&
+          actionData?.error &&
+          typeof actionData?.error === "string" && <p>{actionData?.error}</p>}
       </Form>
     </div>
   );
