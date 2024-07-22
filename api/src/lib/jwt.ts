@@ -61,7 +61,7 @@ function buildJWTPayload(
 
 function buildSignature(header: string, payload: string, algo: ALGO) {
   const data = [header, payload].join(".");
-  const signature = createHmac("HS256", SECRET)
+  const signature = createHmac("SHA256", SECRET)
     .update(data)
     .digest("base64url");
   console.log(signature);

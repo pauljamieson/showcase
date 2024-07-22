@@ -8,6 +8,7 @@ export default async ({ request }: { request: Request }) => {
         email: formData.get("email") as string,
         password: formData.get("new-password") as string,
       };
+
       const confirmPassword = formData.get("confirm-password") as string;
       if (body.password !== confirmPassword)
         return { error: "Passwords don't match." };
@@ -23,7 +24,7 @@ export default async ({ request }: { request: Request }) => {
         if (data.status === "success") return redirect("/");
         if (data.status === "failure" && data.error.code === "P2002")
           throw "Email address already registerd.";
-        return {};
+        return { status: "success", auth: data };
       } catch (error: any) {
         return { error };
       }
