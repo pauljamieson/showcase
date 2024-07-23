@@ -1,17 +1,17 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useDebugValue } from "react";
 
 interface AuthContextValue {
-  auth: string | undefined;
-  setAuth: ((str: string) => void) | undefined;
+  auth: string | null;
+  setAuth: (str: string ) => void;
 }
 
 const AuthContext = createContext<AuthContextValue>({
-  auth: undefined,
-  setAuth: undefined,
+  auth: null,
+  setAuth: () => null,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [auth, setAuth] = useState<string>("");
+  const [auth, setAuth] = useState<string | null>(localStorage.getItem("showcase"));
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export default function useAuth() {
   const context = useContext(AuthContext);
-  if (context.auth === "undefined")
+  if (context.auth === null)
     throw new Error("useAuth used outside of auth provider.");
   return context;
 }

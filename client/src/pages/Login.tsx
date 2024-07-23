@@ -1,5 +1,6 @@
-import { Form, Navigate, redirect, useActionData } from "react-router-dom";
+import { Form, Navigate, useActionData } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { useEffect } from "react";
 
 type Data = {
   status: string;
@@ -8,10 +9,16 @@ type Data = {
 };
 
 export default function Login() {
-  const { auth } = useAuth();
-
-  if (auth) <Navigate to="/" />;
+  
+  const { auth, setAuth } = useAuth();
+  if (auth && auth.length > 0) return <Navigate to="/" />;
+  
   const actionData: Data = useActionData() as Data;
+  
+  useEffect(() => {
+    if (actionData && actionData?.status === "success")
+      setAuth(actionData.auth);
+  }, [actionData]);
 
   return (
     <div className="login-container">
@@ -22,9 +29,6 @@ export default function Login() {
         <label htmlFor="password">Password</label>
         <input type="password" name="password" autoComplete="true" />
         <button type="submit">LOGIN</button>
-        {actionData &&
-          actionData?.error &&
-          typeof actionData?.error === "string" && <p>{actionData?.error}</p>}
       </Form>
     </div>
   );
