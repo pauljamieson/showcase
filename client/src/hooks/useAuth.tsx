@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useDebugValue } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 interface AuthContextValue {
   auth: string | null;
