@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 export default function AppBar() {
-  const { auth } = useAuth();
+  const { auth, clearAuth } = useAuth();
   
   function clickSignOut() {
     localStorage.removeItem("showcase");
+    clearAuth()
   }
 
   return (
@@ -19,7 +20,7 @@ export default function AppBar() {
           {auth ? (
             <>
               <li>
-                <Link to={"/"} reloadDocument onClick={clickSignOut}>
+                <Link to={"/"} onClick={clickSignOut}>
                   <p>Sign Out</p>
                 </Link>
               </li>

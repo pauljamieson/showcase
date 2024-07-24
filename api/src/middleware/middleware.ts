@@ -9,5 +9,6 @@ export default function (req: Request, res: Response, next: NextFunction) {
     // signature stripping attacks
     algorithms: ["HS256"],
   });
+  //console.log(decoded);
   next();
 }
