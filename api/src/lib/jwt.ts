@@ -42,7 +42,7 @@ type ALGO = "SHA256" | "SHA512";
 
 function buildJWTHeader(hashEncoding: ALGO = "SHA256") {
   const typ = "JWT";
-  const alg = hashEncoding;
+  const alg = "HS256";
   const header: JWTHeader = { typ, alg };
   return encodeBase64(JSON.stringify(header));
 }
@@ -60,16 +60,10 @@ function buildJWTPayload(
 }
 
 function buildSignature(header: string, payload: string, algo: ALGO) {
-  console.log("Start");
-  console.log(header);
-  console.log(payload);
-  console.log("End");
   const data = [header, payload].join(".");
-  console.log(data);
-  const signature = createHmac("SHA256", SECRET)
+  const signature = createHmac("SHA256", Buffer.from(SECRET, "base64url"))
     .update(data)
     .digest("base64url");
-  console.log(signature);
   return signature;
 }
 
