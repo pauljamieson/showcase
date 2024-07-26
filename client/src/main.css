@@ -5,6 +5,8 @@
   --bg-prim: #15c757;
   --text-prim: #000;
   --highlight: #15c7b0;
+  --btn-prim: #40eb57;
+  --btn-prim-hover: #51fc68;
 }
 
 body {
@@ -89,4 +91,29 @@ nav li {
 nav ol {
   display: flex;
   gap: 10px;
+}
+
+.btn {
+  border: #000 1px solid;
+  border-radius: 8px;
+  padding: 5px;
+  background-color: var(--btn-prim);
+}
+
+.btn:hover {
+  background-color: var(--btn-prim-hover);
+}
+
+.admin-container {
+  width: 100%;
+}
+
+.admin-btn-bar {
+  margin: auto;
+  width: 200px;
+
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }

@@ -23,7 +23,12 @@ async function POST(req: Request, res: Response) {
     // );
     res.setHeader(
       "Authorization",
-      `Bearer ${buildJwtToken(String(user.id), "P", 60000, true)}`
+      `Bearer ${buildJwtToken(
+        String(user.id),
+        user.username || "noname",
+        60000,
+        user.role === "ADMIN"
+      )}`
     );
     res.json({ status: "success" });
   } catch (error) {

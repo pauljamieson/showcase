@@ -10,14 +10,14 @@ type Data = {
 
 export default function Login() {
   
-  const { auth, setAuth } = useAuth();
+  const { auth, setToken } = useAuth();
   if (auth && auth.length > 0) return <Navigate to="/" />;
   
   const actionData: Data = useActionData() as Data;
   
   useEffect(() => {
     if (actionData && actionData?.status === "success")
-      setAuth(actionData.auth);
+      setToken(actionData.auth);
   }, [actionData]);
 
   return (

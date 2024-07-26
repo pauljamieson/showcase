@@ -6,6 +6,7 @@ import signup from "../actions/signup";
 import Login from "../pages/Login";
 import loginAction from "../actions/login";
 import Home from "../pages/Home";
+import Admin from "../pages/Admin";
 
 export const router = createBrowserRouter([
   {
@@ -26,7 +27,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <div>Hello</div>,
+        element: <Admin />,
       },
     ],
   },

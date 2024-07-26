@@ -2,12 +2,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 export default function AppBar() {
-  const { auth, clearAuth } = useAuth();
-  
-  function clickSignOut() {
-    localStorage.removeItem("showcase");
-    clearAuth()
-  }
+  const { isLoggedIn, user, clearToken } = useAuth();
 
   return (
     <div className="appbar-container">
@@ -17,11 +12,23 @@ export default function AppBar() {
       <div className="grow" />
       <nav>
         <ol>
-          {auth ? (
+          {isLoggedIn ? (
             <>
+              {user?.admin && (
+                <li>
+                  <Link to={"/admin"}>
+                    <p>Admin</p>
+                  </Link>
+                </li>
+              )}
               <li>
-                <Link to={"/"} onClick={clickSignOut}>
+                <Link to={"/"} onClick={clearToken}>
                   <p>Sign Out</p>
+                </Link>
+              </li>
+              <li>
+                <Link to={"/profile"}>
+                  <p>{user?.name}</p>
                 </Link>
               </li>
             </>
