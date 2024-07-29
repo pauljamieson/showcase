@@ -7,6 +7,7 @@
   --highlight: #15c7b0;
   --btn-prim: #40eb57;
   --btn-prim-hover: #51fc68;
+  --spacing: 5px;
 }
 
 body {
@@ -98,6 +99,7 @@ nav ol {
   border-radius: 8px;
   padding: 5px;
   background-color: var(--btn-prim);
+  text-align: center;
 }
 
 .btn:hover {
@@ -111,9 +113,24 @@ nav ol {
 .admin-btn-bar {
   margin: auto;
   width: 200px;
-
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: var(--spacing);
+}
+
+.files-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  user-select: none;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.incoming-btn-container {
+  display: flex;
+  gap: var(--spacing);
+  padding: 5px;
 }

@@ -7,6 +7,9 @@ import Login from "../pages/Login";
 import loginAction from "../actions/login";
 import Home from "../pages/Home";
 import Admin from "../pages/Admin";
+import Incoming from "../pages/Incoming";
+import incoming from "../actions/incoming";
+import incomingAll from "../actions/incomingAll";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +32,13 @@ export const router = createBrowserRouter([
         path: "/admin",
         element: <Admin />,
       },
+      {
+        path: "/admin/incoming",
+        element: <Incoming />,
+        loader: incoming,
+        action: incoming,
+      },
+      { path: "/admin/incoming/all", element: <></>, action: incomingAll },
     ],
   },
 ]);

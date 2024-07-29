@@ -1,5 +1,3 @@
-import { redirect } from "react-router-dom";
-
 export default async ({ request }: { request: Request }) => {
   switch (request.method) {
     case "POST": {
