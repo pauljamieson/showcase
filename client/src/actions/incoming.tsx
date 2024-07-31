@@ -29,27 +29,20 @@ export default async ({ request }: { request: Request }) => {
       try {
         const formData = await request.formData();
         const intent = formData.get("intent");
-
+        let payload = [];
         if (intent === "importall") {
           const { files } = JSON.parse(
             atob(formData.get("all")?.toString() || "")
           );
-          console.log(files);
-          return {};
+          payload = files;
         }
 
         if (intent === "selected") {
-          const files = [];
-
-          for (const file of formData.values()) {
-            console.log(file);
-            if (file === "selected" || file === "all") continue;
-            files.push(atob(file));
+          for (const a of formData.entries()) {
+            if (a[1] === "on") payload.push(atob(a[0]));
           }
-          console.log(files);
-
-          return {};
         }
+        console.log(payload);
 
         return {};
       } catch (err) {

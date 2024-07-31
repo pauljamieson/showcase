@@ -12,7 +12,7 @@ export default function Incoming() {
   if (!isLoggedIn || !user?.admin) return <Navigate to="/" />;
 
   const data: LoaderData = useLoaderData() as LoaderData;
-
+  
   if (data.status === "failure") return <p>Failed to fetch files</p>;
   return (
     <>
@@ -33,8 +33,8 @@ export default function Incoming() {
         />
         {data?.files.map((file) => (
           <label key={btoa(file)}>
-            <input type="checkbox" value={btoa(file)} name={btoa(file)} />
-            {file.slice(file.lastIndexOf("/incoming/") + "/incoming/".length)}
+            <input type="checkbox" name={btoa(file)} />
+            {file.slice(file.indexOf("/incoming/") + "/incoming/".length)}
           </label>
         ))}
       </Form>

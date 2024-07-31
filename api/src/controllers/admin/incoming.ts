@@ -31,4 +31,11 @@ async function GET(req: Request, res: Response) {
   }
 }
 
+async function POST(req: Request, res: Response) {
+  try {
+  } catch (error) {
+    res.json({ status: "failure", error });
+  }
+}
+
 export default { GET };
