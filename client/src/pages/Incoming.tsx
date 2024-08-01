@@ -21,7 +21,6 @@ export default function Incoming() {
           <button type="submit" className="btn" name="intent" value="importall">
             Import All
           </button>
-
           <button type="submit" className="btn" name="intent" value="selected">
             Import Selected
           </button>
