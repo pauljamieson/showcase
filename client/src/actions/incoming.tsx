@@ -42,8 +42,17 @@ export default async ({ request }: { request: Request }) => {
             if (a[1] === "on") payload.push(atob(a[0]));
           }
         }
-        console.log(payload);
+        const fetchData = await fetch("http://localhost:5000/admin/incoming/", {
+          method: "post",
+          body: JSON.stringify({ files: payload }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("showcase"),
+          },
+        });
 
+        const data = await fetchData.json();
+        console.log(data);
         return {};
       } catch (err) {
         console.error(err);

@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
-import { opendir } from "fs/promises";
+import { basename } from "path";
+import { opendir, stat, realpath, mkdir, rename } from "fs/promises";
+import { nanoid } from "nanoid";
+
 import path from "path";
 
 async function walkTree(folder: string) {
@@ -32,10 +35,20 @@ async function GET(req: Request, res: Response) {
 }
 
 async function POST(req: Request, res: Response) {
+  const { files } = req.body;
   try {
+    for (const file of files) {
+      const stats = await stat(file);
+      const path = await realpath(file);
+      const folderId = nanoid(6);
+      await mkdir(`./app_data/processing/${folderId}`, { recursive: true });
+      await rename(path, `./app_data/processing/${folderId}/${basename(path)}`);
+    }
+    res.json({ status: "success" });
   } catch (error) {
+    console.log(error);
     res.json({ status: "failure", error });
   }
 }
 
-export default { GET };
+export default { GET, POST };

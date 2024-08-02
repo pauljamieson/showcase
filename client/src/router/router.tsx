@@ -9,7 +9,6 @@ import Home from "../pages/Home";
 import Admin from "../pages/Admin";
 import Incoming from "../pages/Incoming";
 import incoming from "../actions/incoming";
-import incomingAll from "../actions/incomingAll";
 
 export const router = createBrowserRouter([
   {
@@ -38,7 +37,6 @@ export const router = createBrowserRouter([
         loader: incoming,
         action: incoming,
       },
-      { path: "/admin/incoming/all", element: <></>, action: incomingAll },
     ],
   },
 ]);
