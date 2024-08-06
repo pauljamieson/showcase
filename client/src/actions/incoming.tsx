@@ -32,14 +32,14 @@ export default async ({ request }: { request: Request }) => {
         let payload = [];
         if (intent === "importall") {
           const { files } = JSON.parse(
-            atob(formData.get("all")?.toString() || "")
+            decodeURIComponent(atob(formData.get("all")?.toString() || ""))
           );
           payload = files;
         }
 
         if (intent === "selected") {
           for (const a of formData.entries()) {
-            if (a[1] === "on") payload.push(atob(a[0]));
+            if (a[1] === "on") payload.push(decodeURIComponent(atob(a[0])));
           }
         }
         const fetchData = await fetch("http://localhost:5000/admin/incoming/", {
@@ -52,7 +52,7 @@ export default async ({ request }: { request: Request }) => {
         });
 
         const data = await fetchData.json();
-        console.log(data);
+
         return {};
       } catch (err) {
         console.error(err);

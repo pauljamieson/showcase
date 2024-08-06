@@ -1,4 +1,4 @@
-import { Form, Navigate, useFormAction, useLoaderData } from "react-router-dom";
+import { Form, Navigate, useLoaderData } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 type LoaderData = {
@@ -27,12 +27,14 @@ export default function Incoming() {
         </div>
         <input
           type="hidden"
-          value={btoa(JSON.stringify({ files: data?.files }))}
+          value={btoa(
+            encodeURIComponent(JSON.stringify({ files: data?.files }))
+          )}
           name="all"
         />
         {data?.files?.map((file) => (
-          <label key={btoa(file)}>
-            <input type="checkbox" name={btoa(file)} />
+          <label key={btoa(encodeURIComponent(file))}>
+            <input type="checkbox" name={btoa(encodeURIComponent(file))} />
             {file.slice(file.indexOf("/incoming/") + "/incoming/".length)}
           </label>
         ))}

@@ -5,7 +5,9 @@ export default function Root() {
   return (
     <div>
       <AppBar />
-      <Outlet />
+      <div className="home-outlet">
+        <Outlet />
+      </div>
     </div>
   );
 }

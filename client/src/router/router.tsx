@@ -5,10 +5,14 @@ import SignUp from "../pages/SignUp";
 import signup from "../actions/signup";
 import Login from "../pages/Login";
 import loginAction from "../actions/login";
+import videosLoader from "../loaders/videos";
 import Home from "../pages/Home";
 import Admin from "../pages/Admin";
 import Incoming from "../pages/Incoming";
 import incoming from "../actions/incoming";
+import Videos from "../pages/Videos";
+import Video from "../pages/Video";
+import VideoLoader from "../loaders/video";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +34,16 @@ export const router = createBrowserRouter([
       {
         path: "/admin",
         element: <Admin />,
+      },
+      {
+        path: "/videos",
+        element: <Videos />,
+        loader: videosLoader,
+      },
+      {
+        path: "/video/:id",
+        element: <Video />,
+        loader: VideoLoader,
       },
       {
         path: "/admin/incoming",

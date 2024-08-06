@@ -7,19 +7,19 @@
   --highlight: #15c7b0;
   --btn-prim: #40eb57;
   --btn-prim-hover: #51fc68;
+  --scroll-bg: #000;
+  --scrool-thumb: #a3a0a0;
   --spacing: 5px;
 }
 
 body {
   margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
-  position: relative;
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   color: var(--text-prim);
-  overflow: auto;
+  overflow: hidden;
+  width: 100vw;
 }
 
 a {
@@ -33,6 +33,7 @@ a {
 
 .appbar-container {
   display: flex;
+  width: 100vw;
   background-color: var(--bg-prim);
   padding: 0 10px;
   border-bottom: 1px solid black;
@@ -133,4 +134,87 @@ nav ol {
   display: flex;
   gap: var(--spacing);
   padding: 5px;
+}
+
+.video-card {
+  width: auto;
+  border: 1px solid var(--highlight);
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.video-card-container {
+  width: 100vw;
+  display: grid;
+  gap: 5px;
+  grid-template-columns: auto;
+  padding: 5px;
+}
+
+@media all and (min-width: 600px) {
+  .video-card-container {
+    grid-template-columns: auto auto;
+  }
+}
+
+@media all and (min-width: 960px) {
+  .video-card-container {
+    grid-template-columns: auto auto auto;
+  }
+}
+
+@media all and (min-width: 1440px) {
+  .video-card-container {
+    grid-template-columns: auto auto auto auto;
+  }
+}
+
+.video-card img {
+  max-width: 100%;
+}
+
+.home-outlet {
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+  width: 100vw;
+  position: relative;
+}
+
+*::-webkit-scrollbar {
+  width: 10px; /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scroll-bg); /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+  height: 10px;
+  background-color: var(--scrool-thumb); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
+
+.video-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.video-player-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+}
+
+video {
+  align-self: center;
+  max-width: 100%;
+}
+
+@media all and (min-width: 960px) {
+  video {
+    max-width: 70%;
+  }
 }
