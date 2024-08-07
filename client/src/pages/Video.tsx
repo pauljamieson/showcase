@@ -105,15 +105,19 @@ function Video() {
       <div className="video-player-container">
         <video controls onSeeking={handleSeeking} onProgress={handleProgress}>
           <source
-            src={`http://localhost:5000/${filename
+            src={encodeURI(`http://localhost:5000/${filename
               .split("/")
               .filter((_, idx) => idx > 2)
-              .join("/")}`}
+              .join("/")}`)}
           ></source>
         </video>
       </div>
       <div>
         <h1>{filename.slice(filename.lastIndexOf("/") + 1)}</h1>
+        {encodeURI(`http://localhost:5000/${filename
+              .split("/")
+              .filter((_, idx) => idx > 2)
+              .join("/")}`)}
         <p>
           Size: {formatSize(size)} <br />
           Views: {views} <br />
