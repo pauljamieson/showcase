@@ -10,8 +10,8 @@ async function GET(req: Request, res: Response) {
       take: limit,
       include: { tags: true, people: true },
     });
-    console.log(files);
-    res.json({ status: "success", data: { files } });
+    const count = await prisma.videoFile.count();
+    res.json({ status: "success", data: { files, count } });
   } catch (error) {
     console.error(error);
     res.json({ status: "failure" });

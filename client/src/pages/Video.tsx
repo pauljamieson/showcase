@@ -34,8 +34,22 @@ type LoaderData = {
 
 function Video() {
   const {
-    video: { filename, size, views, height, width, videoCodec, audioCodec, id },
+    video: {
+      filename,
+      size,
+      views,
+      height,
+      width,
+      videoCodec,
+      audioCodec,
+      id,
+      duration,
+    },
   } = useLoaderData() as LoaderData;
+
+  const [start, setStart] = useState<number>(0);
+  const [seeked, setSeeked] = useState<boolean>(false);
+  const [isViewed, setIsViewed] = useState<boolean>(false);
 
   function formatSize(s: number) {
     const kb = s / 1024;
@@ -47,9 +61,16 @@ function Video() {
     return "That sucker is huge!";
   }
 
-  const [start, setStart] = useState<number>(0);
-  const [seeked, setSeeked] = useState<boolean>(false);
-  const [isViewed, setIsViewed] = useState<boolean>(false);
+  function formatDuration(d: number) {
+    const s = (d % 60).toString().padStart(2, "0");
+    const m = Math.floor((d / 60) % 60)
+      .toString()
+      .padStart(2, "0");
+    const h = Math.floor(d / 3600)
+      .toString()
+      .padStart(2, "0");
+    return `${h}:${m}:${s}`;
+  }
 
   async function handleProgress(e: any) {
     if (isViewed) return;
@@ -86,7 +107,7 @@ function Video() {
           <source
             src={`http://localhost:5000/${filename
               .split("/")
-              .filter((val, idx) => idx > 2)
+              .filter((_, idx) => idx > 2)
               .join("/")}`}
           ></source>
         </video>
@@ -96,6 +117,7 @@ function Video() {
         <p>
           Size: {formatSize(size)} <br />
           Views: {views} <br />
+          Duration: {formatDuration(duration)} <br />
           Dimensions: {width}x{height} <br />
           Video Codec: {videoCodec} <br />
           Audio Codec: {audioCodec}

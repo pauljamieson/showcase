@@ -4,7 +4,7 @@ export default async ({ request }: { request: Request }) => {
       try {
         const url = new URL(request.url);
         const page = url.searchParams.get("page");
-        const limit = url.searchParams.get("limit");
+        const limit = url.searchParams.get("limit") || "8";
         const apiUrl = new URL("http://localhost:5000/videos");
         if (page) apiUrl.searchParams.set("page", page);
         if (limit) apiUrl.searchParams.set("limit", limit);
@@ -15,8 +15,9 @@ export default async ({ request }: { request: Request }) => {
             Authorization: "Bearer " + localStorage.getItem("showcase"),
           },
         });
-        const result = await resp.json();
-        if (result.status === "success") return { files: result.data.files };
+        const { status, data } = await resp.json();
+        if (status === "success")
+          return { files: data.files, count: Math.ceil(data.count / +limit) };
         throw "Failed to get files from api.";
       } catch (error: any) {
         console.log(error);

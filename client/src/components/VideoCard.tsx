@@ -33,6 +33,16 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
     return () => clearInterval(loop);
   }, []);
 
+  function formatDuration(d: number) {
+    const s = (d % 60).toString().padStart(2, "0");
+    const m = Math.floor((d / 60) % 60)
+      .toString()
+      .padStart(2, "0");
+    const h = Math.floor(d / 3600)
+      .toString()
+      .padStart(2, "0");
+    return `${h}:${m}:${s}`;
+  }
   function handleMouseEnter() {
     setImgNum(1);
     const i = setInterval(
@@ -57,7 +67,10 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
           src={`${filePath}/thumbs/${filename}-${imgNum}.jpg`}
         />
       </Link>
-      {filename}
+      <p>
+        {filename} <br />
+        {formatDuration(videoFile.duration)}
+      </p>
     </div>
   );
 }

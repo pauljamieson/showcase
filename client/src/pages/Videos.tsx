@@ -1,8 +1,10 @@
 import { useLoaderData } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
+import Paginator from "../components/Paginator";
 
 type LoaderData = {
   files: VideoFile[];
+  count: number;
 };
 
 export type VideoFile = {
@@ -34,10 +36,12 @@ export type Person = {
 
 export default function Videos() {
   const data: LoaderData = useLoaderData() as LoaderData;
-  console.log(data);
   return (
-    <div className="video-card-container">
-      {data && data.files.map((val) => <VideoCard videoFile={val} />)}
-    </div>
+    <>
+      <Paginator count={data.count} />
+      <div className="video-card-container">
+        {data && data.files.map((val) => <VideoCard videoFile={val} />)}
+      </div>
+    </>
   );
 }

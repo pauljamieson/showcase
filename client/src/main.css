@@ -218,3 +218,22 @@ video {
     max-width: 70%;
   }
 }
+
+.pagination-container {
+  display: flex;
+  gap: 3px;
+  padding: 5px;
+}
+
+.pagination-container button {
+  width: 30px;
+  border-radius: 15%;
+  user-select: none;
+}
+.pagination-container button.active {
+  background-color: var(--highlight);
+ }
+
+.pagination-container button:hover {
+  background-color: var(--btn-prim-hover);
+}
