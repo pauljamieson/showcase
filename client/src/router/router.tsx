@@ -13,6 +13,7 @@ import incoming from "../actions/incoming";
 import Videos from "../pages/Videos";
 import Video from "../pages/Video";
 import VideoLoader from "../loaders/video";
+import VideoAction from "../actions/video";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
         path: "/video/:id",
         element: <Video />,
         loader: VideoLoader,
+        action: VideoAction,
       },
       {
         path: "/admin/incoming",

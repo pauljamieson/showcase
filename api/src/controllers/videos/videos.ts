@@ -9,6 +9,7 @@ async function GET(req: Request, res: Response) {
       skip: page * limit - limit,
       take: limit,
       include: { tags: true, people: true },
+      orderBy: { id: "desc" },
     });
     const count = await prisma.videoFile.count();
     res.json({ status: "success", data: { files, count } });

@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import {
+  Form,
+  useFormAction,
+  useLoaderData,
+  useNavigate,
+} from "react-router-dom";
+import videoAction from "../actions/video";
 
 type Person = {
   id: number;
@@ -32,6 +38,10 @@ type LoaderData = {
   video: VideoData;
 };
 
+type ActionData = {
+  status: string;
+};
+
 function Video() {
   const {
     video: {
@@ -46,6 +56,11 @@ function Video() {
       duration,
     },
   } = useLoaderData() as LoaderData;
+
+  const actionData: ActionData = useFormAction() as ActionData;
+
+  const navigate = useNavigate();
+  if (actionData.status === "success") return navigate(-1);
 
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
@@ -105,19 +120,23 @@ function Video() {
       <div className="video-player-container">
         <video controls onSeeking={handleSeeking} onProgress={handleProgress}>
           <source
-            src={encodeURI(`http://localhost:5000/${filename
-              .split("/")
-              .filter((_, idx) => idx > 2)
-              .join("/")}`)}
+            src={`http://localhost:5000/${encodeURIComponent(
+              filename
+                .split("/")
+                .filter((_, idx) => idx > 2)
+                .join("/")
+            )}`}
           ></source>
         </video>
       </div>
       <div>
         <h1>{filename.slice(filename.lastIndexOf("/") + 1)}</h1>
-        {encodeURI(`http://localhost:5000/${filename
-              .split("/")
-              .filter((_, idx) => idx > 2)
-              .join("/")}`)}
+        {encodeURI(
+          `http://localhost:5000/${filename
+            .split("/")
+            .filter((_, idx) => idx > 2)
+            .join("/")}`
+        )}
         <p>
           Size: {formatSize(size)} <br />
           Views: {views} <br />
@@ -126,6 +145,15 @@ function Video() {
           Video Codec: {videoCodec} <br />
           Audio Codec: {audioCodec}
         </p>
+        <Form method="POST">
+          <input type="hidden" name="videoId" value={id} />
+          <button type="submit" name="intent" value="delete">
+            Delete
+          </button>
+          <button type="submit" name="intent" value="regen">
+            Regen Thumbs
+          </button>
+        </Form>
       </div>
     </div>
   );

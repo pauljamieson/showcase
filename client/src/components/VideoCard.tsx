@@ -2,7 +2,6 @@ import { VideoFile } from "../pages/Videos";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
 export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
   const filePath = `http://localhost:5000/${Math.floor(videoFile.id / 1000)}/${
     videoFile.id % 1000
@@ -43,19 +42,21 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
   }
 
   return (
-    <div className="video-card">
-      <Link to={`/video/${videoFile.id}`}>
+    <Link className="video-card" to={`/video/${videoFile.id}`}>
+      <div className="video-card-img-wrapper">
         <img
           alt="image"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          src={encodeURI(`${filePath}/thumbs/${filename}-${imgNum}.jpg`)}
+          src={`${filePath}/thumbs/${encodeURIComponent(
+            filename
+          )}-${imgNum}.jpg`}
         />
-      </Link>
+      </div>
       <p>
         {filename} <br />
         {formatDuration(videoFile.duration)}
       </p>
-    </div>
+    </Link>
   );
 }

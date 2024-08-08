@@ -1,8 +1,7 @@
 import cron from "node-cron";
 import prisma from "../lib/prisma";
 import Ffmpeg, { ffprobe } from "fluent-ffmpeg";
-import { IncomingFile, VideoFile } from "@prisma/client";
-import { fstat } from "fs";
+import { IncomingFile } from "@prisma/client";
 import { mkdir, opendir, rename, rmdir } from "fs/promises";
 import path from "path";
 

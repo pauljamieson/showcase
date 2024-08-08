@@ -1,14 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 export default function AppBar() {
   const { isLoggedIn, user, clearToken } = useAuth();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div className="appbar-container">
-      <Link to={"/"}>
+      {pathname.startsWith("/video/") ? (
+        <p className="title" onClick={() => navigate(-1)}>
+          Showcase
+        </p>
+      ) : pathname.startsWith("/videos") ? (
         <p className="title">Showcase</p>
-      </Link>
+      ) : (
+        <Link to={"/"}>
+          <p className="title">Showcase</p>
+        </Link>
+      )}
+
       <div className="grow" />
       <nav>
         <ol>
