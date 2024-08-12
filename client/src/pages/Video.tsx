@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Form,
-  useFormAction,
+  useActionData,
   useLoaderData,
   useNavigate,
 } from "react-router-dom";
-import videoAction from "../actions/video";
+import TagModal from "../components/TagModal";
 
 type Person = {
   id: number;
@@ -57,10 +57,16 @@ function Video() {
     },
   } = useLoaderData() as LoaderData;
 
-  const actionData: ActionData = useFormAction() as ActionData;
+  const ref = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
+  }, []);
+
+  const actionData = useActionData() as ActionData;
 
   const navigate = useNavigate();
-  if (actionData.status === "success") return navigate(-1);
+  if (actionData?.status === "success") return navigate(-1);
 
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
@@ -115,10 +121,20 @@ function Video() {
     setStart(e.target.currentTime);
   }
 
+  function handleVolumeChange(e: any) {
+    localStorage.setItem("volume", e.target.volume.toString());
+  }
+
   return (
     <div className="video-container">
       <div className="video-player-container">
-        <video controls onSeeking={handleSeeking} onProgress={handleProgress}>
+        <video
+          ref={ref}
+          controls
+          onSeeking={handleSeeking}
+          onProgress={handleProgress}
+          onVolumeChange={handleVolumeChange}
+        >
           <source
             src={`http://localhost:5000/${encodeURIComponent(
               filename
@@ -131,12 +147,7 @@ function Video() {
       </div>
       <div>
         <h1>{filename.slice(filename.lastIndexOf("/") + 1)}</h1>
-        {encodeURI(
-          `http://localhost:5000/${filename
-            .split("/")
-            .filter((_, idx) => idx > 2)
-            .join("/")}`
-        )}
+
         <p>
           Size: {formatSize(size)} <br />
           Views: {views} <br />
@@ -145,6 +156,7 @@ function Video() {
           Video Codec: {videoCodec} <br />
           Audio Codec: {audioCodec}
         </p>
+        <TagModal />
         <Form method="POST">
           <input type="hidden" name="videoId" value={id} />
           <button type="submit" name="intent" value="delete">

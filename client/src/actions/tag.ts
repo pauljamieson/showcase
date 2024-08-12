@@ -4,10 +4,11 @@ export default async ({ request }: { request: Request }) => {
       try {
         const formData = await request.formData();
         const body = {
-          intent: formData.get("intent") as string,
-          videoId: formData.get("videoId") as string,
+          name: formData.get("tag-name") as string,
+          videoId: formData.get("video-id") as string,
         };
-        await fetch(`http://localhost:5000/video/${body.videoId}`, {
+        console.log(body);
+        const result = await fetch(`http://localhost:5000/tag/`, {
           method: "POST",
           body: JSON.stringify(body),
           headers: {
@@ -15,7 +16,7 @@ export default async ({ request }: { request: Request }) => {
             Authorization: "Bearer " + localStorage.getItem("showcase"),
           },
         });
-
+        console.log(result);
         return { status: "success" };
       } catch (error) {
         return { status: "failure" };

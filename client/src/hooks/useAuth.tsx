@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    console.log(isLoggedIn, auth, user);
+    //console.log(isLoggedIn, auth, user);
   }, [auth]);
 
   function setToken(token: string) {

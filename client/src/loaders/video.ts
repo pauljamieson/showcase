@@ -11,6 +11,7 @@ export default async ({ params }: { params: Params<"id"> }) => {
       },
     });
     const result = await resp.json();
+
     if (result.status === "success") return { video: result.data.video };
     throw "Failed to get video from api.";
   } catch (error: any) {

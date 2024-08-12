@@ -11,7 +11,7 @@ async function GET(req: Request, res: Response) {
       where: { id: parseInt(id) },
       include: { tags: true, people: true },
     });
-    console.log(video);
+
     res.json({ status: "success", data: { video } });
   } catch (error) {
     console.error(error);

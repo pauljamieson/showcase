@@ -69,13 +69,13 @@ function buildSignature(header: string, payload: string, algo: ALGO) {
 
 function compareSignatures(header: string, payload: string, signature: string) {
   const newSignature = buildSignature(header, payload, "SHA256");
-  return newSignature.localeCompare(signature);
+  return newSignature === signature;
 }
 
 //TODO Update token if less then 50% left
 //TODO Return invalid token if passed expiration date
 function readJwtToken(token: string) {
-  if (token.match(/./g)?.length !== 2) throw "Invalid token string";
+  if (token.match(/\./g)?.length !== 2) throw "Invalid token string";
   const split: string[] = token.split(".");
   const header = split[0];
   const payload = split[1];

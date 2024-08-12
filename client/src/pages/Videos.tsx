@@ -1,6 +1,8 @@
 import { useLoaderData } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
+import SearchBar from "../components/SearchBar";
+import OrderBar from "../components/OrderBar";
 
 type LoaderData = {
   files: VideoFile[];
@@ -38,9 +40,11 @@ export default function Videos() {
   const data: LoaderData = useLoaderData() as LoaderData;
   return (
     <>
+      <SearchBar /> <OrderBar />
       <Paginator count={data.count} />
       <div className="video-card-container">
-        {data && data.files.map((val) => <VideoCard videoFile={val} />)}
+        {data &&
+          data.files.map((val) => <VideoCard key={val.id} videoFile={val} />)}
       </div>
     </>
   );

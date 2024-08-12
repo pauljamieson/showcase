@@ -1,7 +1,6 @@
 export default async ({ request }: { request: Request }) => {
-  switch (request.method) {
-    case "POST": {
-      try {
+    switch (request.method) {
+      case "POST": {
         const formData = await request.formData();
         const body = {
           intent: formData.get("intent") as string,
@@ -15,11 +14,9 @@ export default async ({ request }: { request: Request }) => {
             Authorization: "Bearer " + localStorage.getItem("showcase"),
           },
         });
-
+        
         return { status: "success" };
-      } catch (error) {
-        return { status: "failure" };
       }
     }
-  }
-};
+  };
+  
