@@ -378,3 +378,21 @@ input:checked + .toggler:before {
   top: 0;
   border-radius: 10px;
 }
+
+.chip {
+  border: 1px solid black;
+  width: fit-content;
+  padding:3px 5px;
+  border-radius: 30px;
+  background-color: var(--btn-prim);
+}
+
+.chip:hover {
+  background-color: var(--btn-prim-hover);
+}
+
+.chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}

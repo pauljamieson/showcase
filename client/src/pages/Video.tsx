@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import TagModal from "../components/TagModal";
+import Chip from "../components/Chip";
 
 type Person = {
   id: number;
@@ -54,6 +55,7 @@ function Video() {
       audioCodec,
       id,
       duration,
+      tags,
     },
   } = useLoaderData() as LoaderData;
 
@@ -156,7 +158,14 @@ function Video() {
           Video Codec: {videoCodec} <br />
           Audio Codec: {audioCodec}
         </p>
-        <TagModal />
+
+        <div className="chip-container">
+          {tags.map((data) => (
+            <Chip {...data} />
+          ))}
+          <TagModal />
+        </div>
+
         <Form method="POST">
           <input type="hidden" name="videoId" value={id} />
           <button type="submit" name="intent" value="delete">
