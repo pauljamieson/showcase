@@ -161,7 +161,7 @@ function Video() {
 
         <div className="chip-container">
           {tags.map((data) => (
-            <Chip {...data} />
+            <Chip key={data.id} {...data} videoId={id} />
           ))}
           <TagModal />
         </div>
