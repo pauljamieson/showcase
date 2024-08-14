@@ -15,6 +15,7 @@ import Video from "../pages/Video";
 import VideoLoader from "../loaders/video";
 import VideoAction from "../actions/video";
 import TagAction from "../actions/tag";
+import ChipAction from "../actions/chip";
 
 export const router = createBrowserRouter([
   {
@@ -47,7 +48,10 @@ export const router = createBrowserRouter([
         element: <Video />,
         loader: VideoLoader,
         action: VideoAction,
-        children: [{ path: "tag", action: TagAction }],
+        children: [
+          { path: "tag", action: TagAction },
+          { path: "tag/chip", action: ChipAction },
+        ],
       },
       {
         path: "/admin/incoming",

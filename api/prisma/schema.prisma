@@ -50,8 +50,8 @@ model VideoFile {
   audioCodec String
   views Int @default(0)
   rating Int @default(0)
-  tags Tag[]
-  people Person[]
+  tags TagOnVideFile[]
+  people PersonOnVideFile[]
 
   @@unique([filename, size])
 }
@@ -59,19 +59,40 @@ model VideoFile {
 model Tag {
   id Int @id @default(autoincrement())
   name String @unique
-  videoFiles VideoFile[]
-  userId User @relation(fields: [creator], references: [id])
+  videoFiles TagOnVideFile[]
+  userId User @relation(fields: [creator], references: [id], onDelete: Restrict)
   creator Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model TagOnVideFile {
+  tag Tag @relation(fields: [tagId], references: [id])
+  tagId Int 
+  videoFile VideoFile @relation(fields: [videoFileId], references: [id])
+  videoFileId Int
+  
+  @@id([tagId, videoFileId])
+}
+
 model Person {
   id Int @id @default(autoincrement())
   name String @unique
-  videoFiles VideoFile[]
-  userId User @relation(fields: [creator], references: [id])
+  videoFiles PersonOnVideFile[]
+  userId User @relation(fields: [creator], references: [id], onDelete: Restrict)
   creator Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PersonOnVideFile {
+  person Person @relation(fields: [personId], references: [id])
+  personId Int 
+  videoFile VideoFile @relation(fields: [videoFileId], references: [id])
+  videoFileId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  @@id([personId, videoFileId])
 }

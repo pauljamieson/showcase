@@ -11,7 +11,7 @@ async function GET(req: Request, res: Response) {
     const files = await prisma.videoFile.findMany({
       skip: page * limit - limit,
       take: limit,
-      include: { tags: true, people: true },
+
       orderBy: { id: order as Prisma.SortOrder },
       where: {
         AND: search.split(" ").map((word) => {

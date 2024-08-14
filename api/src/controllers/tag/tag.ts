@@ -10,12 +10,12 @@ async function POST(req: Request, res: Response) {
         name: name,
       },
       update: {
-        videoFiles: { connect: { id: +videoId } },
+        videoFiles: { create: { videoFileId: +videoId } },
       },
       create: {
         name: name,
         creator: +res.locals.user,
-        videoFiles: { connect: { id: +videoId } },
+        videoFiles: { create: { videoFileId: +videoId } },
       },
     });
     res.json({ status: "success" });

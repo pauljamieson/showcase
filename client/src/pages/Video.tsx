@@ -29,8 +29,8 @@ type VideoData = {
   size: number;
   views: number;
   rating: number;
-  people: Person[];
-  tags: Tag[];
+  //people: Person[];
+  //tags: Tag[];
   updatedAt: string;
   createdAt: string;
 };
@@ -55,7 +55,7 @@ function Video() {
       audioCodec,
       id,
       duration,
-      tags,
+      //tags,
     },
   } = useLoaderData() as LoaderData;
 
@@ -160,9 +160,9 @@ function Video() {
         </p>
 
         <div className="chip-container">
-          {tags.map((data) => (
+          {/*{tags.map((data) => ( 
             <Chip key={data.id} {...data} videoId={id} />
-          ))}
+          ))} */}
           <TagModal />
         </div>
 

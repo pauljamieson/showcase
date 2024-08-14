@@ -26,7 +26,7 @@ export default function Chip({
   }
 
   return (
-    <fetcher.Form method="POST" action="/video/tag/chip">
+    <fetcher.Form method="POST" action="/video/:id/tag/chip">
       <input type="submit" className="chip" value={name} />
       <input type="hidden" name="tagId" value={id} />
       <input type="hidden" name="videoId" value={videoId} />
