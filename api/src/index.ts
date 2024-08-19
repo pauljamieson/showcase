@@ -13,9 +13,10 @@ import AuthRouter from "./routes/auth/auth";
 import AdminRouter from "./routes/admin/admin";
 import TagRouter from "./routes/tag/tag";
 import TagsRouter from "./routes/tags/tags";
-import CastRouter from "./routes/cast/cast";
 import VideosRouter from "./routes/videos/videos";
 import VideoRouter from "./routes/video/video";
+import PersonRouter from "./routes/person/person";
+import PeopleRouter from "./routes/people/people";
 import { middleWare } from "./middleware/middleware";
 
 dotenv.config();
@@ -37,7 +38,8 @@ app.use("/auth", AuthRouter);
 app.use("/admin", AdminRouter);
 app.use("/tag", TagRouter);
 app.use("/tags", TagsRouter);
-app.use("/cast", CastRouter);
+app.use("/person", PersonRouter);
+app.use("/people", PeopleRouter);
 app.use("/videos", VideosRouter);
 app.use("/video", VideoRouter);
 

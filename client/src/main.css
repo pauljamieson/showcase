@@ -308,7 +308,7 @@ input:checked + .slider:before {
 }
 
 .order-container { 
-   width: 130px;
+  width:140px;
   padding: 5px;
  }
 
@@ -317,6 +317,7 @@ input:checked + .slider:before {
 .toggle-container {
   display: flex;
   align-items: center;
+  width: fit-content;
 }
 
 .toggle {
@@ -342,7 +343,6 @@ input:checked + .slider:before {
   transition: .4s;
 }
 
-
 .toggler::before {
   position: absolute;
   content: "";
@@ -357,10 +357,6 @@ input:checked + .slider:before {
   background-color: #15c757;
 }
 
-input:checked + .toggler {
-  
-}
-
 input:focus + .slider {
   box-shadow: 0 0 1px var(--highlight);
 }
@@ -372,11 +368,20 @@ input:checked + .toggler:before {
 }
 
 /* END TOGGLE*/
+.centerpoint {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+}
+
 
 .modal {
-  position: absolute;
-  top: 0;
+  position: relative;
   border-radius: 10px;
+  width: 325px;
+  margin-left: -162px;
+  height: 120px;
+  margin-top: -120px;
 }
 
 .chip {
@@ -396,3 +401,14 @@ input:checked + .toggler:before {
   flex-wrap: wrap;
   gap: 2px;
 }
+
+.toggle-bar {
+  display: flex;
+}
+
+.toggle-container span.active {
+  color: var(--highlight);
+  text-decoration: underline;
+}
+
+ 

@@ -1,19 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useFetcher, useParams } from "react-router-dom";
 
-type Tag = { id: number; name: string };
+type Person = { id: number; name: string };
 
-export default function TagModal() {
+export default function PersonModal() {
   const { id } = useParams();
   const fetcher = useFetcher();
   const [open, setOpen] = useState<boolean>(false);
 
   const [input, setInput] = useState<string>("");
-  const [options, setOptions] = useState<Tag[]>([]);
+  const [options, setOptions] = useState<Person[]>([]);
 
   useEffect(() => {
     if (input.length > 0) {
-      const apiUrl = new URL("http://localhost:5000/tags");
+      const apiUrl = new URL("http://localhost:5000/people");
       apiUrl.searchParams.set("terms", input);
       fetch(apiUrl, {
         method: "GET",
@@ -23,7 +23,7 @@ export default function TagModal() {
         },
       })
         .then((resp) => resp.json())
-        .then((data) => setOptions(data.tags));
+        .then((data) => setOptions(data.people));
     }
   }, [input]);
 
@@ -49,20 +49,19 @@ export default function TagModal() {
       <button className="btn" name="intent" value="open" onClick={handleClick}>
         +
       </button>
-
       <div className="centerpoint">
         <dialog className="modal" open={open}>
-          <p>TAGS</p>
-          <fetcher.Form method="POST" action="/video/:id/tag">
+          <p>People</p>
+          <fetcher.Form method="POST" action="/video/:id/person">
             <input
               type="text"
-              list="tags"
-              name="tag-name"
+              list="people"
+              name="person-name"
               value={input}
               onChange={handleChange}
               autoComplete="off"
             />
-            <datalist id="tags">
+            <datalist id="people">
               {options.map((val) => (
                 <option>{val.name}</option>
               ))}

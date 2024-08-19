@@ -2,7 +2,7 @@ import cron from "node-cron";
 import prisma from "../lib/prisma";
 import Ffmpeg, { ffprobe } from "fluent-ffmpeg";
 import { IncomingFile } from "@prisma/client";
-import { mkdir, opendir, rename, rmdir } from "fs/promises";
+import { mkdir, opendir, rename, rm, rmdir, unlink } from "fs/promises";
 import path from "path";
 
 let isActive = false;
@@ -27,23 +27,50 @@ cron.schedule("* * * * *", importFile);
 
 function processFile(file: IncomingFile) {
   return new Promise<boolean>(async (resolve) => {
-    const fileInfo: FileInfo = await getFileInfo(file);
-    const { id } = await prisma.videoFile.create({ data: fileInfo });
-    const filePath = `./app_data/videos/${Math.floor(id / 1000)}/${id % 1000}`;
-    const newPath = `${filePath}/${path.basename(fileInfo.filename)}`;
-    await mkdir(`${filePath}/thumbs`, { recursive: true });
-    await createThumbs(fileInfo, `${filePath}/thumbs`);
-    await rename(fileInfo.filename, newPath);
-    await prisma.videoFile.update({
-      where: { id },
-      data: { filename: newPath },
-    });
-    await prisma.incomingFile.delete({
-      where: {
-        id: file.id,
-      },
-    });
-    resolve(true);
+    var fileInfo: FileInfo;
+    try {
+      fileInfo = await getFileInfo(file);
+      const { id } = await prisma.videoFile.create({ data: fileInfo });
+      const filePath = `./app_data/videos/${Math.floor(id / 1000)}/${
+        id % 1000
+      }`;
+      const newPath = `${filePath}/${path.basename(fileInfo.filename)}`;
+      await mkdir(`${filePath}/thumbs`, { recursive: true });
+      await createThumbs(fileInfo, `${filePath}/thumbs`);
+      await rename(fileInfo.filename, newPath);
+      await rm(path.dirname(fileInfo.filename), {
+        recursive: true,
+        force: true,
+      });
+      await prisma.videoFile.update({
+        where: { id },
+        data: { filename: newPath },
+      });
+      await prisma.incomingFile.delete({
+        where: {
+          id: file.id,
+        },
+      });
+    } catch (error: any) {
+      // delete files already in system
+      // filename and size
+      if (error.code === "P2002") {
+        fileInfo = await getFileInfo(file);
+        await rm(path.dirname(fileInfo.filename), {
+          recursive: true,
+          force: true,
+        });
+        await prisma.incomingFile.delete({
+          where: {
+            id: file.id,
+          },
+        });
+      }
+      if (error.code === "P2025") {
+      }
+    } finally {
+      resolve(true);
+    }
   });
 }
 
@@ -93,10 +120,11 @@ async function getFileInfo(file: IncomingFile) {
 
 function createThumbs(fileInfo: FileInfo, outputPath: string) {
   return new Promise(async (resolve, reject) => {
-    try {
-      for (let x = 0; x < 10; x++) {
-        const time = Math.floor((Number(fileInfo.duration) / 10) * x);
-        try {
+    const promises = [];
+    for (let x = 0; x < 10; x++) {
+      const time = Math.floor((Number(fileInfo.duration) / 10) * x);
+      promises.push(
+        new Promise<boolean>((resolve, reject) => {
           Ffmpeg(fileInfo.filename, { niceness: 15 })
             .screenshot({
               size: "640x?",
@@ -112,13 +140,10 @@ function createThumbs(fileInfo: FileInfo, outputPath: string) {
               console.log(`Encoding Error: ${error.message}`)
             )
             .on("end", () => resolve(true));
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    } catch (err) {
-      console.error(err);
+        })
+      );
     }
+    Promise.all(promises).then(() => resolve(true));
   });
 }
 

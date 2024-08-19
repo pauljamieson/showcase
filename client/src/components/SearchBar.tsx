@@ -1,9 +1,9 @@
-import React from "react";
-import { useSearchParams, Form } from "react-router-dom";
+import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export default function SearchBar() {
-  const [params, setParams] = useSearchParams();
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [input, setInput] = useState<string>(searchParams.get("search") || "");
   //React.FormEvent<HTMLFormElement>
   function handleSubmit(e: any) {
     e.preventDefault();
@@ -12,14 +12,21 @@ export default function SearchBar() {
         searchTerms: { value },
       },
     } = e;
-    value.length > 0 ? params.set("search", value) : params.delete("search");
-    params.set("page", "1");
-    setParams(params);
+    value.length > 0
+      ? searchParams.set("search", value)
+      : searchParams.delete("search");
+    searchParams.set("page", "1");
+    setSearchParams(searchParams);
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="search" name="searchTerms" />
+      <input
+        type="search"
+        name="searchTerms"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
     </form>
   );
 }

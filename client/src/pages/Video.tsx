@@ -6,7 +6,9 @@ import {
   useNavigate,
 } from "react-router-dom";
 import TagModal from "../components/TagModal";
-import Chip from "../components/Chip";
+import TagChip from "../components/TagChip";
+import PersonChip from "../components/PersonChip";
+import PersonModal from "../components/PersonModal";
 
 type Person = {
   id: number;
@@ -29,8 +31,8 @@ type VideoData = {
   size: number;
   views: number;
   rating: number;
-  //people: Person[];
-  //tags: Tag[];
+  people: Person[];
+  tags: Tag[];
   updatedAt: string;
   createdAt: string;
 };
@@ -55,7 +57,8 @@ function Video() {
       audioCodec,
       id,
       duration,
-      //tags,
+      tags,
+      people,
     },
   } = useLoaderData() as LoaderData;
 
@@ -160,10 +163,17 @@ function Video() {
         </p>
 
         <div className="chip-container">
-          {/*{tags.map((data) => ( 
-            <Chip key={data.id} {...data} videoId={id} />
-          ))} */}
+          {tags.map((data) => (
+            <TagChip key={data.id} {...data} videoId={id} />
+          ))}
           <TagModal />
+        </div>
+        <div className="chip-container">
+          {people.length > 0 &&
+            people.map((data) => (
+              <PersonChip key={data.id} {...data} videoId={id} />
+            ))}
+          <PersonModal />
         </div>
 
         <Form method="POST">

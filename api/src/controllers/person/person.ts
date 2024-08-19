@@ -8,7 +8,7 @@ async function POST(req: Request, res: Response) {
     if (name === null) return res.json({ status: "ok" });
     if (videoId === null) return res.json({ status: "ok" });
 
-    const tag = await prisma.tag.upsert({
+    await prisma.person.upsert({
       where: { name: name },
       create: {
         name: name,

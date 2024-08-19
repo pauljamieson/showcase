@@ -3,15 +3,9 @@ export default async ({ request }: { request: Request }) => {
     case "GET": {
       try {
         const url = new URL(request.url);
-        const page = url.searchParams.get("page");
         const limit = url.searchParams.get("limit") || "8";
-        const search = url.searchParams.get("search");
-        const order = url.searchParams.get("order");
         const apiUrl = new URL("http://localhost:5000/videos");
-        if (page) apiUrl.searchParams.set("page", page);
-        if (limit) apiUrl.searchParams.set("limit", limit);
-        if (search) apiUrl.searchParams.set("search", search);
-        if (order) apiUrl.searchParams.set("order", order);
+        url.searchParams.forEach((v, k) => apiUrl.searchParams.append(k, v));
         const resp = await fetch(apiUrl, {
           method: "get",
           headers: {

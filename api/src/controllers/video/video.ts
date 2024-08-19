@@ -9,9 +9,8 @@ async function GET(req: Request, res: Response) {
     const { id } = req.params;
     const video = await prisma.videoFile.findFirst({
       where: { id: parseInt(id) },
-      
+      include: { tags: true, people: true },
     });
-
     res.json({ status: "success", data: { video } });
   } catch (error) {
     console.error(error);
@@ -80,6 +79,7 @@ async function POST(req: Request, res: Response) {
     if (intent === "delete") {
       await rm(filePath, { recursive: true, force: true });
       await prisma.videoFile.delete({ where: { id: +videoId } });
+      // TODO on delete remove tags\persons that dont have other matches
     }
     if (intent === "regen") {
       await createThumbs(+videoId, `${filePath}/thumbs`);

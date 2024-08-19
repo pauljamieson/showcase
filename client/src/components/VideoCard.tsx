@@ -55,7 +55,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
       </div>
       <p>
         {filename} <br />
-        {formatDuration(videoFile.duration)}
+        Length: {formatDuration(videoFile.duration)} Views: {videoFile.views}
       </p>
     </Link>
   );
