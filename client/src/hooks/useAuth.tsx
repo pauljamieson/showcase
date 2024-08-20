@@ -40,10 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { name, admin };
   }
 
-  useEffect(() => {
-    //console.log(isLoggedIn, auth, user);
-  }, [auth]);
-
   function setToken(token: string) {
     setAuth(token);
     setIisLoggedIn(true);

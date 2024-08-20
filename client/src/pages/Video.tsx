@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Form,
+  Navigate,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -9,6 +10,7 @@ import TagModal from "../components/TagModal";
 import TagChip from "../components/TagChip";
 import PersonChip from "../components/PersonChip";
 import PersonModal from "../components/PersonModal";
+import useAuth from "../hooks/useAuth";
 
 type Person = {
   id: number;
@@ -46,6 +48,9 @@ type ActionData = {
 };
 
 function Video() {
+  const auth = useAuth();
+  if (!auth.isLoggedIn) return <Navigate to="/login" />;
+
   const {
     video: {
       filename,
@@ -71,7 +76,7 @@ function Video() {
   const actionData = useActionData() as ActionData;
 
   const navigate = useNavigate();
-  if (actionData?.status === "success") return navigate(-1);
+  if (actionData?.status === "success") return <Navigate to="/" />;
 
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);

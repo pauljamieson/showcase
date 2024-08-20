@@ -67,6 +67,7 @@ async function removeEmptyFolders(folder: string, isRoot = true) {
 
 async function GET(req: Request, res: Response) {
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
     const files: string[] = await walkTree("./app_data/incoming");
     files.sort();
     res.setHeader("Authorization", `${req.header("Authorization")}`);
@@ -80,6 +81,7 @@ async function GET(req: Request, res: Response) {
 async function POST(req: Request, res: Response) {
   const { files } = req.body;
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
     for (const file of files) {
       const stats = await stat(file);
       const path = await realpath(file);

@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { Navigate, useLoaderData } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
 import SearchBar from "../components/SearchBar";
@@ -7,6 +7,7 @@ import ViewsOrder from "../components/ViewsOrder";
 import DurationOrder from "../components/DurationOrder";
 import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
+import useAuth from "../hooks/useAuth";
 
 type LoaderData = {
   files: VideoFile[];
@@ -41,6 +42,8 @@ export type Person = {
 };
 
 export default function Videos() {
+  const auth = useAuth();
+  if (!auth.isLoggedIn) return <Navigate to="/login" />;
   const data: LoaderData = useLoaderData() as LoaderData;
   return (
     <>

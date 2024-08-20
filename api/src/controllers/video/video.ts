@@ -6,6 +6,7 @@ import path from "path";
 
 async function GET(req: Request, res: Response) {
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
     const { id } = req.params;
     const video = await prisma.videoFile.findFirst({
       where: { id: parseInt(id) },
@@ -19,8 +20,9 @@ async function GET(req: Request, res: Response) {
 }
 
 async function PATCH(req: Request, res: Response) {
-  const { update, id }: { update: string; id: string } = req.body;
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
+    const { update, id }: { update: string; id: string } = req.body;
     let data = {};
     if (update === "views") data = { views: { increment: 1 } };
 
@@ -71,8 +73,10 @@ function createThumbs(videoId: number, outputPath: string) {
 }
 
 async function POST(req: Request, res: Response) {
-  const { intent, videoId }: { intent: string; videoId: string } = req.body;
+  
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
+    const { intent, videoId }: { intent: string; videoId: string } = req.body;
     const filePath = `./app_data/videos/${Math.floor(+videoId / 1000)}/${
       +videoId % 1000
     }`;

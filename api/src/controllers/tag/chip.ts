@@ -3,6 +3,7 @@ import prisma from "../../lib/prisma";
 
 async function POST(req: Request, res: Response) {
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
     const { tagId, videoId }: { tagId: string; videoId: string } = req.body;
 
     const result = await prisma.tag.update({

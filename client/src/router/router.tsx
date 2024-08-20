@@ -10,6 +10,7 @@ import Home from "../pages/Home";
 import Admin from "../pages/Admin";
 import Incoming from "../pages/Incoming";
 import incoming from "../actions/incoming";
+import IncomingLoader from "../loaders/incoming";
 import Videos from "../pages/Videos";
 import Video from "../pages/Video";
 import VideoLoader from "../loaders/video";
@@ -60,7 +61,7 @@ export const router = createBrowserRouter([
       {
         path: "/admin/incoming",
         element: <Incoming />,
-        loader: incoming,
+        loader: IncomingLoader,
         action: incoming,
       },
     ],

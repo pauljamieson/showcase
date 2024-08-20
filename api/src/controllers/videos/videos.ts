@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 
 async function GET(req: Request, res: Response) {
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
     const searchParams = new URLSearchParams(req.url.slice(1));
     const people = searchParams.getAll("people");
     const tags = searchParams.getAll("tags");

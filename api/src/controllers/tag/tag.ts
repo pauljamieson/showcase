@@ -3,6 +3,7 @@ import prisma from "../../lib/prisma";
 
 async function POST(req: Request, res: Response) {
   try {
+    if (!res.locals.isLogged) throw "Not logged in.";
     const { name, videoId }: { name: string; videoId: string } = req.body;
 
     if (name === null) return res.json({ status: "ok" });
@@ -25,8 +26,4 @@ async function POST(req: Request, res: Response) {
   }
 }
 
-function GET(req: Request, res: Response) {
-  res.json({ status: "success" });
-}
-
-export default { GET, POST };
+export default { POST };
