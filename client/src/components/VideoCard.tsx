@@ -29,6 +29,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
   }
   function handleMouseEnter() {
     setImgNum(1);
+    if (loop) clearInterval(loop);
     const i = setInterval(
       () => setImgNum((old) => (old >= 10 ? 1 : old + 1)),
       750

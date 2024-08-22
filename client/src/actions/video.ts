@@ -1,3 +1,5 @@
+import { redirect } from "react-router-dom";
+
 export default async ({ request }: { request: Request }) => {
   switch (request.method) {
     case "POST": {
@@ -16,6 +18,7 @@ export default async ({ request }: { request: Request }) => {
           },
         });
 
+        if (body.intent === "delete") return redirect("/");
         return { status: "success" };
       } catch (error) {
         return { status: "failure" };

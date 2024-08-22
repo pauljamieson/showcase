@@ -2,12 +2,13 @@ import { Navigate, useLoaderData } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
 import SearchBar from "../components/SearchBar";
-import OrderBar from "../components/DateOrder";
-import ViewsOrder from "../components/ViewsOrder";
-import DurationOrder from "../components/DurationOrder";
+import OrderBar from "../components/OrderDate";
+import ViewsOrder from "../components/OrderViews";
+import DurationOrder from "../components/OrderDuration";
 import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
 import useAuth from "../hooks/useAuth";
+import SizeBar from "../components/OrderSize";
 
 type LoaderData = {
   files: VideoFile[];
@@ -50,6 +51,7 @@ export default function Videos() {
       <SearchBar /> <PersonSearch /> <TagSearch />
       <div className="toggle-bar">
         <OrderBar /> <ViewsOrder /> <DurationOrder />
+        <SizeBar />
       </div>
       <Paginator count={data.count} />
       <div className="video-card-container">

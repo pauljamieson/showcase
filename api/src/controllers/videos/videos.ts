@@ -15,6 +15,11 @@ async function GET(req: Request, res: Response) {
     const views = searchParams.get("views");
     const duration = searchParams.get("duration");
 
+    const size = searchParams.get("size");
+    /*searchParams.get("size") === "asc"
+        ? Prisma.SortOrder.asc
+        : Prisma.SortOrder.desc;*/
+
     const x = [
       tags.map((t) => {
         return { tags: { some: { name: t } } };
@@ -34,6 +39,8 @@ async function GET(req: Request, res: Response) {
       orderBy: [
         views ? { views: views as Prisma.SortOrder } : {},
         duration ? { duration: duration as Prisma.SortOrder } : {},
+        size ? { size: size as Prisma.SortOrder } : {},
+
         { id: order as Prisma.SortOrder },
       ],
 

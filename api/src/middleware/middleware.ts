@@ -11,9 +11,9 @@ export const middleWare: RequestHandler = (
   // matches for thumbs
   if (req.url.match(/[0-9]+\/[0-9]+\/thumbs/)) return next();
 
-  // gets the route class 
+  // gets the route class
   const routeClass = getRouteClass(req.url);
-  
+
   // Skip checks for public pages
   if (routeClass === "PUBLIC") return next();
 
@@ -24,7 +24,6 @@ export const middleWare: RequestHandler = (
     return next();
   }
 
-    
   if (token) {
     try {
       const decypted = readJwtToken(token);

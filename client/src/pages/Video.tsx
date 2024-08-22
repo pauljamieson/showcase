@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Form,
-  Navigate,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "react-router-dom";
+import { Form, Navigate, useActionData, useLoaderData } from "react-router-dom";
 import TagModal from "../components/TagModal";
 import TagChip from "../components/TagChip";
 import PersonChip from "../components/PersonChip";
@@ -74,8 +68,7 @@ function Video() {
   }, []);
 
   const actionData = useActionData() as ActionData;
-
-  const navigate = useNavigate();
+  console.log("AD: ", actionData?.status);
   if (actionData?.status === "success") return <Navigate to="/" />;
 
   const [start, setStart] = useState<number>(0);
@@ -137,6 +130,46 @@ function Video() {
 
   return (
     <div className="video-container">
+      <div>
+        <h1>{filename.slice(filename.lastIndexOf("/") + 1)}</h1>
+        <div className="video-details">
+          <span> Size: {formatSize(size)}</span>
+          <span>Views: {views}</span>
+          <span>Duration: {formatDuration(duration)} </span>
+          <span>
+            Dimensions: {width}x{height}
+          </span>
+          <span>Video Codec: {videoCodec}</span>
+          <span>Audio Codec: {audioCodec}</span>
+        </div>
+        <div className="chip-container">
+          <span>Tags: </span>
+          {tags.map((data) => (
+            <TagChip key={data.id} {...data} videoId={id} />
+          ))}
+          <TagModal />
+        </div>
+        <div className="chip-container">
+          <span>People: </span>
+          {people.length > 0 &&
+            people.map((data) => (
+              <PersonChip key={data.id} {...data} videoId={id} />
+            ))}
+          <PersonModal />
+        </div>
+
+        {auth.user?.admin && (
+          <Form className="flexer3" method="POST">
+            <input type="hidden" name="videoId" value={id} />
+            <button className="btn" type="submit" name="intent" value="delete">
+              Delete
+            </button>
+            <button className="btn" type="submit" name="intent" value="regen">
+              Regen Thumbs
+            </button>
+          </Form>
+        )}
+      </div>
       <div className="video-player-container">
         <video
           ref={ref}
@@ -154,42 +187,6 @@ function Video() {
             )}`}
           ></source>
         </video>
-      </div>
-      <div>
-        <h1>{filename.slice(filename.lastIndexOf("/") + 1)}</h1>
-
-        <p>
-          Size: {formatSize(size)} <br />
-          Views: {views} <br />
-          Duration: {formatDuration(duration)} <br />
-          Dimensions: {width}x{height} <br />
-          Video Codec: {videoCodec} <br />
-          Audio Codec: {audioCodec}
-        </p>
-
-        <div className="chip-container">
-          {tags.map((data) => (
-            <TagChip key={data.id} {...data} videoId={id} />
-          ))}
-          <TagModal />
-        </div>
-        <div className="chip-container">
-          {people.length > 0 &&
-            people.map((data) => (
-              <PersonChip key={data.id} {...data} videoId={id} />
-            ))}
-          <PersonModal />
-        </div>
-
-        <Form method="POST">
-          <input type="hidden" name="videoId" value={id} />
-          <button type="submit" name="intent" value="delete">
-            Delete
-          </button>
-          <button type="submit" name="intent" value="regen">
-            Regen Thumbs
-          </button>
-        </Form>
       </div>
     </div>
   );
