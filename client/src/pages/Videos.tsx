@@ -2,13 +2,10 @@ import { Navigate, useLoaderData } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
 import SearchBar from "../components/SearchBar";
-import OrderBar from "../components/OrderDate";
-import ViewsOrder from "../components/OrderViews";
-import DurationOrder from "../components/OrderDuration";
 import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
 import useAuth from "../hooks/useAuth";
-import SizeBar from "../components/OrderSize";
+import SortOrder from "../components/SortOrder";
 
 type LoaderData = {
   files: VideoFile[];
@@ -46,12 +43,20 @@ export default function Videos() {
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/login" />;
   const data: LoaderData = useLoaderData() as LoaderData;
+  const orders: any[] = [
+    { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
+    { name: "views", options: ["Least Views", "Most Views"] },
+    { name: "duration", options: ["Shortest", "Longest"] },
+    { name: "size", options: ["Smol", "Big Boy"] },
+  ];
   return (
     <>
       <SearchBar /> <PersonSearch /> <TagSearch />
       <div className="toggle-bar">
-        <OrderBar /> <ViewsOrder /> <DurationOrder />
-        <SizeBar />
+        <SortOrder {...orders[0]} />
+        <SortOrder {...orders[1]} />
+        <SortOrder {...orders[2]} />
+        <SortOrder {...orders[3]} />
       </div>
       <Paginator count={data.count} />
       <div className="video-card-container">

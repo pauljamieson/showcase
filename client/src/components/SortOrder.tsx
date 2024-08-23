@@ -1,27 +1,37 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-export default function ViewsOrder() {
+interface Props {
+  name: string;
+  options: string[];
+  alwaysOn: Boolean;
+}
+
+export default function SortOrder({ name, options, alwaysOn = false }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [checked, setChecked] = useState<boolean>(
-    searchParams.get("size") === "asc" ? false : true
+  const [active, setActive] = useState<boolean>(
+    alwaysOn ? true : searchParams.has(name)
   );
-  const [active, setActive] = useState<boolean>(searchParams.has("size"));
+  const [checked, setChecked] = useState<boolean>(
+    searchParams.get(name) === "asc" ? true : false
+  );
+
   function handleChange(e: any) {
     setChecked(!checked);
     if (active) {
-      const size = e.target.checked ? "desc" : "asc";
-      searchParams.set("size", size);
+      const direction = e.target.checked ? "asc" : "desc";
+      searchParams.set(name, direction);
       setSearchParams(searchParams);
     }
   }
 
   function handleClick(e: any) {
+    if (alwaysOn) return;
     if (!active) {
-      searchParams.set("size", checked ? "desc" : "asc");
+      searchParams.set(name, checked ? "asc" : "desc");
       setSearchParams(searchParams);
     } else {
-      searchParams.delete("size");
+      searchParams.delete(name);
       setSearchParams(searchParams);
     }
     setActive(!active);
@@ -34,8 +44,11 @@ export default function ViewsOrder() {
           <input onChange={handleChange} type="checkbox" checked={checked} />
           <span className="toggler"></span>
         </label>
-        <span className={active ? "active" : ""} onClick={handleClick}>
-          {checked ? "Big Boys" : "Smol"}
+        <span
+          className={!alwaysOn && active ? "active" : ""}
+          onClick={handleClick}
+        >
+          {checked ? options[0] : options[1]}
         </span>
       </div>
     </div>
