@@ -210,26 +210,31 @@ nav ol {
 }
 
 .video-container {
-  display: flex;
+ display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: auto;
 }
 
 .video-player-container {
   display: flex;
   flex-direction: column;
   background-color: #000;
+  height: 70%;
 }
 
 video {
   align-self: center;
   max-width: 100%;
+  min-height: 0;
+  flex-grow:1;
 }
 
-@media all and (min-width: 960px) {
-  video {
-    max-width: 70%;
-  }
+.video-title {
+  text-wrap:wrap;
+  word-break: break-all;
 }
+
 
 .pagination-container {
   display: flex;
