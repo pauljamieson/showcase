@@ -10,6 +10,8 @@ export default function SignUp() {
     <div className="signup-container">
       <Form className="signup-form" method="post">
         <h3>Signup</h3>
+        <label htmlFor="displayname">Display Name</label>
+        <input type="text" name="displayname" />
         <label htmlFor="email">Email</label>
         <input type="email" name="email" />
         <label htmlFor="new-password">Password</label>

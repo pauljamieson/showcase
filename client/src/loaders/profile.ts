@@ -2,7 +2,7 @@ import { Params } from "react-router-dom";
 
 export default async ({ params }: { params: Params<"id"> }) => {
   try {
-    const apiUrl = new URL(`http://localhost:5000/video/${params.id}`);
+    const apiUrl = new URL(`http://localhost:5000/profile/`);
     const resp = await fetch(apiUrl, {
       method: "get",
       headers: {
@@ -15,8 +15,8 @@ export default async ({ params }: { params: Params<"id"> }) => {
     localStorage.setItem("showcase", token.substring(7));
     const result = await resp.json();
 
-    if (result.status === "success") return { video: result.data.video };
-    throw "Failed to get video from api.";
+    if (result.status === "success") return { profile: result.data.profile };
+    throw "Failed to get profile from api.";
   } catch (error: any) {
     console.log(error);
     return { error };

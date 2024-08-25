@@ -1,7 +1,14 @@
 import { RequestHandler, Request, Response, NextFunction } from "express";
-import { readJwtToken } from "../lib/jwt";
-import { Route } from "react-router-dom";
+import { buildJwtToken, readJwtToken } from "../lib/jwt";
 const SECRET = process.env.SECRET || "This is not good enough";
+
+type Payload = {
+  sub: string;
+  name: string;
+  admin: boolean;
+  exp: number;
+  iat: number;
+};
 
 export const middleWare: RequestHandler = (
   req: Request,
@@ -26,10 +33,26 @@ export const middleWare: RequestHandler = (
 
   if (token) {
     try {
-      const decypted = readJwtToken(token);
+      const decrypted: Payload = JSON.parse(readJwtToken(token));
+  
+      if (decrypted.exp < Date.now()/ 1000){
+        throw "Expired Token."
+      }
+      
+      // refresh token at 50% of expiration
+      if (Math.floor(decrypted.exp - Math.floor(Date.now()) / 1000) < 302400) {        
+        const newToken = buildJwtToken(
+          decrypted.sub,
+          decrypted.name,
+          604800,
+          decrypted.admin
+        );
+        res.setHeader("Authorization", `Bearer ${newToken}`);
+      }
       res.locals.isLogged = true;
-      res.locals.user = JSON.parse(decypted).sub;
-      res.locals.isAdmin = JSON.parse(decypted).admin;
+      res.locals.user = decrypted.sub;
+      res.locals.isAdmin = decrypted.admin;
+      if (routeClass === "ADMIN" && !res.locals.isAdmin) throw "Not Admin";
     } catch (error) {
       console.error(error);
     } finally {

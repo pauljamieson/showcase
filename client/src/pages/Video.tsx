@@ -68,7 +68,6 @@ function Video() {
   }, []);
 
   const actionData = useActionData() as ActionData;
-  console.log("AD: ", actionData?.status);
   if (actionData?.status === "success") return <Navigate to="/" />;
 
   const [start, setStart] = useState<number>(0);
@@ -131,7 +130,9 @@ function Video() {
   return (
     <div className="video-container">
       <div>
-        <h1 className="video-title">{filename.slice(filename.lastIndexOf("/") + 1)}</h1>
+        <h1 className="video-title">
+          {filename.slice(filename.lastIndexOf("/") + 1)}
+        </h1>
         <div className="video-details">
           <span> Size: {formatSize(size)}</span>
           <span>Views: {views}</span>

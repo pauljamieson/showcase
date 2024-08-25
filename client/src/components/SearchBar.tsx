@@ -22,11 +22,14 @@ export default function SearchBar() {
   return (
     <form onSubmit={handleSubmit}>
       <input
+        className="search-input"
         type="search"
         name="searchTerms"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        placeholder="Search"
       />
+      <input className="btn" type="submit" value="Search" />
     </form>
   );
 }

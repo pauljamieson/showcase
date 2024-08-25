@@ -17,8 +17,8 @@ async function POST(req: Request, res: Response) {
       "Authorization",
       `Bearer ${buildJwtToken(
         String(user.id),
-        user.username || "noname",
-        60000,
+        user.displayname || "noname",
+        604800,
         user.role === "ADMIN"
       )}`
     );

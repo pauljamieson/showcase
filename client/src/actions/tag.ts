@@ -1,26 +1,24 @@
 export default async ({ request }: { request: Request }) => {
-  switch (request.method) {
-    case "POST": {
-      try {
-        const formData = await request.formData();
-        const body = {
-          name: formData.get("tag-name") as string,
-          videoId: formData.get("video-id") as string,
-        };
-        console.log(body);
-        const result = await fetch(`http://localhost:5000/tag/`, {
-          method: "POST",
-          body: JSON.stringify(body),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("showcase"),
-          },
-        });
-        console.log(result);
-        return { status: "success" };
-      } catch (error) {
-        return { status: "failure" };
-      }
-    }
+  try {
+    const formData = await request.formData();
+    const body = {
+      name: formData.get("tag-name") as string,
+      videoId: formData.get("video-id") as string,
+    };
+
+    const resp = await fetch(`http://localhost:5000/tag/`, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("showcase"),
+      },
+    });
+    const token = resp.headers.get("Authorization");
+    if (!token) throw "JWT header is missing";
+    localStorage.setItem("showcase", token.substring(7));
+    return { status: "success" };
+  } catch (error) {
+    return { status: "failure" };
   }
 };

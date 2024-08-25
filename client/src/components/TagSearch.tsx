@@ -37,6 +37,7 @@ export default function TagSearch() {
     const tags = searchParams.getAll("tags");
     if (!tags.includes(input) && options.map((v) => v.name).includes(input)) {
       searchParams.append("tags", input);
+      searchParams.set("page", "1");
       setSearchParams(searchParams);
       setActive(searchParams.getAll("tags"));
       setInput("");
@@ -57,19 +58,21 @@ export default function TagSearch() {
     <div>
       <form onSubmit={handleSubmit}>
         <input
+          className="text-input"
           type="text"
           list="tags"
           name="tag-name"
           value={input}
           onChange={handleChange}
           autoComplete="off"
+          placeholder="Tags"
         />
         <datalist id="tags">
           {options.map((val) => (
             <option>{val.name}</option>
           ))}
         </datalist>
-        <input type="submit" value="Add" />
+        <input className="btn" type="submit" value="Add" />
       </form>
       <div className="chip-container">
         {active.length > 0 &&

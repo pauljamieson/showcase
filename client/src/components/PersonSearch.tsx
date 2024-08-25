@@ -37,6 +37,7 @@ export default function PersonSearch() {
     const people = searchParams.getAll("people");
     if (!people.includes(input) && options.map((v) => v.name).includes(input)) {
       searchParams.append("people", input);
+      searchParams.set("page", "1");
       setSearchParams(searchParams);
       setActive(searchParams.getAll("people"));
       setInput("");
@@ -57,19 +58,21 @@ export default function PersonSearch() {
     <div>
       <form onSubmit={handleSubmit}>
         <input
+          className="text-input"
           type="text"
           list="people"
           name="person-name"
           value={input}
           onChange={handleChange}
           autoComplete="off"
+          placeholder="People"
         />
         <datalist id="people">
           {options.map((val) => (
-            <option>{val.name}</option>
+            <option key={val.name}>{val.name}</option>
           ))}
         </datalist>
-        <input type="submit" value="Add" />
+        <input className="btn" type="submit" value="Add" />
       </form>
       <div className="chip-container">
         {active.length > 0 &&

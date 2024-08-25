@@ -34,13 +34,11 @@ function buildJwtToken(
   // encode payload
   const payload: string = buildJWTPayload(sub, name, admin, expiration);
   // create signture
-  const signature: string = buildSignature(header, payload, "SHA256");
+  const signature: string = buildSignature(header, payload);
   return [header, payload, signature].join(".");
 }
 
-type ALGO = "SHA256" | "SHA512";
-
-function buildJWTHeader(hashEncoding: ALGO = "SHA256") {
+function buildJWTHeader() {
   const typ = "JWT";
   const alg = "HS256";
   const header: JWTHeader = { typ, alg };
@@ -51,15 +49,15 @@ function buildJWTPayload(
   sub: string,
   name: string,
   admin: boolean,
-  expiration: number = 604800 // number of secs till expire
+  expiration: number
 ) {
-  const exp = Math.floor(Date.now() / 1000 + expiration);
+  const exp = Math.floor((expiration * 1000 + Date.now()) / 1000);
   const iat = Math.floor(Date.now() / 1000);
   const payload: JWTPayload = { sub, name, admin, exp, iat };
   return encodeBase64(JSON.stringify(payload));
 }
 
-function buildSignature(header: string, payload: string, algo: ALGO) {
+function buildSignature(header: string, payload: string) {
   const data = [header, payload].join(".");
   const signature = createHmac("SHA256", Buffer.from(SECRET, "base64url"))
     .update(data)
@@ -68,7 +66,7 @@ function buildSignature(header: string, payload: string, algo: ALGO) {
 }
 
 function compareSignatures(header: string, payload: string, signature: string) {
-  const newSignature = buildSignature(header, payload, "SHA256");
+  const newSignature = buildSignature(header, payload);
   return newSignature === signature;
 }
 

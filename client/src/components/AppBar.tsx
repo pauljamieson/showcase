@@ -32,11 +32,7 @@ export default function AppBar() {
                   </Link>
                 </li>
               )}
-              <li>
-                <Link to={"/"} onClick={clearToken}>
-                  <p>Sign Out</p>
-                </Link>
-              </li>
+
               <li>
                 <Link to={"/profile"}>
                   <p>{user?.name}</p>

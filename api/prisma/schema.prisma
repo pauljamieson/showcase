@@ -14,15 +14,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
-  username  String?  @unique
-  password  String
-  role      Role     @default(USER)
-  tags      Tag[]
-  people    Person[]
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  email        String   @unique
+  displayname  String?  @unique
+  password     String
+  role         Role     @default(USER)
+  tags         Tag[]
+  people       Person[]
 }
 
 enum Role {

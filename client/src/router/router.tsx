@@ -2,14 +2,14 @@ import ErrorPage from "../components/ErrorPage";
 import Root from "../layouts/Root";
 import { createBrowserRouter } from "react-router-dom";
 import SignUp from "../pages/SignUp";
-import signup from "../actions/signup";
+import SignUpAction from "../actions/signup";
 import Login from "../pages/Login";
-import loginAction from "../actions/login";
-import videosLoader from "../loaders/videos";
+import LoginAction from "../actions/login";
+import VideosLoader from "../loaders/videos";
 import Home from "../pages/Home";
 import Admin from "../pages/Admin";
 import Incoming from "../pages/Incoming";
-import incoming from "../actions/incoming";
+import IncomingAction from "../actions/incoming";
 import IncomingLoader from "../loaders/incoming";
 import Videos from "../pages/Videos";
 import Video from "../pages/Video";
@@ -18,7 +18,9 @@ import VideoAction from "../actions/video";
 import TagAction from "../actions/tag";
 import TagChipAction from "../actions/tagChip";
 import PersonAction from "../actions/person";
-import PersonChipAction from "../actions/PersonChip";
+import PersonChipAction from "../actions/personChip";
+import Profile from "../pages/Profile";
+import ProfileLoader from "../loaders/profile";
 
 export const router = createBrowserRouter([
   {
@@ -30,12 +32,12 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />,
-        action: signup,
+        action: SignUpAction,
       },
       {
         path: "/login",
         element: <Login />,
-        action: loginAction,
+        action: LoginAction,
       },
       {
         path: "/admin",
@@ -44,7 +46,7 @@ export const router = createBrowserRouter([
       {
         path: "/videos",
         element: <Videos />,
-        loader: videosLoader,
+        loader: VideosLoader,
       },
       {
         path: "/video/:id",
@@ -62,8 +64,9 @@ export const router = createBrowserRouter([
         path: "/admin/incoming",
         element: <Incoming />,
         loader: IncomingLoader,
-        action: incoming,
+        action: IncomingAction,
       },
+      { path: "/profile", element: <Profile />, loader: ProfileLoader },
     ],
   },
 ]);
