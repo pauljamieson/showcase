@@ -10,8 +10,12 @@ export default function () {
         <Link className="btn" to={"incoming"}>
           Manage Incoming
         </Link>
-        <button className="btn">Manage Tags</button>
-        <button className="btn">Manage Cast</button>
+        <Link className="btn" to={"tags"}>
+          Manage Tags
+        </Link>{" "}
+        <Link className="btn" to={"people"}>
+          Manage People
+        </Link>
         <button className="btn">Maintenance</button>
       </div>
     </div>

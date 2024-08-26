@@ -33,7 +33,7 @@ async function PATCH(req: Request, res: Response) {
 
     res.json({ status: "success" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ status: "failure", error });
   }
 }
@@ -59,11 +59,11 @@ function createThumbs(videoId: number, outputPath: string) {
               folder: outputPath,
             })
             .on("error", (error: any) =>
-              console.log(`Encoding Error: ${error.message}`)
+              console.error(`Encoding Error: ${error.message}`)
             )
             .on("end", () => resolve(true));
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       }
     } catch (err) {
@@ -91,7 +91,7 @@ async function POST(req: Request, res: Response) {
     if (!intent) throw "No intent made.";
     res.json({ status: "success" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ status: "failure", error });
   }
 }

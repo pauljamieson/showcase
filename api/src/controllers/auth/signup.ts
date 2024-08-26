@@ -10,15 +10,14 @@ function GET(req: Request, res: Response) {
 
 // create new account if valid
 async function POST(req: Request, res: Response) {
-  const { email, password } = req.body;
+  const { email, password, displayName } = req.body;
   try {
     const passwordHash = await hash(password, SALT_ROUNDS);
     const result = await prisma.user.create({
-      data: { email: email, password: passwordHash },
+      data: { email: email, password: passwordHash, displayname: displayName },
     });
     res.json({ status: "success" });
   } catch (error) {
-    
     res.json({ status: "failure", error });
   }
 }

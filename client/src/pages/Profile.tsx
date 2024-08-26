@@ -1,5 +1,6 @@
 import { Form, useLoaderData } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { Navigate } from "react-router-dom";
 
 type LoaderData = {
   profile: {
@@ -11,7 +12,9 @@ type LoaderData = {
 };
 
 export default function Profile() {
-  const { clearToken } = useAuth();
+  const { clearToken, isLoggedIn } = useAuth();
+
+  if (!isLoggedIn) return <Navigate to="/" />;
   const loader: LoaderData = useLoaderData() as LoaderData;
 
   return (

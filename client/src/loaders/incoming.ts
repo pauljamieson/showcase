@@ -1,4 +1,4 @@
-export default async ({ request }: { request: Request }) => {
+export default async () => {
   try {
     const fetchData = await fetch("http://localhost:5000/admin/incoming/", {
       method: "get",

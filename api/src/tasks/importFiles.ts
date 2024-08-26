@@ -52,8 +52,6 @@ function processFile(file: IncomingFile) {
         },
       });
     } catch (error: any) {
-      // delete files already in system
-      // filename and size
       if (error.code === "P2002") {
         fileInfo = await getFileInfo(file);
         await rm(path.dirname(fileInfo.filename), {

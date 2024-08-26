@@ -130,9 +130,9 @@ function Video() {
   return (
     <div className="video-container">
       <div>
-        <h1 className="video-title">
+        <p className="video-title">
           {filename.slice(filename.lastIndexOf("/") + 1)}
-        </h1>
+        </p>
         <div className="video-details">
           <span> Size: {formatSize(size)}</span>
           <span>Views: {views}</span>

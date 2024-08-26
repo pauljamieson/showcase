@@ -1,4 +1,4 @@
-import { apiCall } from "../lib/api";
+
 
 export default async ({ request }: { request: Request }) => {
   try {
@@ -14,6 +14,7 @@ export default async ({ request }: { request: Request }) => {
       },
     });
     const token = resp.headers.get("Authorization");
+    
     if (!token) throw "JWT header is missing";
     localStorage.setItem("showcase", token.substring(7));
     const { status, data } = await resp.json();

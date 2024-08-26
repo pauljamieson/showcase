@@ -9,12 +9,11 @@ type Data = {
 };
 
 export default function Login() {
-  
   const { auth, setToken } = useAuth();
   if (auth && auth.length > 0) return <Navigate to="/" />;
-  
+
   const actionData: Data = useActionData() as Data;
-  
+
   useEffect(() => {
     if (actionData && actionData?.status === "success")
       setToken(actionData.auth);
@@ -29,6 +28,7 @@ export default function Login() {
         <label htmlFor="password">Password</label>
         <input type="password" name="password" autoComplete="true" />
         <button type="submit">LOGIN</button>
+        {actionData?.error && <p>{actionData.error}</p>}
       </Form>
     </div>
   );

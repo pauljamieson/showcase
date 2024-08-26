@@ -51,7 +51,9 @@ export default function Videos() {
   ];
   return (
     <>
-      <SearchBar /> <PersonSearch /> <TagSearch />
+      <div className="search-bar">
+        <SearchBar /> <PersonSearch /> <TagSearch />
+      </div>
       <div className="toggle-bar">
         <SortOrder {...orders[0]} />
         <SortOrder {...orders[1]} />

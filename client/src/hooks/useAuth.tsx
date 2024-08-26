@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User>(undefined);
 
   function decodeToken(token: string) {
-    const { name, admin, ...rest } = JSON.parse(atob(token.split(".")[1]));
+    const { name, admin } = JSON.parse(atob(token.split(".")[1]));
     return { name, admin };
   }
 

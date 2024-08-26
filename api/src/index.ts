@@ -1,12 +1,6 @@
 require("./lib/bigint");
 require("./tasks/importFiles");
-import express, {
-  Express,
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-} from "express";
+import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import AuthRouter from "./routes/auth/auth";
@@ -17,7 +11,7 @@ import VideosRouter from "./routes/videos/videos";
 import VideoRouter from "./routes/video/video";
 import PersonRouter from "./routes/person/person";
 import PeopleRouter from "./routes/people/people";
-import ProfileRouter from "./routes/profile/profile"
+import ProfileRouter from "./routes/profile/profile";
 import { middleWare } from "./middleware/middleware";
 
 dotenv.config();
@@ -43,7 +37,7 @@ app.use("/person", PersonRouter);
 app.use("/people", PeopleRouter);
 app.use("/videos", VideosRouter);
 app.use("/video", VideoRouter);
-app.use("/profile", ProfileRouter)
+app.use("/profile", ProfileRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");

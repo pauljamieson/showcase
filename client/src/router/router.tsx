@@ -21,6 +21,10 @@ import PersonAction from "../actions/person";
 import PersonChipAction from "../actions/personChip";
 import Profile from "../pages/Profile";
 import ProfileLoader from "../loaders/profile";
+import AdminTag from "../pages/AdminTag";
+import AdminTagLoader from "../loaders/adminTag";
+import AdminPerson from "../pages/AdminPerson";
+import AdminPersonLoader from "../loaders/adminPerson";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +69,16 @@ export const router = createBrowserRouter([
         element: <Incoming />,
         loader: IncomingLoader,
         action: IncomingAction,
+      },
+      {
+        path: "/admin/tags",
+        element: <AdminTag />,
+        loader: AdminTagLoader,
+      },
+      {
+        path: "/admin/people",
+        element: <AdminPerson />,
+        loader: AdminPersonLoader,
       },
       { path: "/profile", element: <Profile />, loader: ProfileLoader },
     ],

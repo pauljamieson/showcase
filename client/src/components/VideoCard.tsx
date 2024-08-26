@@ -7,7 +7,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
     videoFile.id % 1000
   }`;
   const filename = videoFile.filename
-    .slice(0, videoFile.filename.lastIndexOf("."))
+    
     .slice(videoFile.filename.lastIndexOf("/") + 1);
 
   const [imgNum, setImgNum] = useState<number>(3);
@@ -50,7 +50,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           src={`${filePath}/thumbs/${encodeURIComponent(
-            filename
+            filename.slice(0, filename.lastIndexOf("."))
           )}-${imgNum}.jpg`}
         />
       </div>

@@ -1,6 +1,6 @@
 export default async () => {
   try {
-    const apiUrl = new URL(`http://localhost:5000/profile/`);
+    const apiUrl = new URL("http://localhost:5000/tags");
     const resp = await fetch(apiUrl, {
       method: "get",
       headers: {
@@ -8,15 +8,17 @@ export default async () => {
         Authorization: "Bearer " + localStorage.getItem("showcase"),
       },
     });
+
     const token = resp.headers.get("Authorization");
     if (!token) throw "JWT header is missing";
     localStorage.setItem("showcase", token.substring(7));
-    const result = await resp.json();
 
-    if (result.status === "success") return { profile: result.data.profile };
-    throw "Failed to get profile from api.";
+    const { status, tags } = await resp.json();
+    console.log(status, tags);
+    if (status === "success") return { tags };
+    throw "Failed to get files from api.";
   } catch (error: any) {
     console.log(error);
-    return { error };
+    return { files: [], count: 0 };
   }
 };

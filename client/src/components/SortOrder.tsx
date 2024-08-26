@@ -25,7 +25,7 @@ export default function SortOrder({ name, options, alwaysOn = false }: Props) {
     }
   }
 
-  function handleClick(e: any) {
+  function handleClick() {
     if (alwaysOn) return;
     if (!active) {
       searchParams.set(name, checked ? "asc" : "desc");

@@ -17,7 +17,7 @@ async function POST(req: Request, res: Response) {
     }
     res.json({ status: "success" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ status: "failure" });
   }
 }

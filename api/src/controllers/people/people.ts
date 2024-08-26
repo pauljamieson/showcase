@@ -4,18 +4,24 @@ import prisma from "../../lib/prisma";
 async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
-    const terms = req.query.terms as string;
+    const terms = (req.query.terms as string) || "";
     const result = await prisma.person.findMany({
-      select: { id: true, name: true },
+      select: {
+        id: true,
+        name: true,
+        userId: true,
+        creator: { select: { displayname: true } },
+      },
       where: {
         AND: terms.split(" ").map((word) => {
           return { name: { contains: word, mode: "insensitive" } };
         }),
       },
     });
+
     res.json({ status: "success", people: result });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ status: "failure", error });
   }
 }

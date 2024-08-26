@@ -1,0 +1,32 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: dockerfile
+    volumes:
+      - ./app_data:/app/app_data
+    restart: unless-stopped
+    user: "node"
+    ports:
+      - 5000:5000
+  client:
+    build:
+      context: ./client
+      dockerfile: dockerfile
+    restart: unless-stopped
+    ports:
+      - 8000:80
+  db:
+    image: postgres
+    restart: unless-stopped
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: showcase
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080

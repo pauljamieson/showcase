@@ -32,12 +32,18 @@ export default function Incoming() {
           )}
           name="all"
         />
-        {data?.files?.map((file) => (
-          <label key={btoa(encodeURIComponent(file))}>
-            <input type="checkbox" name={btoa(encodeURIComponent(file))} />
-            {file.slice(file.indexOf("/incoming/") + "/incoming/".length)}
-          </label>
-        ))}
+        <div className="file-names">
+          {data?.files.length > 0 ? (
+            data?.files?.map((file) => (
+              <label key={btoa(encodeURIComponent(file))}>
+                <input type="checkbox" name={btoa(encodeURIComponent(file))} />
+                {file.slice(file.indexOf("/incoming/") + "/incoming/".length)}
+              </label>
+            ))
+          ) : (
+            <div>No Files Found.</div>
+          )}
+        </div>
       </Form>
     </>
   );

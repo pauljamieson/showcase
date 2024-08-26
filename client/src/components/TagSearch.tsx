@@ -77,9 +77,9 @@ export default function TagSearch() {
       <div className="chip-container">
         {active.length > 0 &&
           active.map((data) => (
-            <p key={data} onClick={handleClick} id={data}>
+            <div className="chip" key={data} onClick={handleClick} id={data}>
               {data}
-            </p>
+            </div>
           ))}
       </div>
     </div>

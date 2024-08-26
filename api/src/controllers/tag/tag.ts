@@ -21,9 +21,25 @@ async function POST(req: Request, res: Response) {
 
     res.json({ status: "success" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ status: "failure" });
   }
 }
 
-export default { POST };
+async function DELETE(req: Request, res: Response) {
+  try {
+    if (!res.locals.isLogged) throw "Not logged in.";
+    const { id }: { id: string } = req.body;
+    if (id === null) return res.json({ status: "failure" });
+    const tag = await prisma.tag.delete({
+      where: { id: +id },
+    });
+    console.log(tag);
+    res.json({ status: "success" });
+  } catch (error) {
+    console.error(error);
+    res.json({ status: "failure" });
+  }
+}
+
+export default { POST, DELETE };

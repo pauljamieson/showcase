@@ -34,21 +34,19 @@ export const middleWare: RequestHandler = (
   if (token) {
     try {
       const decrypted: Payload = JSON.parse(readJwtToken(token));
-  
-      if (decrypted.exp < Date.now()/ 1000){
-        throw "Expired Token."
+
+      if (decrypted.exp < Date.now() / 1000) {
+        throw "Expired Token.";
       }
-      
-      // refresh token at 50% of expiration
-      if (Math.floor(decrypted.exp - Math.floor(Date.now()) / 1000) < 302400) {        
-        const newToken = buildJwtToken(
-          decrypted.sub,
-          decrypted.name,
-          604800,
-          decrypted.admin
-        );
-        res.setHeader("Authorization", `Bearer ${newToken}`);
-      }
+
+      const newToken = buildJwtToken(
+        decrypted.sub,
+        decrypted.name,
+        604800,
+        decrypted.admin
+      );
+      res.setHeader("Authorization", `Bearer ${newToken}`);
+
       res.locals.isLogged = true;
       res.locals.user = decrypted.sub;
       res.locals.isAdmin = decrypted.admin;
