@@ -1,10 +1,10 @@
 FROM node:20.12.1
-WORKDIR /app
-EXPOSE 5000
-COPY . /app
-RUN npm install --include dev
 RUN apt update && apt -y upgrade
 RUN apt -y install ffmpeg
-USER 1000
 RUN echo umask 0000 >> ~/.bashrc
-CMD npm run dev
+EXPOSE 5000
+WORKDIR /app
+COPY . /app
+RUN npm install --include dev
+USER 1000
+ENTRYPOINT [ "./startup.sh" ]

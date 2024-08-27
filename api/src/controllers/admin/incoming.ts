@@ -50,6 +50,7 @@ async function walkTree(folder: string) {
 
 async function removeEmptyFolders(folder: string, isRoot = true) {
   try {
+    console.log(isRoot, folder);
     const dir = await opendir(folder);
     let hasFiles = false;
     for await (const dirent of dir) {
@@ -62,7 +63,9 @@ async function removeEmptyFolders(folder: string, isRoot = true) {
       if (dirent.isFile()) hasFiles = true;
     }
     if (isRoot === false && hasFiles === false) await rmdir(folder);
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function GET(req: Request, res: Response) {

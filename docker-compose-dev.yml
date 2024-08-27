@@ -10,6 +10,11 @@ services:
     user: "node"
     ports:
       - 5000:5000
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+        
   client:
     build:
       context: ./client
@@ -19,6 +24,9 @@ services:
     restart: unless-stopped
     ports:
       - 5173:5173
+    depends_on:
+      - api
+
   db:
     image: postgres
     restart: always
@@ -28,6 +36,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: showcase
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d showcase
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
   adminer:
     image: adminer
     restart: always
