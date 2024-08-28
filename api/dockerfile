@@ -1,12 +1,11 @@
-FROM node:20.12.1 AS build1
-EXPOSE 5000
+FROM node:20.12.1
 RUN apt update && apt -y upgrade
 RUN apt -y install ffmpeg
 WORKDIR /app
 COPY . /app
 RUN npm install
 RUN npm run build
-
-FROM nginx:1.27.1
-EXPOSE 8080
-COPY --from=build1 /app/dist /usr/share/nginx/html
+WORKDIR /app/dist
+COPY startup.prod.sh /app/dist/
+RUN npm install pm2 -g
+ENTRYPOINT [ "./startup.prod.sh" ]

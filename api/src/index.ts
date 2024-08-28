@@ -13,18 +13,19 @@ import PersonRouter from "./routes/person/person";
 import PeopleRouter from "./routes/people/people";
 import ProfileRouter from "./routes/profile/profile";
 import { middleWare } from "./middleware/middleware";
-
+const compression = require('compression')
 dotenv.config();
 
 const app: Express = express();
 const port: string | undefined = process.env.PORT;
-
+app.use(compression())
 app.use(
   cors({
     exposedHeaders: ["Authorization"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
+
 
 app.use(middleWare);
 app.use(express.json());

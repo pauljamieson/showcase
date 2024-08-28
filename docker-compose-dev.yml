@@ -14,7 +14,7 @@ services:
       db:
         condition: service_healthy
         restart: true
-        
+
   client:
     build:
       context: ./client
@@ -32,6 +32,8 @@ services:
     restart: always
     # set shared memory limit when using docker-compose
     shm_size: 128mb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: showcase
@@ -47,3 +49,6 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+volumes:
+  pgdata:
