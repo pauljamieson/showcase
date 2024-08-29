@@ -3,8 +3,8 @@ WORKDIR /app
 COPY . /app
 RUN npm install --include dev
 RUN npm run build
+RUN npm install -g serve
+CMD serve -s dist
 
-FROM nginx:1.27.1
-EXPOSE 8080
-COPY --from=build1 /app/dist /usr/share/nginx/html
+
 

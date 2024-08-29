@@ -8,15 +8,19 @@ services:
     volumes:
       - ./app_data:/app/app_data
     restart: unless-stopped
-    ports:
-      - 5000:5000
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+
   client:
     build:
       context: ./client
       dockerfile: dockerfile
     restart: unless-stopped
-    ports:
-      - 8000:80
+    depends_on:
+      - api
+
   db:
     image: postgres
     restart: unless-stopped
@@ -26,8 +30,28 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: showcase
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d showcase
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
   adminer:
     image: adminer
     restart: unless-stopped
     ports:
       - 8080:8080
+      
+  proxy:
+    image: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+      - 5000:5000
+    build:
+      context: ./proxy
+      dockerfile: dockerfile
+    depends_on:
+      - api
+      - client
