@@ -13,7 +13,6 @@ export default function Incoming() {
 
   const data: LoaderData = useLoaderData() as LoaderData;
 
-  if (data.status === "failure") return <p>Failed to fetch files</p>;
   return (
     <>
       <Form className="files-container" method="post">

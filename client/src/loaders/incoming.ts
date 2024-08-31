@@ -19,6 +19,6 @@ export default async () => {
       return { status: "success", files: data.data.files };
     } else if (data.status === "failure") throw data.error;
   } catch (error: any) {
-    return { error };
+    return { status: "failure", files: [] };
   }
 };
