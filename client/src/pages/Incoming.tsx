@@ -33,7 +33,7 @@ export default function Incoming() {
           name="all"
         />
         <div className="file-names">
-          {data?.files.length > 0 ? (
+          {data?.files?.length > 0 ? (
             data?.files?.map((file) => (
               <label key={btoa(encodeURIComponent(file))}>
                 <input type="checkbox" name={btoa(encodeURIComponent(file))} />
