@@ -3,6 +3,8 @@ services:
     build:
       context: ./api
       dockerfile: dockerfile
+    ports:
+      - 2000:5000
     env_file: ".env.prod"
     user: node
     volumes:
@@ -18,6 +20,8 @@ services:
       context: ./client
       dockerfile: dockerfile
     restart: unless-stopped
+    ports:
+      - 5173:5173
     depends_on:
       - api
 
@@ -41,7 +45,7 @@ services:
     restart: unless-stopped
     ports:
       - 8080:8080
-      
+
   proxy:
     image: nginx
     restart: unless-stopped

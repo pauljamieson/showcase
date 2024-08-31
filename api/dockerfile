@@ -1,7 +1,6 @@
 FROM node:20.12.1
-USER node
-#RUN apt update && apt -y upgrade
-#RUN apt -y install ffmpeg
+RUN apt update && apt -y upgrade
+RUN apt -y install ffmpeg
 WORKDIR /app
 COPY . /app
 RUN npm install

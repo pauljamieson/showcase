@@ -18,7 +18,7 @@ dotenv.config();
 
 const app: Express = express();
 const port: string | undefined = process.env.PORT;
-app.use(compression())
+
 app.use(
   cors({
     exposedHeaders: ["Authorization"],
