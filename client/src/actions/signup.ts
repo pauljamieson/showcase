@@ -28,6 +28,6 @@ export default async ({ request }: { request: Request }) => {
     return { status: "success", auth: data };
   } catch (error: any) {
     console.log(error);
-    return { error };
+    return { status: "failure", auth: undefined };
   }
 };
