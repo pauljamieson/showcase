@@ -6,7 +6,7 @@ export default async ({ request }: { request: Request }) => {
   };
 
   try {
-    const fetchData = await fetch("http://localhost:5000/auth/login/", {
+    const fetchData = await fetch(`${process.env.REACT_APP_API_URL}/auth/login/`, {
       method: "post",
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },

@@ -2,7 +2,7 @@ import { Params } from "react-router-dom";
 
 export default async ({ params }: { params: Params<"id"> }) => {
   try {
-    const apiUrl = new URL(`http://localhost:5000/video/${params.id}`);
+    const apiUrl = new URL(`${process.env.REACT_APP_API_URL}/video/${params.id}`);
     const resp = await fetch(apiUrl, {
       method: "get",
       headers: {

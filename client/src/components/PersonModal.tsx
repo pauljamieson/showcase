@@ -13,7 +13,7 @@ export default function PersonModal() {
 
   useEffect(() => {
     if (input.length > 0) {
-      const apiUrl = new URL("http://localhost:5000/people");
+      const apiUrl = new URL(`${process.env.REACT_APP_API_URL}/people`);
       apiUrl.searchParams.set("terms", input);
       fetch(apiUrl, {
         method: "GET",

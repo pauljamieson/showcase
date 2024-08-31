@@ -4,7 +4,7 @@ export default async ({ request }: { request: Request }) => {
   try {
     const url = new URL(request.url);
     const limit = url.searchParams.get("limit") || "8";
-    const apiUrl = new URL("http://localhost:5000/videos");
+    const apiUrl = new URL(`${process.env.REACT_APP_API_URL}/videos`);
     url.searchParams.forEach((v, k) => apiUrl.searchParams.append(k, v));
     const resp = await fetch(apiUrl, {
       method: "get",

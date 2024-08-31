@@ -15,7 +15,7 @@ export default async ({ request }: { request: Request }) => {
   if (body.password.length < 8)
     return { error: "Password must be atleast 8 characters long." };
   try {
-    const resp = await fetch("http://localhost:5000/auth/signup", {
+    const resp = await fetch(`${process.env.REACT_APP_API_URL}/auth/signup`, {
       method: "post",
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },

@@ -1,6 +1,6 @@
 export default async () => {
   try {
-    const fetchData = await fetch("http://localhost:5000/admin/incoming/", {
+    const fetchData = await fetch(`${process.env.REACT_APP_API_URL}/admin/incoming/`, {
       method: "get",
       headers: {
         "Content-Type": "application/json",

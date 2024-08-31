@@ -15,7 +15,7 @@ export default async ({ request }: { request: Request }) => {
         if (a[1] === "on") payload.push(decodeURIComponent(atob(a[0])));
       }
     }
-    const resp = await fetch("http://localhost:5000/admin/incoming/", {
+    const resp = await fetch(`${process.env.REACT_APP_API_URL}/admin/incoming/`, {
       method: "post",
       body: JSON.stringify({ files: payload }),
       headers: {

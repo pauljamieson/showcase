@@ -7,7 +7,7 @@ export default async ({ request }: { request: Request }) => {
       intent: formData.get("intent") as string,
       videoId: formData.get("videoId") as string,
     };
-    await fetch(`http://localhost:5000/video/${body.videoId}`, {
+    await fetch(`${process.env.REACT_APP_API_URL}/video/${body.videoId}`, {
       method: "POST",
       body: JSON.stringify(body),
       headers: {

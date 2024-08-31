@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
-  const filePath = `http://localhost:5000/${Math.floor(videoFile.id / 1000)}/${
-    videoFile.id % 1000
-  }`;
-  const filename = videoFile.filename
-    
-    .slice(videoFile.filename.lastIndexOf("/") + 1);
+  const filePath = `${process.env.REACT_APP_API_URL}/${Math.floor(
+    videoFile.id / 1000
+  )}/${videoFile.id % 1000}`;
+  const filename = videoFile.filename.slice(
+    videoFile.filename.lastIndexOf("/") + 1
+  );
 
   const [imgNum, setImgNum] = useState<number>(3);
-  const [loop, setLoop] = useState<number | undefined>(undefined);
+  const [loop, setLoop] = useState<NodeJS.Timeout | number | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     return () => clearInterval(loop);
