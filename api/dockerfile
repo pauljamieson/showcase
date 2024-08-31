@@ -6,6 +6,7 @@ COPY . /app
 RUN npm install
 RUN npm run build
 WORKDIR /app/dist
+COPY prisma /app/dist/
 COPY startup.prod.sh /app/dist/
 RUN npm install pm2 -g
 ENTRYPOINT [ "./startup.prod.sh" ]
