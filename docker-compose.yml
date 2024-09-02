@@ -5,7 +5,7 @@ services:
       dockerfile: dockerfile
     ports:
       - 2000:5000
-    env_file: ".env.prod"
+    
     user: node
     volumes:
       - ./app_data:/app/dist/app_data
@@ -20,6 +20,8 @@ services:
       context: ./client
       dockerfile: dockerfile
     restart: unless-stopped
+    environment:
+      VITE_API_URL: http://192.168.100.137:5000
     ports:
       - 5173:5173
     depends_on:
@@ -30,6 +32,8 @@ services:
     restart: unless-stopped
     # set shared memory limit when using docker-compose
     shm_size: 128mb
+    volumes:
+      - prod_pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: showcase
@@ -59,3 +63,6 @@ services:
     depends_on:
       - api
       - client
+
+volumes:
+  prod_pgdata:

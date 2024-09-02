@@ -6,7 +6,7 @@ export default async ({ request }: { request: Request }) => {
       videoId: formData.get("videoId") as string,
     };
 
-    const resp = await fetch(`${process.env.REACT_APP_API_URL}/tag/chip`, {
+    const resp = await fetch(`${import.meta.env.VITE_API_URL}/tag/chip`, {
       method: "POST",
       body: JSON.stringify(body),
       headers: {

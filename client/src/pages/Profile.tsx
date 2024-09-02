@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 
 type LoaderData = {
+  status: string;
   profile: {
     createdAt: Date;
     displayname: string;
@@ -16,6 +17,8 @@ export default function Profile() {
 
   if (!isLoggedIn) return <Navigate to="/" />;
   const loader: LoaderData = useLoaderData() as LoaderData;
+
+  if (loader.status === "failure") return <div>Profile not found</div>;
 
   return (
     <div className="profile-container">

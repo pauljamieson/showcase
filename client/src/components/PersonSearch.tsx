@@ -11,7 +11,7 @@ export default function PersonSearch() {
 
   useEffect(() => {
     if (input.length > 0) {
-      const apiUrl = new URL(`${process.env.REACT_APP_API_URL}/people`);
+      const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/people`);
       apiUrl.searchParams.set("terms", input);
       fetch(apiUrl, {
         method: "GET",

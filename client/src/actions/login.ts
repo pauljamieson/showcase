@@ -7,7 +7,7 @@ export default async ({ request }: { request: Request }) => {
 
   try {
     const fetchData = await fetch(
-      `${process.env.REACT_APP_API_URL}/auth/login/`,
+      `${import.meta.env.VITE_API_URL}/auth/login/`,
       {
         method: "post",
         body: JSON.stringify(body),
@@ -22,9 +22,9 @@ export default async ({ request }: { request: Request }) => {
       localStorage.setItem("showcase", token.substring(7));
       return { status: "success", auth: token.substring(7) };
     }
-    if (data.status === "failure") throw data.error;
-    return {};
+    throw data.error;
   } catch (error: any) {
+    console.error(error);
     return { status: "failure", auth: "" };
   }
 };

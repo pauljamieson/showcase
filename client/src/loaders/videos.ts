@@ -4,7 +4,7 @@ export default async ({ request }: { request: Request }) => {
   try {
     const url = new URL(request.url);
     const limit = url.searchParams.get("limit") || "8";
-    const apiUrl = new URL(`${process.env.REACT_APP_API_URL}/videos`);
+    const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/videos`);
     url.searchParams.forEach((v, k) => apiUrl.searchParams.append(k, v));
     const resp = await fetch(apiUrl, {
       method: "get",
@@ -22,7 +22,7 @@ export default async ({ request }: { request: Request }) => {
       return { files: data.files, count: Math.ceil(data.count / +limit) };
     throw "Failed to get files from api.";
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
     return { files: [], count: 0 };
   }
 };

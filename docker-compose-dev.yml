@@ -22,6 +22,8 @@ services:
     volumes:
       - ./client:/app
     restart: unless-stopped
+    environment:
+      - VITE_API_URL=http://localhost:5000
     ports:
       - 5173:5173
     depends_on:

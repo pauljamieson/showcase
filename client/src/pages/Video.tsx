@@ -103,7 +103,7 @@ function Video() {
     try {
       if (!seeked && currentTime - start > 30) {
         setIsViewed(true);
-        await fetch(`${process.env.REACT_APP_API_URL}/video/${id}`, {
+        await fetch(`${import.meta.env.VITE_API_URL}/video/${id}`, {
           method: "PATCH",
           body: JSON.stringify({ update: "views", id }),
           headers: {
@@ -181,7 +181,7 @@ function Video() {
           onVolumeChange={handleVolumeChange}
         >
           <source
-            src={`${process.env.REACT_APP_API_URL}/${encodeURIComponent(
+            src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
               filename
                 .split("/")
                 .filter((_, idx) => idx > 2)

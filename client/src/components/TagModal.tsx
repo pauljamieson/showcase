@@ -13,7 +13,7 @@ export default function TagModal() {
 
   useEffect(() => {
     if (input.length > 0) {
-      const apiUrl = new URL(`${process.env.REACT_APP_API_URL}/tags`);
+      const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/tags`);
       apiUrl.searchParams.set("terms", input);
       fetch(apiUrl, {
         method: "GET",

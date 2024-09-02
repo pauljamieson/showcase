@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
-  const filePath = `${process.env.REACT_APP_API_URL}/${Math.floor(
+  const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     videoFile.id / 1000
   )}/${videoFile.id % 1000}`;
   const filename = videoFile.filename.slice(

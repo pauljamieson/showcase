@@ -1,6 +1,6 @@
 export default async () => {
   try {
-    const apiUrl = new URL(`${process.env.REACT_APP_API_URL}/profile/`);
+    const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/profile/`);
     const resp = await fetch(apiUrl, {
       method: "get",
       headers: {
@@ -13,10 +13,11 @@ export default async () => {
     localStorage.setItem("showcase", token.substring(7));
     const result = await resp.json();
 
-    if (result.status === "success") return { profile: result.data.profile };
+    if (result.status === "success")
+      return { status: "success", profile: result.data.profile };
     throw "Failed to get profile from api.";
   } catch (error: any) {
-    console.log(error);
-    return { error };
+    console.error(error);
+    return { status: "failure", error };
   }
 };
