@@ -19,6 +19,7 @@ type Tag = {
 type VideoData = {
   id: number;
   filename: string;
+  filepath: string;
   videoCodec: string;
   height: number;
   width: number;
@@ -48,6 +49,7 @@ function Video() {
   const {
     video: {
       filename,
+      filepath,
       size,
       views,
       height,
@@ -182,10 +184,7 @@ function Video() {
         >
           <source
             src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
-              filename
-                .split("/")
-                .filter((_, idx) => idx > 2)
-                .join("/")
+              `${filepath}/${filename}`
             )}`}
           ></source>
         </video>

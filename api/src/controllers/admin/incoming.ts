@@ -41,7 +41,7 @@ async function walkTree(folder: string) {
       } else if (dirent.isFile())
         await unlink(path.join(dirent.parentPath, dirent.name));
     }
-    await removeEmptyFolders("./app_data/incoming");
+    //await removeEmptyFolders("./app_data/incoming");
     return files;
   } catch (error) {
     throw "Failed to walkTree";
@@ -50,7 +50,7 @@ async function walkTree(folder: string) {
 
 async function removeEmptyFolders(folder: string, isRoot = true) {
   try {
-    console.log(isRoot, folder);
+    
     const dir = await opendir(folder);
     let hasFiles = false;
     for await (const dirent of dir) {
@@ -97,7 +97,7 @@ async function POST(req: Request, res: Response) {
         },
       });
     }
-    await removeEmptyFolders("./app_data/incoming");
+    //await removeEmptyFolders("./app_data/incoming");
     res.json({ status: "success" });
   } catch (error) {
     console.error(error);
