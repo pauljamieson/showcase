@@ -103,7 +103,7 @@ function processFile(file: IncomingFile) {
       console.log(`Processing End  : ${path.basename(file.filename)}`);
     } catch (error: any) {
       //console.error("Task Error:");
-      //console.error(error);
+      console.error(error);
       if (error.code === 10001) {
         console.error(`FFProbe failed for ${file.filename}`);
         console.log(error.msg);
