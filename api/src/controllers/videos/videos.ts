@@ -16,9 +16,6 @@ async function GET(req: Request, res: Response) {
     const duration = searchParams.get("duration");
 
     const size = searchParams.get("size");
-    /*searchParams.get("size") === "asc"
-        ? Prisma.SortOrder.asc
-        : Prisma.SortOrder.desc;*/
 
     const x = [
       tags.map((t) => {

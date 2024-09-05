@@ -16,7 +16,7 @@ type FileInfo = {
   size: number;
 };
 
-let isActive = false;
+var isActive = false;
 
 async function importFile() {
   try {
@@ -27,9 +27,9 @@ async function importFile() {
       await processFile(file);
     }
     //await removeEmptyFolders("./app_data/processing");
+    isActive = false;
   } catch (error) {
     console.error(error);
-  } finally {
     isActive = false;
   }
 }
@@ -38,7 +38,7 @@ cron.schedule("* * * * *", importFile);
 
 function processFile(file: IncomingFile) {
   return new Promise<boolean>(async (resolve) => {
-    console.log(`Processing: ${path.basename(file.filename)}`);
+    console.log(`Processing Start: ${path.basename(file.filename)}`);
     // data for sql create
     var fileInfo: FileInfo;
     try {
@@ -100,14 +100,14 @@ function processFile(file: IncomingFile) {
       // generate thumb nails for preview
       await createThumbs(fileInfo.duration, newFilePath, `${destPath}/thumbs`);
 
-      console.log(`Finished processing: ${path.basename(file.filename)}`);
+      console.log(`Processing End  : ${path.basename(file.filename)}`);
     } catch (error: any) {
       //console.error("Task Error:");
       //console.error(error);
-      if (error.code === "10001") {
+      if (error.code === 10001) {
         console.error(`FFProbe failed for ${file.filename}`);
         console.log(error.msg);
-      } else if (error.code === "10002") {
+      } else if (error.code === 10002) {
         console.log(error.msg);
       }
     } finally {
@@ -129,9 +129,9 @@ async function getFileInfo(file: IncomingFile) {
       videoCodec: "",
       audioCodec: "",
     };
-    
+
     ffprobe(file.filename, (err, data) => {
-      if (err) return reject({ code: "10001", msg: err }); // FFProbe failed
+      if (err) return reject({ code: 10001, msg: err }); // FFProbe failed
 
       info.duration = Math.floor(data.format.duration!);
       info.size = data.format.size!;
@@ -146,12 +146,11 @@ async function getFileInfo(file: IncomingFile) {
             info.audioCodec = val.codec_name!;
             break;
           default:
-            console.error(val.codec_type);
         }
       });
       return resolve(info);
-    })
-  })
+    });
+  });
 }
 
 function createThumbs(

@@ -3,6 +3,8 @@ import { useSearchParams } from "react-router-dom";
 
 function Paginator({ count }: { count: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const limit = searchParams.get("limit") || 8;
+  const pageCount = Math.ceil(count / +limit);
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -10,7 +12,7 @@ function Paginator({ count }: { count: number }) {
     const curPage = parseInt(searchParams.get("page") || "1");
     switch (name) {
       case "next":
-        if (curPage === count) break;
+        if (curPage === pageCount) break;
         searchParams.set("page", (curPage + 1).toString());
         setSearchParams(searchParams);
         break;
@@ -30,10 +32,11 @@ function Paginator({ count }: { count: number }) {
 
   return (
     <div className="pagination-container">
+      {count}
       <button onClick={handleClick} name="previous">
         &lt;
       </button>
-      {count > 1 && (
+      {pageCount > 1 && (
         <button
           className={
             (+searchParams.get("page")! > 4
@@ -52,7 +55,7 @@ function Paginator({ count }: { count: number }) {
           {+searchParams.get("page")! > 4 ? +searchParams.get("page")! - 3 : 1}
         </button>
       )}
-      {count > 2 && (
+      {pageCount > 2 && (
         <button
           className={
             (+searchParams.get("page")! > 4
@@ -71,7 +74,7 @@ function Paginator({ count }: { count: number }) {
           {+searchParams.get("page")! > 4 ? +searchParams.get("page")! - 2 : 2}
         </button>
       )}
-      {count > 3 && (
+      {pageCount > 3 && (
         <button
           className={
             (+searchParams.get("page")! > 4
@@ -90,7 +93,7 @@ function Paginator({ count }: { count: number }) {
           {+searchParams.get("page")! > 4 ? +searchParams.get("page")! - 1 : 3}
         </button>
       )}
-      {count > 4 && (
+      {pageCount > 4 && (
         <button
           className={
             (+searchParams.get("page")! > 4

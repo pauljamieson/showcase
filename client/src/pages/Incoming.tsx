@@ -31,6 +31,7 @@ export default function Incoming() {
           )}
           name="all"
         />
+        {data?.files?.length > 0 && <div>Files : {data.files.length}</div>}
         <div className="file-names">
           {data?.files?.length > 0 ? (
             data?.files?.map((file) => (
