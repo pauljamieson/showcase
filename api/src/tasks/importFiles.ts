@@ -38,7 +38,7 @@ cron.schedule("* * * * *", importFile);
 
 function processFile(file: IncomingFile) {
   return new Promise<boolean>(async (resolve) => {
-    console.log(`Processing Start: ${path.basename(file.filename)}`);
+    
     // data for sql create
     var fileInfo: FileInfo;
     try {
@@ -100,7 +100,6 @@ function processFile(file: IncomingFile) {
       // generate thumb nails for preview
       await createThumbs(fileInfo.duration, newFilePath, `${destPath}/thumbs`);
 
-      console.log(`Processing End  : ${path.basename(file.filename)}`);
     } catch (error: any) {
       //console.error("Task Error:");
       console.error(error);
@@ -182,6 +181,7 @@ function createThumbs(
         })
       );
     }
+
     Promise.all(promises).then(() => resolve(true));
   });
 }
