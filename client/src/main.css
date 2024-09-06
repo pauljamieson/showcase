@@ -255,7 +255,8 @@ video {
 }
 
 .pagination-container button {
-  width: 30px;
+  min-width: 30px;
+  width: fit-content;
   border-radius: 15%;
   user-select: none;
 }
