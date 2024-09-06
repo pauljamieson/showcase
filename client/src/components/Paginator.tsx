@@ -54,7 +54,7 @@ function Paginator({ count }: { count: number }) {
       ) : // more then 5 pages first 3
       +searchParams.get("page")! < 3 ? (
         <>
-          {[...Array(5)].map((_, i) => (
+          {[...Array(4)].map((_, i) => (
             <button
               key={i.toString()}
               className={+searchParams.get("page")! === i + 1 ? "active" : ""}
@@ -64,44 +64,85 @@ function Paginator({ count }: { count: number }) {
             >
               {i + 1}
             </button>
-          ))}{" "}
+          ))}
+          <button
+            className={+searchParams.get("page")! === pageCount ? "active" : ""}
+            onClick={handleClick}
+            name="goto"
+            value={pageCount}
+          >
+            {pageCount}
+          </button>
         </>
       ) : //more then 5 pages last 3
       +searchParams.get("page")! > pageCount - 3 ? (
         <>
-          {[...Array(5)].map((_, i) => (
+          <button
+            className={+searchParams.get("page")! === 1 ? "active" : ""}
+            onClick={handleClick}
+            name="goto"
+            value={1}
+          >
+            1
+          </button>
+          {[...Array(3)].map((_, i) => (
             <button
               key={i.toString()}
               className={
-                +searchParams.get("page")! === pageCount - 4 + i ? "active" : ""
+                +searchParams.get("page")! === pageCount - 3 + i ? "active" : ""
               }
               onClick={handleClick}
               name="goto"
-              value={pageCount - 4 + i}
+              value={pageCount - 3 + i}
             >
-              {pageCount - 4 + i}
+              {pageCount - 3 + i}
             </button>
-          ))}
+          ))}{" "}
+          <button
+            className={+searchParams.get("page")! === pageCount ? "active" : ""}
+            onClick={handleClick}
+            name="goto"
+            value={pageCount}
+          >
+            {pageCount}
+          </button>
         </>
       ) : (
         //more then 5 but not last or first 3
         <>
-          {[...Array(5)].map((_, i) => (
+          <button
+            className={+searchParams.get("page")! === 1 ? "active" : ""}
+            onClick={handleClick}
+            name="goto"
+            value={1}
+          >
+            1
+          </button>
+          {[...Array(3)].map((_, i) => (
             <button
               key={i.toString()}
               className={
                 +searchParams.get("page")! ===
-                +searchParams.get("page")! - 2 + i
+                +searchParams.get("page")! - 1 + i
                   ? "active"
                   : ""
               }
               onClick={handleClick}
               name="goto"
-              value={i + 1}
+              value={+searchParams.get("page")! - 1 + i}
             >
-              {+searchParams.get("page")! - 2 + i}
+              {+searchParams.get("page")! - 1 + i}
             </button>
           ))}
+
+          <button
+            className={+searchParams.get("page")! === pageCount ? "active" : ""}
+            onClick={handleClick}
+            name="goto"
+            value={pageCount}
+          >
+            {pageCount}
+          </button>
         </>
       )}
       <button onClick={handleClick} name="next">
