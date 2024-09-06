@@ -5,8 +5,7 @@ export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  console.log(import.meta.env);
-
+  
   return (
     <div className="appbar-container">
       {pathname.startsWith("/video/") ? (
