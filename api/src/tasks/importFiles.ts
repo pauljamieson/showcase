@@ -38,7 +38,6 @@ cron.schedule("* * * * *", importFile);
 
 function processFile(file: IncomingFile) {
   return new Promise<boolean>(async (resolve) => {
-    
     // data for sql create
     var fileInfo: FileInfo;
     try {
@@ -64,7 +63,17 @@ function processFile(file: IncomingFile) {
       }
 
       // Create new database entry
-      const { id } = await prisma.videoFile.create({ data: fileInfo });
+      const { id } = await prisma.videoFile.create({
+        data: {
+          ...fileInfo,
+          tags: {
+            connectOrCreate: {
+              where: { name: "new" },
+              create: { name: "new", userId: 1 },
+            },
+          },
+        },
+      });
 
       // Create new folders based on database id
       fileInfo.filepath = `${Math.floor(id / 1000)}/${id % 1000}`;
@@ -99,7 +108,6 @@ function processFile(file: IncomingFile) {
 
       // generate thumb nails for preview
       await createThumbs(fileInfo.duration, newFilePath, `${destPath}/thumbs`);
-
     } catch (error: any) {
       //console.error("Task Error:");
       console.error(error);

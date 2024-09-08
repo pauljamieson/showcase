@@ -22,7 +22,7 @@ async function POST(req: Request, res: Response) {
     const result = await prisma.videoFile.findMany({
       where: { createdAt: { lte: new Date("2024-09-07 02:00:04.051") } },
     });
-
+    
     result.map(async (v: any) => {
       try {
         await prisma.videoFile.update({

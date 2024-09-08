@@ -94,7 +94,7 @@ async function POST(req: Request, res: Response) {
       await prisma.incomingFile.create({
         data: {
           filename: `./app_data/processing/${folderId}/${basename(path)}`,
-        },
+        }, 
       });
     }
     //await removeEmptyFolders("./app_data/incoming");
