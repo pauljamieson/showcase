@@ -12,8 +12,9 @@ import VideoRouter from "./routes/video/video";
 import PersonRouter from "./routes/person/person";
 import PeopleRouter from "./routes/people/people";
 import ProfileRouter from "./routes/profile/profile";
+import MigrateRouter from "./routes/migrate/migrate";
 import { middleWare } from "./middleware/middleware";
-const compression = require('compression')
+const compression = require("compression");
 dotenv.config();
 
 const app: Express = express();
@@ -26,6 +27,8 @@ app.use(
   })
 );
 
+app.use(express.urlencoded({ extended: false }));
+app.use("/migrate", MigrateRouter);
 
 app.use(middleWare);
 app.use(express.json());
