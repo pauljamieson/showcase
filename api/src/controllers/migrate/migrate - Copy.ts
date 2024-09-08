@@ -16,18 +16,45 @@ async function POST(req: Request, res: Response) {
     });
     if (!file) throw "File not found.";
 
-    const tagList = (tags ? tags.split(",") : []).map((v: string) => {
+    /*const tagList = (tags ? tags.split(",") : []).map((v: string) => {
       return {
-        create: { name: v, userId: 1 },
-        update: {},
-        where: { name: v },
+        where: {
+          id: file.id,
+        },
+        create: {
+          name: v,
+          userId: 1,
+        },
       };
     });
     const peopleList = (people ? people.split(",") : []).map((v: string) => {
       return {
-        create: { name: v, userId: 1 },
-        update: {},
-        where: { name: v },
+        where: {
+          id: file.id,
+        },
+        create: {
+          name: v,
+          userId: 1,
+        },
+      };
+    });
+    */
+    const tagList = (tags ? tags.split(",") : []).map((v: string) => {
+      return {
+        upsert: {
+          create: { name: v, creator: 1 },
+          update: {},
+          where: { name: v },
+        },
+      };
+    });
+    const peopleList = (people ? people.split(",") : []).map((v: string) => {
+      return {
+        upsert: {
+          create: { name: v, creator: 1 },
+          update: {},
+          where: { name: v },
+        },
       };
     });
 
@@ -38,8 +65,8 @@ async function POST(req: Request, res: Response) {
       data: {
         views: +views,
         rating: +rating,
-        tags: { upsert: tagList },
-        people: { upsert: peopleList },
+        tags: tagList,
+        people: peopleList,
       },
     });
 
