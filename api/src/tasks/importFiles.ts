@@ -66,12 +66,12 @@ function processFile(file: IncomingFile) {
       const { id } = await prisma.videoFile.create({
         data: {
           ...fileInfo,
-          tags: {
+          /*tags: {
             connectOrCreate: {
               where: { name: "new" },
               create: { name: "new", userId: 1 },
             },
-          },
+          },*/
         },
       });
 
