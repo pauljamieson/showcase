@@ -39,6 +39,8 @@ async function POST(req: Request, res: Response) {
       data: {
         views: +views,
         rating: +rating,
+        tags: { upsert: tagList },
+        people: { upsert: peopleList },
       },
     });
 
