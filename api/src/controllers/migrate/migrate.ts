@@ -22,7 +22,7 @@ async function POST(req: Request, res: Response) {
         update: {},
         where: { name: v },
       };
-    });
+    });1
     const peopleList = (people ? people.split(",") : []).map((v: string) => {
       return {
         create: { name: v, userId: 1 },
