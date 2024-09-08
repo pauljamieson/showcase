@@ -18,17 +18,25 @@ async function POST(req: Request, res: Response) {
 
     const tagList = (tags ? tags.split(",") : []).map((v: string) => {
       return {
-        create: { name: v, userId: 1 },
-        update: {},
-        where: { name: v },
+        where: {
+          name: v,
+        },
+        create: {
+          name: v,
+          userId: 1,
+        },
       };
     });
-    1;
+
     const peopleList = (people ? people.split(",") : []).map((v: string) => {
       return {
-        create: { name: v, userId: 1 },
-        update: {},
-        where: { name: v },
+        where: {
+          name: v,
+        },
+        create: {
+          name: v,
+          userId: 1,
+        },
       };
     });
 
@@ -39,8 +47,12 @@ async function POST(req: Request, res: Response) {
       data: {
         views: +views,
         rating: +rating,
-        tags: { upsert: tagList },
-        people: { upsert: peopleList },
+        tags: {
+          connectOrCreate: tagList,
+        },
+        people: {
+          connectOrCreate: peopleList,
+        },
       },
     });
 
