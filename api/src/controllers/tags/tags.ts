@@ -17,6 +17,7 @@ async function GET(req: Request, res: Response) {
           return { name: { contains: word, mode: "insensitive" } };
         }),
       },
+      take: 10,
     });
     res.json({ status: "success", tags: result });
   } catch (error) {

@@ -14,7 +14,7 @@ export default function PersonModal() {
   useEffect(() => {
     if (input.length > 0) {
       const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/people`);
-      apiUrl.searchParams.set("terms", input);
+      apiUrl.searchParams.set("terms", input.trim());
       fetch(apiUrl, {
         method: "GET",
         headers: {
