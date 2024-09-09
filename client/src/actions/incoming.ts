@@ -21,8 +21,6 @@ export default async ({ request }: { request: Request }) => {
 
     for (let i = 0; i < rounds; i++) {
       const start = i * size;
-      console.log(start, " > ", start + size);
-      console.log(payload.slice(start, start + size));
       const resp = await fetch(
         `${import.meta.env.VITE_API_URL}/admin/incoming/`,
         {

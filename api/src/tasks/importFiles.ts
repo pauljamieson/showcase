@@ -121,7 +121,7 @@ function processFile(file: IncomingFile) {
       await createThumbs(fileInfo.duration, newFilePath, `${destPath}/thumbs`);
     } catch (error: any) {
       //console.error("Task Error:");
-      console.error(error);
+      //console.error(error);
       if (error.code === 10001) {
         console.error(`FFProbe failed for ${file.filename}`);
         console.log(error.msg);
