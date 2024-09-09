@@ -48,6 +48,7 @@ export default function Videos() {
     { name: "views", options: ["Least Views", "Most Views"] },
     { name: "duration", options: ["Shortest", "Longest"] },
     { name: "size", options: ["Smol", "Big Boy"] },
+    { name: "alpha", options: ["A-Z", "Z-A"] },
   ];
   return (
     <>
@@ -59,6 +60,7 @@ export default function Videos() {
         <SortOrder {...orders[1]} />
         <SortOrder {...orders[2]} />
         <SortOrder {...orders[3]} />
+        <SortOrder {...orders[4]} />
       </div>
       <Paginator count={data.count} />
       <div className="video-card-container">

@@ -103,6 +103,8 @@ nav ol {
   padding: 5px;
   background-color: var(--btn-prim);
   text-align: center;
+  font-weight: bold;
+  
 }
 
 .btn:hover {
@@ -401,8 +403,9 @@ input:checked + .toggler:before {
   border: 1px solid black;
   width: fit-content;
   padding: 3px 5px;
-  border-radius: 30px;
+  border-radius: 10px;
   background-color: var(--btn-prim);
+  font-weight: bold;
 }
 
 .chip:hover {
@@ -418,7 +421,7 @@ input:checked + .toggler:before {
 
 .toggle-bar {
   display: grid;
-  grid-template-columns: repeat(4, 140px);
+  grid-template-columns: repeat(5, 130px);
 }
 
 .toggle-container span.active {

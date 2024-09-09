@@ -15,18 +15,32 @@ export default async ({ request }: { request: Request }) => {
         if (a[1] === "on") payload.push(decodeURIComponent(atob(a[0])));
       }
     }
-    const resp = await fetch(`${import.meta.env.VITE_API_URL}/admin/incoming/`, {
-      method: "post",
-      body: JSON.stringify({ files: payload }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("showcase"),
-      },
-    });
-    const token = resp.headers.get("Authorization");
-    if (!token) throw "JWT header is missing";
-    localStorage.setItem("showcase", token.substring(7));
-    await resp.json();
+
+    const size = 100;
+    const rounds = Math.ceil(payload.length / size);
+
+    for (let i = 0; i < rounds; i++) {
+      const start = i * size;
+      console.log(start, " > ", start + size);
+      console.log(payload.slice(start, start + size));
+      const resp = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/incoming/`,
+        {
+          method: "post",
+          body: JSON.stringify({
+            files: payload.slice(start, start + size),
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("showcase"),
+          },
+        }
+      );
+
+      const token = resp.headers.get("Authorization");
+      if (!token) throw "JWT header is missing";
+      localStorage.setItem("showcase", token.substring(7));
+    }
 
     return {};
   } catch (err) {

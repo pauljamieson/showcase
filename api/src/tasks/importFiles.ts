@@ -22,11 +22,22 @@ async function importFile() {
   try {
     if (isActive) return;
     isActive = true;
-    const files = await prisma.incomingFile.findMany();
-    for await (const file of files) {
+    const files = await prisma.incomingFile.findMany({
+      orderBy: { filename: "asc" },
+    });
+
+    const sorted = files.sort((a, b) =>
+      path.basename(a.filename) < path.basename(b.filename)
+        ? -1
+        : path.basename(a.filename) < path.basename(b.filename)
+        ? 1
+        : 0
+    );
+
+    for await (const file of sorted) {
       await processFile(file);
     }
-    //await removeEmptyFolders("./app_data/processing");
+    //await removeEmptyFolders("./app_data/processing");*/
     isActive = false;
   } catch (error) {
     console.error(error);
@@ -66,12 +77,12 @@ function processFile(file: IncomingFile) {
       const { id } = await prisma.videoFile.create({
         data: {
           ...fileInfo,
-          /*tags: {
+          tags: {
             connectOrCreate: {
               where: { name: "new" },
               create: { name: "new", userId: 1 },
             },
-          },*/
+          },
         },
       });
 

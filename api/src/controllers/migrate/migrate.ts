@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
-import tag from "../tag/tag";
-import { userInfo } from "os";
-import { Prisma } from "@prisma/client";
 
 async function POST(req: Request, res: Response) {
   const { filename, size, views, rating, tags, people } = req.body;

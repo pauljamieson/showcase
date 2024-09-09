@@ -11,6 +11,7 @@ async function GET(req: Request, res: Response) {
     const page = searchParams.get("page") || 1;
     const limit = searchParams.get("limit") || 8;
     const search = searchParams.get("search") || "";
+    const alpha = searchParams.get("alpha") || "";
     const order = searchParams.get("order") || "desc";
     const views = searchParams.get("views");
     const duration = searchParams.get("duration");
@@ -37,7 +38,7 @@ async function GET(req: Request, res: Response) {
         views ? { views: views as Prisma.SortOrder } : {},
         duration ? { duration: duration as Prisma.SortOrder } : {},
         size ? { size: size as Prisma.SortOrder } : {},
-
+        alpha ? { filename: alpha as Prisma.SortOrder } : {},
         { id: order as Prisma.SortOrder },
       ],
 
