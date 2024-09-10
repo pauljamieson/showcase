@@ -34,7 +34,7 @@ export default async ({ request }: { request: Request }) => {
     if (!token) throw "JWT header is missing";
     localStorage.setItem("showcase", token.substring(7));
     if (body.intent === "delete") return redirect("/");
-    return { status: "success" };
+    return { status: "success", intent };
   } catch (error) {
     return { status: "failure" };
   }

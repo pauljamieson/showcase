@@ -40,6 +40,7 @@ type LoaderData = {
 
 type ActionData = {
   status: string;
+  intent: string;
 };
 
 function Video() {
@@ -71,7 +72,8 @@ function Video() {
   }, []);
 
   const actionData = useActionData() as ActionData;
-  //if (actionData?.status === "success") return <Navigate to="/" />;
+  if (actionData?.status === "success" && actionData?.intent === "delete")
+    return <Navigate to="/" />;
 
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
