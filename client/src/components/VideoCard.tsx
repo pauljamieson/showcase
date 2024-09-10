@@ -56,10 +56,24 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
           )}-${imgNum}.jpg`}
         />
       </div>
-      <p>
-        {filename} <br />
-        Length: {formatDuration(videoFile.duration)} Views: {videoFile.views}
-      </p>
+      <div className="video-card-details">
+        <p>{filename}</p>
+        <p>
+          Length: {formatDuration(videoFile.duration)} Views: {videoFile.views}
+        </p>
+        <div className="chip-container">
+          Tags: 
+          {videoFile.tags?.map((v) => (
+            <span className="chip chip-sm">{v.name}</span>
+          ))}
+        </div>
+        <div className="chip-container">
+          People: 
+          {videoFile.people?.map((v) => (
+            <span className="chip chip-sm">{v.name}</span>
+          ))}
+        </div>
+      </div>
     </Link>
   );
 }

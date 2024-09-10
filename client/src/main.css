@@ -1,4 +1,7 @@
 * {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -104,7 +107,6 @@ nav ol {
   background-color: var(--btn-prim);
   text-align: center;
   font-weight: bold;
-  
 }
 
 .btn:hover {
@@ -185,6 +187,10 @@ nav ol {
   height: 300px;
   display: block;
   overflow: hidden;
+}
+
+.video-card-details {
+  padding: var(--spacing);
 }
 
 .home-outlet {
@@ -410,6 +416,20 @@ input:checked + .toggler:before {
 
 .chip:hover {
   background-color: var(--btn-prim-hover);
+}
+
+.chip-sm {
+  border: 1px solid black;
+  width: fit-content;
+  padding: 3px 5px;
+  border-radius: 10px;
+  background-color: var(--btn-prim);
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.chip-sm:hover {
+  background-color: var(--btn-prim);
 }
 
 .chip-container {
