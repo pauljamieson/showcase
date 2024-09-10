@@ -20,6 +20,11 @@ dotenv.config();
 const app: Express = express();
 const port: string | undefined = process.env.PORT;
 
+app.use((req, res, next) => {
+  console.log(req.path);
+  next();
+});
+
 app.use(
   cors({
     exposedHeaders: ["Authorization"],

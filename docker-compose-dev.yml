@@ -7,9 +7,9 @@ services:
       - ./api:/app
       - ./app_data:/app/app_data
     restart: unless-stopped
-    user: "node"
     ports:
       - 5000:5000
+    user: "node"
     depends_on:
       db:
         condition: service_healthy
@@ -22,10 +22,10 @@ services:
     volumes:
       - ./client:/app
     restart: unless-stopped
-    environment:
-      - VITE_API_URL=http://localhost:5000
     ports:
       - 5173:5173
+    environment:
+      - VITE_API_URL=http://192.168.100.137:5000
     depends_on:
       - api
 

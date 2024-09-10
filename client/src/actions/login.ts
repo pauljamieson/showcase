@@ -20,6 +20,7 @@ export default async ({ request }: { request: Request }) => {
       const token = fetchData.headers.get("Authorization");
       if (!token) throw "JWT header is missing";
       localStorage.setItem("showcase", token.substring(7));
+      console.log(token);
       return { status: "success", auth: token.substring(7) };
     }
     throw data.error;

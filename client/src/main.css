@@ -19,12 +19,12 @@
 
 body {
   margin: 0;
-  display: flex;
-  flex-wrap: wrap;
+  
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   color: var(--text-prim);
-  overflow: hidden;
-  width: 100vw;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
 }
 
 a {
@@ -202,7 +202,6 @@ nav ol {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px);
   width: 100vw;
   position: relative;
 }
@@ -224,7 +223,7 @@ nav ol {
 .video-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  
   overflow: auto;
 }
 
