@@ -60,6 +60,7 @@ function Video() {
       duration,
       tags,
       people,
+      rating,
     },
   } = useLoaderData() as LoaderData;
 
@@ -70,7 +71,7 @@ function Video() {
   }, []);
 
   const actionData = useActionData() as ActionData;
-  if (actionData?.status === "success") return <Navigate to="/" />;
+  //if (actionData?.status === "success") return <Navigate to="/" />;
 
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
@@ -144,6 +145,39 @@ function Video() {
           </span>
           <span>Video Codec: {videoCodec}</span>
           <span>Audio Codec: {audioCodec}</span>
+        </div>
+        <div className="rating-selector">
+          Rating:{" "}
+          {[...Array(rating)].map((_, i) => (
+            <Form key={i} method="post">
+              <input type="hidden" name="videoId" value={id} />
+              <input type="hidden" name="rating" value={i + 1} />
+              <button
+                key={i}
+                className="rating-star-btn-on"
+                type="submit"
+                name="intent"
+                value="rating"
+              >
+                &#9733;
+              </button>
+            </Form>
+          ))}
+          {[...Array(5 - rating)].map((_, i) => (
+            <Form key={i} method="post">
+              <input type="hidden" name="videoId" value={id} />
+              <input type="hidden" name="rating" value={rating + i + 1} />
+              <button
+                key={i}
+                className="rating-star-btn-off"
+                type="submit"
+                name="intent"
+                value="rating"
+              >
+                &#9733;
+              </button>
+            </Form>
+          ))}
         </div>
         <div className="chip-container">
           <span>Tags: </span>

@@ -1,5 +1,5 @@
-import React from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useSearchParams, useLocation } from "react-router-dom";
 
 function Paginator({ count }: { count: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -8,6 +8,8 @@ function Paginator({ count }: { count: number }) {
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
+    
+    window.scrollTo(0, 0);
     const { value, name } = e.target as HTMLButtonElement;
     const curPage = parseInt(searchParams.get("page") || "1");
     switch (name) {

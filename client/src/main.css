@@ -193,6 +193,10 @@ nav ol {
   padding: var(--spacing);
 }
 
+.flex {
+  display: flex;
+}
+
 .home-outlet {
   overflow-y: auto;
   overflow-x: hidden;
@@ -393,6 +397,31 @@ input:checked + .toggler:before {
   top: 150px;
   left: 50%;
   position: absolute;
+}
+
+.rating-star {
+  color: orange;
+  font-size: 1rem;
+}
+
+.rating-star-btn-on {
+  color: orange;
+  border: none;
+  background-color: unset;
+  font-size: 1rem;
+}
+
+.rating-star-btn-off {
+  color: black;
+  border: none;
+  background-color: unset;
+  font-size: 1rem;
+}
+
+.rating-selector {
+  display: flex;
+  align-items: baseline;
+  padding: var(--spacing)
 }
 
 .modal {

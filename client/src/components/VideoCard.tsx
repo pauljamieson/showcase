@@ -58,19 +58,37 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
       </div>
       <div className="video-card-details">
         <p>{filename}</p>
-        <p>
-          Length: {formatDuration(videoFile.duration)} Views: {videoFile.views}
-        </p>
+        <div className="flex">
+          <span>Length: {formatDuration(videoFile.duration)}</span>
+          <span className="grow" />
+          <span>Views: {videoFile.views}</span>
+        </div>
+        <div>
+          Rating:{" "}
+          {videoFile.rating > 0 ? (
+            [...Array(videoFile.rating)].map((_, i) => (
+              <span key={i} className="rating-star">
+                &#9733;
+              </span>
+            ))
+          ) : (
+            <span>unrated</span>
+          )}
+        </div>
         <div className="chip-container">
-          Tags: 
+          Tags:
           {videoFile.tags?.map((v) => (
-            <span className="chip chip-sm">{v.name}</span>
+            <span className="chip chip-sm" key={v.id}>
+              {v.name}
+            </span>
           ))}
         </div>
         <div className="chip-container">
-          People: 
+          People:
           {videoFile.people?.map((v) => (
-            <span className="chip chip-sm">{v.name}</span>
+            <span className="chip chip-sm" key={v.id}>
+              {v.name}
+            </span>
           ))}
         </div>
       </div>

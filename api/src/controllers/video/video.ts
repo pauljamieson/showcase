@@ -75,19 +75,33 @@ function createThumbs(videoId: number, outputPath: string) {
 async function POST(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
-    const { intent, videoId }: { intent: string; videoId: string } = req.body;
+
+    const {
+      intent,
+      videoId,
+      rating,
+    }: { intent: string; videoId: string; rating: string } = req.body;
     const filePath = `./app_data/videos/${Math.floor(+videoId / 1000)}/${
       +videoId % 1000
     }`;
-    if (intent === "delete" && res.locals.isAdmin) {
+    if (intent === "delete") {
+      if (!res.locals.isAdmin) throw "Not authorized to take this action.";
       await rm(filePath, { recursive: true, force: true });
       await prisma.videoFile.delete({ where: { id: +videoId } });
       // TODO on delete remove tags\persons that dont have other matches
     }
-    if (intent === "regen" && res.locals.isAdmin) {
+    if (intent === "regen") {
+      if (!res.locals.isAdmin) throw "Not authorized to take this action.";
       await createThumbs(+videoId, `${filePath}/thumbs`);
     }
-    if (!res.locals.isAdmin) throw "Not authorized to take this action.";
+
+    if (intent === "rating") {
+      await prisma.videoFile.update({
+        where: { id: +videoId },
+        data: { rating: +rating },
+      });
+    }
+
     if (!intent) throw "No intent made.";
     res.json({ status: "success" });
   } catch (error) {

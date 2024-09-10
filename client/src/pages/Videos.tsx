@@ -42,6 +42,7 @@ export type Person = {
 export default function Videos() {
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/login" />;
+
   const data: LoaderData = useLoaderData() as LoaderData;
   const orders: any[] = [
     { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
@@ -67,6 +68,7 @@ export default function Videos() {
         {data &&
           data.files.map((val) => <VideoCard key={val.id} videoFile={val} />)}
       </div>
+      <Paginator count={data.count} />
     </>
   );
 }
