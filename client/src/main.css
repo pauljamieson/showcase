@@ -19,12 +19,10 @@
 
 body {
   margin: 0;
-  
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   color: var(--text-prim);
   overflow-y: auto;
   overflow-x: hidden;
-  
 }
 
 a {
@@ -44,6 +42,9 @@ a {
   border-bottom: 1px solid black;
   align-items: center;
   height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .title {
@@ -190,6 +191,7 @@ nav ol {
 }
 
 .video-card-details {
+  word-break: break-word;
   padding: var(--spacing);
 }
 
@@ -223,7 +225,7 @@ nav ol {
 .video-container {
   display: flex;
   flex-direction: column;
-  
+
   overflow: auto;
 }
 
@@ -420,7 +422,7 @@ input:checked + .toggler:before {
 .rating-selector {
   display: flex;
   align-items: baseline;
-  padding: var(--spacing)
+  padding: var(--spacing);
 }
 
 .modal {
