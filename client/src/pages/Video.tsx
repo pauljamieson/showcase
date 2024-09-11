@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Form, Navigate, useActionData, useLoaderData } from "react-router-dom";
+import { Form, Navigate, useLoaderData } from "react-router-dom";
 import TagModal from "../components/TagModal";
 import TagChip from "../components/TagChip";
 import PersonChip from "../components/PersonChip";
@@ -38,10 +38,10 @@ type LoaderData = {
   video: VideoData;
 };
 
-type ActionData = {
+/*type ActionData = {
   status: string;
   intent: string;
-};
+};*/
 
 function Video() {
   const auth = useAuth();

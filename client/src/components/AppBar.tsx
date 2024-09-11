@@ -1,10 +1,8 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
 
   return (
     <div className="appbar-container">
