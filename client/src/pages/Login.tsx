@@ -24,7 +24,7 @@ export default function Login() {
       <Form className="login-form" method="post">
         <h3>Login</h3>
         <label htmlFor="email">Email</label>
-        <input type="email" name="email" />
+        <input type="email" name="email" autoFocus />
         <label htmlFor="password">Password</label>
         <input type="password" name="password" autoComplete="true" />
         <button type="submit">LOGIN</button>

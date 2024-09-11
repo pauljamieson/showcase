@@ -77,7 +77,7 @@ export default function PersonSearch() {
       <div className="chip-container">
         {active.length > 0 &&
           active.map((data) => (
-            <div className="chip" key={data} onClick={handleClick} id={data}>
+            <div className="chip-sm" key={data} onClick={handleClick} id={data}>
               {data}
             </div>
           ))}

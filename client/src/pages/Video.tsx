@@ -45,7 +45,7 @@ type ActionData = {
 
 function Video() {
   const auth = useAuth();
-  if (!auth.isLoggedIn) return <Navigate to="/login" />;
+  if (!auth.isLoggedIn) return <Navigate to="/" />;
 
   const {
     video: {
@@ -71,9 +71,8 @@ function Video() {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
   }, []);
 
-  const actionData = useActionData() as ActionData;
-  if (actionData?.status === "success" && actionData?.intent === "delete")
-    return <Navigate to="/" />;
+  //const actionData = useActionData() as ActionData;
+
 
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);

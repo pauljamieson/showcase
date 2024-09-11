@@ -78,7 +78,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
         <div className="chip-container">
           Tags:
           {videoFile.tags?.map((v) => (
-            <span className="chip chip-sm" key={v.id}>
+            <span className="chip-sm" key={v.id}>
               {v.name}
             </span>
           ))}
@@ -86,7 +86,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
         <div className="chip-container">
           People:
           {videoFile.people?.map((v) => (
-            <span className="chip chip-sm" key={v.id}>
+            <span className="chip-sm" key={v.id}>
               {v.name}
             </span>
           ))}

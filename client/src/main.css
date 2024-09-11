@@ -177,17 +177,21 @@ nav ol {
 }
 
 .video-card img {
-  width: 120%;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  left: (-50%);
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /*position: relative;*/
+  /*top: 50%;*/
+  /*right:0%;*/
+  /*transform: translateY(-50%);*/
 }
 
 .video-card-img-wrapper {
   height: 300px;
   display: block;
   overflow: hidden;
+  position: relative;
 }
 
 .video-card-details {
@@ -428,11 +432,24 @@ input:checked + .toggler:before {
 .modal {
   position: relative;
   border-radius: 10px;
-  width: 325px;
-  margin-left: -162px;
-  height: 120px;
+  width: 225px;
+  margin-left: -112px;
+  height: 130px;
   margin-top: -120px;
   z-index: 20;
+}
+
+.modal-container,
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  width: 100%;
+}
+
+.modal-form input {
+  width: 100%;
 }
 
 .chip {
@@ -456,10 +473,11 @@ input:checked + .toggler:before {
   background-color: var(--btn-prim);
   font-weight: bold;
   font-size: 0.75rem;
+  cursor: pointer;
 }
 
-.chip-sm:hover {
-  background-color: var(--btn-prim);
+.chip-sm.hover:hover {
+  background-color: var(--btn-prim-hover);
 }
 
 .chip-container {

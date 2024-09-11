@@ -5,21 +5,12 @@ export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  
+
   return (
     <div className="appbar-container">
-      {pathname.startsWith("/video/") ? (
-        <p className="title" onClick={() => navigate(-1)}>
-          Showcase
-        </p>
-      ) : pathname.startsWith("/videos") ? (
+      <Link to={"/"}>
         <p className="title">Showcase</p>
-      ) : (
-        <Link to={"/"}>
-          <p className="title">Showcase</p>
-        </Link>
-      )}
-
+      </Link>
       <div className="grow" />
       <nav>
         <ol>

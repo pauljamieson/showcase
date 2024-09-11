@@ -34,7 +34,7 @@ function Paginator({ count }: { count: number }) {
 
   return (
     <div className="pagination-container">
-      {count}({pageCount})
+      ({count})
       <button onClick={handleClick} name="previous">
         &lt;
       </button>

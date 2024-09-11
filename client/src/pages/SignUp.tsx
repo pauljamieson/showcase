@@ -11,7 +11,7 @@ export default function SignUp() {
       <Form className="signup-form" method="post">
         <h3>Signup</h3>
         <label htmlFor="display-name">Display Name</label>
-        <input type="text" name="display-name" />
+        <input type="text" name="display-name" autoFocus />
         <label htmlFor="email">Email</label>
         <input type="email" name="email" />
         <label htmlFor="new-password">Password</label>
