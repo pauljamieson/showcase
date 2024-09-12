@@ -12,18 +12,18 @@ To install:
    premade certs to ./certs.
 5. Build docker compose images using docker compose build in
    folder of repo
-6. Run server by running docker compose up -d  in folder of
+6. Run server by running docker compose up -d in folder of
    repo.
 
-1st run create user that will be the admin.  Login to adminer
-using http://<ip>:8080 and edit user role to ADMIN for admin 
-user.  After stop the adminer service and only run when 
+1st run create user that will be the admin. Login to adminer
+using http://<ip>:8080 and edit user role to ADMIN for admin
+user. After stop the adminer service and only run when
 needed.
 
-Folders:
-
-/api        Expressjs api server  
-/app_data   Work folder for video files  
-/certs      SSL certificate store  
-/client     Reactjs web client  
-/proxy      nginx web reverse proxy used for production  
+| Folders:  |                                             |
+| --------- | ------------------------------------------- |
+| /api      | Expressjs api server                        |
+| /app_data | Work folder for video files                 |
+| /certs    | SSL certificate store                       |
+| /client   | Reactjs web client                          |
+| /proxy    | nginx web reverse proxy used for production |
