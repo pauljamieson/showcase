@@ -4,3 +4,4 @@ node_modules/
 app_data/
 dist/
 CONTAINER_ALREADY_STARTED_PLACEHOLDER
+certs/

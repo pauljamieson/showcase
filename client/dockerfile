@@ -1,5 +1,5 @@
 FROM node:20.12.1
-ENV VITE_API_URL=http://192.168.100.137:5000
+ENV VITE_API_URL=https://192.168.100.137:5000
 WORKDIR /app
 COPY . /app
 RUN npm install
