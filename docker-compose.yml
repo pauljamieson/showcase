@@ -3,13 +3,19 @@ services:
     build:
       context: ./api
       dockerfile: dockerfile
-    ports:
-      - 2000:5000
-    
     user: node
+    expose:
+      - "5000"
     volumes:
       - ./app_data:/app/dist/app_data
     restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - SECRET=${SECRET}
+      - NODE_ENV=${NODE_ENV}
     depends_on:
       db:
         condition: service_healthy
@@ -19,11 +25,13 @@ services:
     build:
       context: ./client
       dockerfile: dockerfile
+      args:
+        VITE_API_URL: ${API_URL}
+    expose:
+      - "3000"
     restart: unless-stopped
     environment:
-      VITE_API_URL: http://192.168.100.137:5000
-    ports:
-      - 5173:5173
+      - NODE_ENV=${NODE_ENV}
     depends_on:
       - api
 
@@ -57,6 +65,8 @@ services:
       - 80:80
       - 443:443
       - 5000:5000
+    volumes:
+      - ./certs:/certs
     build:
       context: ./proxy
       dockerfile: dockerfile
