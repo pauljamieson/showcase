@@ -22,8 +22,8 @@ needed.
 
 Folders:
 
-/api        Expressjs api server
-/app_data   Work folder for video files
-/certs      SSL certificate store
-/client     Reactjs web client
-/proxy      nginx web reverse proxy used for production
+/api        Expressjs api server  
+/app_data   Work folder for video files  
+/certs      SSL certificate store  
+/client     Reactjs web client  
+/proxy      nginx web reverse proxy used for production  
