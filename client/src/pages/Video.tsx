@@ -73,7 +73,6 @@ function Video() {
 
   //const actionData = useActionData() as ActionData;
 
-
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
   const [isViewed, setIsViewed] = useState<boolean>(false);

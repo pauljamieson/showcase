@@ -102,6 +102,12 @@ async function POST(req: Request, res: Response) {
       });
     }
 
+    if (intent === "convert") {
+      await prisma.covertVideo.create({
+        data: { videoFileId: +videoId },
+      });
+    }
+
     if (!intent) throw "No intent made.";
     res.json({ status: "success" });
   } catch (error) {

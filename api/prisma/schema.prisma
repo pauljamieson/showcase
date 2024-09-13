@@ -37,22 +37,32 @@ model IncomingFile {
   filename  String
 }
 
+model CovertVideo {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  videoFileId Int @unique
+  videoFile   VideoFile @relation(fields: [videoFileId], references: [id])
+}
+
 model VideoFile {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  filename   String
-  filepath   String
-  size       BigInt
-  duration   Int
-  height     Int
-  width      Int
-  videoCodec String
-  audioCodec String
-  views      Int      @default(0)
-  rating     Int      @default(0)
-  tags       Tag[]
-  people     Person[]
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  filename      String
+  filepath      String
+  size          BigInt
+  duration      Int
+  height        Int
+  width         Int
+  videoCodec    String
+  audioCodec    String
+  views         Int      @default(0)
+  rating        Int      @default(0)
+  tags          Tag[]
+  people        Person[]
+  convertId     Int? @unique
+  convertVideo  CovertVideo?
 
   @@unique([filename, size])
 }
