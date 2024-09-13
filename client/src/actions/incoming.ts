@@ -1,3 +1,5 @@
+import apiRequest from "../lib/api";
+
 export default async ({ request }: { request: Request }) => {
   try {
     const formData = await request.formData();
@@ -21,26 +23,18 @@ export default async ({ request }: { request: Request }) => {
 
     for (let i = 0; i < rounds; i++) {
       const start = i * size;
-      const resp = await fetch(
-        `${import.meta.env.VITE_API_URL}/admin/incoming/`,
-        {
-          method: "post",
-          body: JSON.stringify({
-            files: payload.slice(start, start + size),
-          }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("showcase"),
-          },
-        }
-      );
+      const body = {
+        files: payload.slice(start, start + size),
+      };
 
-      const token = resp.headers.get("Authorization");
-      if (!token) throw "JWT header is missing";
-      localStorage.setItem("showcase", token.substring(7));
+      const { status } = await apiRequest({
+        method: "post",
+        endpoint: "/admin/incoming/",
+        body,
+      });
+
+      return { status };
     }
-
-    return {};
   } catch (err) {
     console.error(err);
     return {};

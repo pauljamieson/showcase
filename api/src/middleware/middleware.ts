@@ -39,22 +39,35 @@ export const middleWare: RequestHandler = (
         throw "Expired Token.";
       }
 
-      const newToken = buildJwtToken(
-        decrypted.sub,
-        decrypted.name,
-        604800,
-        decrypted.admin
-      );
-      res.setHeader("Authorization", `Bearer ${newToken}`);
+      // if token is more then 50% of life create new token with
+      // max time to live
+      if (decrypted.exp - 302400 < Date.now() / 1000) {
+        const newToken = buildJwtToken(
+          decrypted.sub,
+          decrypted.name,
+          604800,
+          decrypted.admin
+        );
+        res.setHeader("Authorization", `Bearer ${newToken}`);
+      } else res.setHeader("Authorization", `Bearer ${token}`);
 
       res.locals.isLogged = true;
       res.locals.user = decrypted.sub;
       res.locals.isAdmin = decrypted.admin;
       if (routeClass === "ADMIN" && !res.locals.isAdmin) throw "Not Admin";
-    } catch (error) {
-      console.error(error);
-    } finally {
       return next();
+    } catch (error) {
+      res.locals.isLogged = false;
+      res.locals.isAdmin = false;
+      res.locals.user = undefined;
+      console.error(error);
+      return res.json({
+        status: "failure",
+        data: {
+          reason: "Authentication check failure",
+          code: 2001,
+        },
+      });
     }
   }
 };

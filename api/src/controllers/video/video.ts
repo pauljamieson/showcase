@@ -27,7 +27,7 @@ async function PATCH(req: Request, res: Response) {
     if (update === "views") data = { views: { increment: 1 } };
 
     await prisma.videoFile.update({
-      where: { id: parseInt(id) },
+      where: { id: +id },
       data: data,
     });
 

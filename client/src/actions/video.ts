@@ -1,4 +1,5 @@
 import { redirect } from "react-router-dom";
+import apiRequest from "../lib/api";
 
 export default async ({ request }: { request: Request }) => {
   try {
@@ -18,24 +19,17 @@ export default async ({ request }: { request: Request }) => {
             rating: formData.get("rating") as string,
           }
         : { intent };
+        
+    const { status } = await apiRequest({
+      method: "post",
+      endpoint: "/video/${body.videoId}/",
+      body,
+    });
 
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_URL}/video/${body.videoId}`,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("showcase"),
-        },
-      }
-    );
-    const token = resp.headers.get("Authorization");
-    if (!token) throw "JWT header is missing";
-    localStorage.setItem("showcase", token.substring(7));
-    if (body.intent === "delete") return redirect("/");
-    return { status: "success", intent };
+    if (status === "success" && body.intent === "delete") return redirect("/");
+    return { status, intent };
   } catch (error) {
+    localStorage.removeItem("showcase");
     return { status: "failure" };
   }
 };

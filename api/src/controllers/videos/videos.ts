@@ -15,7 +15,6 @@ async function GET(req: Request, res: Response) {
     const order = searchParams.get("order") || "desc";
     const views = searchParams.get("views");
     const duration = searchParams.get("duration");
-
     const size = searchParams.get("size");
 
     const x = [

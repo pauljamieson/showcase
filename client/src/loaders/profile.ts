@@ -1,20 +1,13 @@
+import apiRequest from "../lib/api";
+
 export default async () => {
   try {
-    const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/profile/`);
-    const resp = await fetch(apiUrl, {
+    const { status, data } = await apiRequest({
       method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("showcase"),
-      },
+      endpoint: "/profile/",
     });
-    const token = resp.headers.get("Authorization");
-    if (!token) throw "JWT header is missing";
-    localStorage.setItem("showcase", token.substring(7));
-    const result = await resp.json();
 
-    if (result.status === "success")
-      return { status: "success", profile: result.data.profile };
+    if (status === "success") return { status, profile: data.profile };
     throw "Failed to get profile from api.";
   } catch (error: any) {
     console.error(error);

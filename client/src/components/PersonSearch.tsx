@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import apiRequest from "../lib/api";
 
 type Person = { id: number; name: string };
 
@@ -11,17 +12,13 @@ export default function PersonSearch() {
 
   useEffect(() => {
     if (input.length > 0) {
-      const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/people`);
-      apiUrl.searchParams.set("terms", input);
-      fetch(apiUrl, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("showcase"),
-        },
-      })
-        .then((resp) => resp.json())
-        .then((data) => setOptions(data.people));
+      const sp = new URLSearchParams();
+      sp.set("terms", input.trim());
+      apiRequest({ method: "get", endpoint: "/people/", searchParams: sp }).then(
+        (resp) => {
+          resp.status === "success" && setOptions(resp.data.people);
+        }
+      );
     }
   }, [input]);
 

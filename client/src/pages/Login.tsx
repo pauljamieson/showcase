@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 type Data = {
   status: string;
-  auth: string;
+  data: { auth: string };
   error: string;
 };
 
@@ -16,7 +16,7 @@ export default function Login() {
 
   useEffect(() => {
     if (actionData && actionData?.status === "success")
-      setToken(actionData.auth);
+      setToken(actionData.data.auth);
   }, [actionData]);
 
   return (

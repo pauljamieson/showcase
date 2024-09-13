@@ -1,5 +1,7 @@
 //import { redirect } from "react-router-dom";
 
+import apiRequest from "../lib/api";
+
 export default async ({ request }: { request: Request }) => {
   try {
     const formData = await request.formData();
@@ -21,18 +23,16 @@ export default async ({ request }: { request: Request }) => {
         status: "failure",
         error: "Password must be atleast 8 characters long.",
       };
-    
-    const resp = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
+
+    const { status, data } = await apiRequest({
       method: "post",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
+      endpoint: "/auth/signup/",
+      body,
     });
-    
-    const data = await resp.json();
-    //if (data.status === "success") return redirect("/");
-    if (data.status === "failure" && data.error.code === "P2002")
+
+    if (status === "failure" && data.error.code === "P2002")
       throw "Email Address or Display Name already registered.";
-    return { status: "success", auth: data };
+    return { status, auth: data };
   } catch (error: any) {
     console.error(error);
     return { status: "failure", auth: undefined };

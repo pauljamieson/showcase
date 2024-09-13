@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import apiRequest from "../lib/api";
 
 type Tag = { id: number; name: string };
 
@@ -11,17 +12,14 @@ export default function TagSearch() {
 
   useEffect(() => {
     if (input.length > 0) {
-      const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/tags`);
-      apiUrl.searchParams.set("terms", input);
-      fetch(apiUrl, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("showcase"),
-        },
-      })
-        .then((resp) => resp.json())
-        .then((data) => setOptions(data.tags));
+      const sp = new URLSearchParams();
+      sp.set("terms", input.trim());
+
+      apiRequest({ method: "get", endpoint: "/tags", searchParams: sp }).then(
+        (resp) => {
+          resp.status === "success" && setOptions(resp.data.tags);
+        }
+      );
     }
   }, [input]);
 
@@ -77,7 +75,12 @@ export default function TagSearch() {
       <div className="chip-container">
         {active.length > 0 &&
           active.map((data) => (
-            <div className="chip-sm hover" key={data} onClick={handleClick} id={data}>
+            <div
+              className="chip-sm hover"
+              key={data}
+              onClick={handleClick}
+              id={data}
+            >
               {data}
             </div>
           ))}

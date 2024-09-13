@@ -7,6 +7,13 @@ services:
       - ./api:/app
       - ./app_data:/app/app_data
     restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - SECRET=${SECRET}
+      - NODE_ENV=${NODE_ENV}
     ports:
       - 5000:5000
     user: "node"
@@ -24,7 +31,8 @@ services:
     restart: unless-stopped
     ports:
       - 5173:5173
-    environment:
+    environment: 
+      - NODE_ENV=${NODE_ENV}
       - VITE_API_URL=http://192.168.100.137:5000
     depends_on:
       - api

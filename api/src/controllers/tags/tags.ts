@@ -19,7 +19,7 @@ async function GET(req: Request, res: Response) {
       },
       take: 10,
     });
-    res.json({ status: "success", tags: result });
+    res.json({ status: "success", data: { tags: result } });
   } catch (error) {
     console.error(error);
     res.json({ status: "failure" });
