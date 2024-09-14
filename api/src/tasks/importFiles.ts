@@ -26,15 +26,7 @@ async function importFile() {
       orderBy: { filename: "asc" },
     });
 
-    const sorted = files.sort((a, b) =>
-      path.basename(a.filename) < path.basename(b.filename)
-        ? -1
-        : path.basename(a.filename) < path.basename(b.filename)
-        ? 1
-        : 0
-    );
-
-    for await (const file of sorted) {
+    for await (const file of files) {
       await processFile(file);
     }
     //await removeEmptyFolders("./app_data/processing");*/

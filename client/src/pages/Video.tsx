@@ -204,6 +204,9 @@ function Video() {
             <button className="btn" type="submit" name="intent" value="regen">
               Regen Thumbs
             </button>
+            <button className="btn" type="submit" name="intent" value="convert">
+              Convert Video
+            </button>
           </Form>
         )}
       </div>

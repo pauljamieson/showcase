@@ -1,5 +1,6 @@
 require("./lib/bigint");
 require("./tasks/importFiles");
+require("./tasks/convertFiles");
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";

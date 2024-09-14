@@ -7,7 +7,7 @@ export default async ({ request }: { request: Request }) => {
     const intent = formData.get("intent") as string;
 
     const body =
-      intent === "delete" || intent === "regen"
+      intent === "delete" || intent === "regen" || intent === "convert"
         ? {
             intent,
             videoId: formData.get("videoId") as string,
@@ -19,7 +19,7 @@ export default async ({ request }: { request: Request }) => {
             rating: formData.get("rating") as string,
           }
         : { intent };
-        
+
     const { status } = await apiRequest({
       method: "post",
       endpoint: "/video/${body.videoId}/",
