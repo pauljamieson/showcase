@@ -38,7 +38,7 @@ async function convertFile() {
 
 async function processFile(file: ConvertVideoInfo) {
   return new Promise<boolean>(async (resolve) => {
-    const INCOMINGFOLDER = "/app/app_data/incoming";
+    const INCOMINGFOLDER = "./app_data/incoming";
     try {
       // get video file info
       const video: VideoFile | null = await prisma.videoFile.findFirst({
@@ -48,12 +48,12 @@ async function processFile(file: ConvertVideoInfo) {
 
       // create source and destination (in processing) paths
       const src = path.join(
-        "/app/app_data/videos",
+        "./app_data/videos",
         video.filepath,
         video.filename
       );
       let dst = path.join(
-        "/app/app_data/processing/",
+        "./app_data/processing/",
         file.id.toString(),
         path.basename(video.filename, path.extname(video.filename)) +
           "-[x265].mp4"
