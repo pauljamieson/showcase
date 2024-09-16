@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  useLoaderData,
-  Form,
-  useSearchParams,
-  useFetcher,
-} from "react-router-dom";
+import { useLoaderData, Form, useSearchParams } from "react-router-dom";
 
 type LoaderData = {
   status: string;
@@ -74,7 +69,6 @@ function Row({
   const editRef = useRef<HTMLDialogElement | null>(null);
   const migrateRef = useRef<HTMLDialogElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const fetcher = useFetcher();
   return (
     <>
       <div className="edit-container">
