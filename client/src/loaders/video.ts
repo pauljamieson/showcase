@@ -9,7 +9,7 @@ export default async ({ params }: { params: Params<"id"> }) => {
     });
 
     if (status === "success") return { video: data.video };
-    throw "Failed to get video from api.";
+    throw "Failed request to api.";
   } catch (error: any) {
     console.error(error);
     return { error };

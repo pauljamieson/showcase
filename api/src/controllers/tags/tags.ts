@@ -4,6 +4,7 @@ import prisma from "../../lib/prisma";
 async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
+
     const terms = (req.query.terms as string) || "";
     const result = await prisma.tag.findMany({
       select: {

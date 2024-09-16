@@ -8,7 +8,7 @@ export default async () => {
     });
 
     if (status === "success") return { status, profile: data.profile };
-    throw "Failed to get profile from api.";
+    throw "Failed request to api.";
   } catch (error: any) {
     console.error(error);
     return { status: "failure", error };

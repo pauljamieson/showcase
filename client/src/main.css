@@ -15,6 +15,7 @@
   --spacing: 5px;
   --toggle-off: #d8d3d3;
   --toggle-on: #15c7b0;
+  --input-radius: 15px;
 }
 
 body {
@@ -34,6 +35,12 @@ a {
   flex-grow: 1;
 }
 
+.flex-container-center {
+  padding: var(--spacing);
+  display: flex;
+  justify-content: center;
+}
+
 .appbar-container {
   display: flex;
   width: 100vw;
@@ -49,6 +56,7 @@ a {
 
 .title {
   font-size: 1.75rem;
+  margin: 0;
 }
 
 nav p {
@@ -226,7 +234,6 @@ nav ol {
   display: flex;
   flex-direction: column;
   overflow: auto;
-  
 }
 
 .video-player-container {
@@ -555,10 +562,35 @@ input:checked + .toggler:before {
 }
 
 .btn-bar {
+  padding: var(--spacing);
   display: flex;
   gap: 5px;
+  justify-content: center;
 }
 
 .half-text {
   font-size: 0.75rem;
+}
+
+.admin-search {
+  width: 100%;
+  padding: 5px;
+}
+
+.edit-modal > div {
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--spacing)
+}
+
+.edit-modal::backdrop {
+  opacity: 50%;
+  background-color: black;
+}
+
+.edit-modal {
+  margin-top: 80px;
+  border-radius: var(--input-radius);
 }
