@@ -2,6 +2,7 @@ import apiRequest from "../lib/api";
 
 export default async ({ request }: { request: Request }) => {
   const formData = await request.formData();
+  console.log(formData);
   const body = {
     intent: formData.get("intent") as string,
     id: formData.get("id") as string,
@@ -15,7 +16,7 @@ export default async ({ request }: { request: Request }) => {
       endpoint: "/admin/tag/",
       body,
     });
-    
+
     return { status };
   } catch (error: any) {
     console.error(error);

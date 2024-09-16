@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoaderData, Form, useSearchParams } from "react-router-dom";
+import apiRequest from "../lib/api";
 
 type LoaderData = {
   status: string;
@@ -55,6 +56,11 @@ export default function AdminTag() {
   );
 }
 
+type Tag = {
+  id: number;
+  name: string;
+};
+
 function Row({
   id,
   name,
@@ -65,10 +71,18 @@ function Row({
   userId: number;
   creator: { displayname: string };
 }) {
-  const [input, setInput] = useState<string>("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [open, setOpen] = useState<boolean>(false);
   const editRef = useRef<HTMLDialogElement | null>(null);
-  const migrateRef = useRef<HTMLDialogElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  function closeMigrateDialog() {
+    setOpen(false);
+  }
+
+  function handleClick() {
+    setOpen(true);
+  }
+
   return (
     <>
       <div className="edit-container">
@@ -86,7 +100,7 @@ function Row({
         <button className="btn" onClick={() => editRef.current!.showModal()}>
           Edit
         </button>
-        <button className="btn" onClick={() => migrateRef.current!.showModal()}>
+        <button className="btn" onClick={handleClick}>
           Migrate
         </button>
       </div>
@@ -111,10 +125,64 @@ function Row({
         </div>
       </dialog>
       {/* Migrate dialog box */}
+      <MigrationDialog
+        id={id}
+        name={name}
+        open={open}
+        handleClose={closeMigrateDialog}
+      />
+    </>
+  );
+}
+
+function MigrationDialog({
+  id,
+  name,
+  open,
+  handleClose,
+}: {
+  id: number;
+  name: string;
+  open: boolean;
+  handleClose: () => void;
+}) {
+  const [input, setInput] = useState<string>("");
+  const [options, setOptions] = useState<Tag[]>([]);
+  const migrateRef = useRef<HTMLDialogElement>(null);
+  const inputRef = useRef(null);
+
+  // Debounce timer
+  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+
+  // Debounce update search terms
+  useEffect(() => {
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(undefined);
+    }
+    const TO = setTimeout(() => {
+      const searchParams = new URLSearchParams();
+      searchParams.set("terms", input);
+      apiRequest({ endpoint: "/tags/", method: "get", searchParams }).then(
+        ({ status, data }) => {
+          status === "success" && setOptions(data.tags);
+        }
+      );
+    }, 750);
+    setTimer(TO);
+  }, [input]);
+
+  useEffect(() => {
+    open ? migrateRef.current?.showModal() : migrateRef.current?.close();
+  }, [open]);
+
+  return (
+    <>
+      {/* Migrate dialog box */}
       <dialog className="edit-modal" ref={migrateRef} open={false}>
         <div>
           Migrate
-          <Form>
+          <Form method="post">
             <input type="hidden" name="id" value={id} />
             <input type="hidden" name="name" value={name} />
             <input
@@ -128,7 +196,7 @@ function Row({
               ref={inputRef}
             />
             <datalist id="tags">
-              {[{ name: "jack" }].map((val) => (
+              {options.map((val) => (
                 <option>{val.name}</option>
               ))}
             </datalist>
@@ -144,7 +212,10 @@ function Row({
               </button>
               <button
                 className="btn"
-                onClick={() => migrateRef.current!.close()}
+                onClick={() => {
+                  migrateRef.current!.close();
+                  handleClose();
+                }}
               >
                 Close
               </button>
