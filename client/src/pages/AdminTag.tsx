@@ -71,7 +71,7 @@ function Row({
   userId: number;
   creator: { displayname: string };
 }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  
   const [open, setOpen] = useState<boolean>(false);
   const editRef = useRef<HTMLDialogElement | null>(null);
 
