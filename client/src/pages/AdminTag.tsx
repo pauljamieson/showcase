@@ -71,7 +71,6 @@ function Row({
   userId: number;
   creator: { displayname: string };
 }) {
-  
   const [open, setOpen] = useState<boolean>(false);
   const editRef = useRef<HTMLDialogElement | null>(null);
 
@@ -149,7 +148,6 @@ function MigrationDialog({
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<Tag[]>([]);
   const migrateRef = useRef<HTMLDialogElement>(null);
-  const inputRef = useRef(null);
 
   // Debounce timer
   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
@@ -189,15 +187,14 @@ function MigrationDialog({
               className="search-input"
               type="text"
               list="tags"
-              name="tag-name"
+              name="migrateName"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               autoComplete="off"
-              ref={inputRef}
             />
             <datalist id="tags">
               {options.map((val) => (
-                <option>{val.name}</option>
+                <option value={val.name} key={val.id} />
               ))}
             </datalist>
 

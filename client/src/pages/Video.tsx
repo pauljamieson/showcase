@@ -209,7 +209,7 @@ function Video() {
             </button>
           </Form>
         )}
-      </div>-
+      </div>
       <div className="grow" />
       <div className="video-player-container">
         <video
