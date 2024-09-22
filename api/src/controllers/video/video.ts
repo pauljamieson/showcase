@@ -8,14 +8,36 @@ async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
     const { id } = req.params;
-    const video = await prisma.videoFile.findFirst({
-      where: { id: parseInt(id) },
+
+    const t1 = prisma.videoFile.findFirst({
+      where: { id: +id },
       include: {
         tags: { orderBy: { name: "asc" } },
         people: { orderBy: { name: "asc" } },
       },
     });
-    res.json({ status: "success", data: { video } });
+    const t2 = prisma.videoRatings.aggregate({
+      where: { videoId: +id },
+      _avg: { rating: true },
+    });
+    const t3 = prisma.videoRatings.findFirst({
+      where: { videoId: +id, userId: +res.locals.user },
+    });
+
+    const [video, rating, myRating] = await prisma.$transaction([t1, t2, t3]);
+
+    res.json({
+      status: "success",
+      data: {
+        video: {
+          ...video,
+          rating: {
+            rating: Math.floor(rating._avg.rating || 0),
+            userRating: myRating?.rating || 0,
+          },
+        },
+      },
+    });
   } catch (error) {
     console.error(error);
     res.json({ status: "failure" });
@@ -102,6 +124,17 @@ async function POST(req: Request, res: Response) {
       await prisma.videoFile.update({
         where: { id: +videoId },
         data: { rating: +rating },
+      });
+      await prisma.videoRatings.upsert({
+        where: {
+          videoId_userId: { videoId: +videoId, userId: +res.locals.user },
+        },
+        create: {
+          videoId: +videoId,
+          userId: +res.locals.user,
+          rating: +rating,
+        },
+        update: { rating: +rating },
       });
     }
 

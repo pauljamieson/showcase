@@ -27,7 +27,7 @@ type VideoData = {
   duration: number;
   size: number;
   views: number;
-  rating: number;
+  rating: { rating: number; userRating: number };
   people: Person[];
   tags: Tag[];
   updatedAt: string;
@@ -148,7 +148,7 @@ function Video() {
         </div>
         <div className="rating-selector">
           Rating:{" "}
-          {[...Array(rating)].map((_, i) => (
+          {[...Array(rating.rating)].map((_, i) => (
             <Form key={i} method="post">
               <input type="hidden" name="videoId" value={id} />
               <input type="hidden" name="rating" value={i + 1} />
@@ -163,10 +163,10 @@ function Video() {
               </button>
             </Form>
           ))}
-          {[...Array(5 - rating)].map((_, i) => (
+          {[...Array(5 - rating.rating)].map((_, i) => (
             <Form key={i} method="post">
               <input type="hidden" name="videoId" value={id} />
-              <input type="hidden" name="rating" value={rating + i + 1} />
+              <input type="hidden" name="rating" value={rating.rating + i + 1} />
               <button
                 key={i}
                 className="rating-star-btn-off"
@@ -178,6 +178,7 @@ function Video() {
               </button>
             </Form>
           ))}
+          <span className="half-text">({rating.userRating})</span>
         </div>
         <div className="chip-container">
           <span>Tags: </span>

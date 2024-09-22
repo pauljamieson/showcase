@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
 import { Prisma } from "@prisma/client";
+import video from "../video/video";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -32,9 +33,11 @@ async function GET(req: Request, res: Response) {
     const files = await prisma.videoFile.findMany({
       skip: +page * +limit - +limit,
       take: +limit,
+
       include: {
         tags: { orderBy: { name: "asc" } },
         people: { orderBy: { name: "asc" } },
+        ratings: true,
       },
 
       orderBy: [
@@ -60,6 +63,16 @@ async function GET(req: Request, res: Response) {
       },
     });
 
+    const ratedFiles = files.map((v) => {
+      return {
+        ...v,
+        rating: Math.floor(
+          v.ratings.map((v) => v.rating).reduce((a, c) => a + c, 0) /
+            v.ratings.length || 0
+        ),
+      };
+    });
+
     const count = await prisma.videoFile.count({
       where: {
         AND: [
@@ -76,7 +89,7 @@ async function GET(req: Request, res: Response) {
       },
     });
 
-    res.json({ status: "success", data: { files, count } });
+    res.json({ status: "success", data: { files: ratedFiles, count } });
   } catch (error) {
     console.error(error);
     res.json({ status: "failure" });

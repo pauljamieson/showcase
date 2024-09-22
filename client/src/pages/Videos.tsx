@@ -48,7 +48,7 @@ export default function Videos() {
     { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
     { name: "views", options: ["Least Views", "Most Views"] },
     { name: "duration", options: ["Shortest", "Longest"] },
-    { name: "size", options: ["Smol", "Big Boy"] },
+    { name: "size", options: ["Small", "Big"] },
     { name: "alpha", options: ["A-Z", "Z-A"] },
   ];
   return (
