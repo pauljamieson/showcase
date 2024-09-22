@@ -23,7 +23,7 @@ model User {
   role         Role     @default(USER)
   tags         Tag[]
   people       Person[]
-  ratings      UserRatings[]  // user ratings on videos
+  ratings      VideoRatings[]  // user ratings on videos
   
 }
 
@@ -65,7 +65,7 @@ model VideoFile {
   people        Person[]
   convertId     Int? @unique
   convertVideo  CovertVideo?
-  ratings       UserRatings[]
+  ratings       VideoRatings[]
 
   @@unique([filename, size])
 }
