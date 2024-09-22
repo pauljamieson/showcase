@@ -32,14 +32,17 @@ async function GET(req: Request, res: Response) {
     const files = await prisma.videoFile.findMany({
       skip: +page * +limit - +limit,
       take: +limit,
-      include: { tags: true, people: true },
+      include: {
+        tags: { orderBy: { name: "asc" } },
+        people: { orderBy: { name: "asc" } },
+      },
 
       orderBy: [
         views ? { views: views as Prisma.SortOrder } : {},
         duration ? { duration: duration as Prisma.SortOrder } : {},
         size ? { size: size as Prisma.SortOrder } : {},
         alpha ? { filename: alpha as Prisma.SortOrder } : {},
-        { id: order as Prisma.SortOrder },
+        { createdAt: order as Prisma.SortOrder },
       ],
 
       where: {

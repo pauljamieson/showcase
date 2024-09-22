@@ -18,6 +18,9 @@ async function GET(req: Request, res: Response) {
         }),
       },
       take: 10,
+      orderBy: {
+        name: "asc",
+      },
     });
 
     res.json({ status: "success", data: { people: result } });

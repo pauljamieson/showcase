@@ -4,7 +4,8 @@ import prisma from "../../lib/prisma";
 async function POST(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
-    const { personId, videoId }: { personId: string; videoId: string } = req.body;
+    const { personId, videoId }: { personId: string; videoId: string } =
+      req.body;
 
     const result = await prisma.person.update({
       where: { id: +personId },

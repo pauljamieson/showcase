@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoaderData, useSearchParams, Form } from "react-router-dom";
+import apiRequest from "../lib/api";
 
 type LoaderData = {
   status: string;
@@ -55,6 +56,11 @@ export default function AdminPerson() {
   );
 }
 
+type Person = {
+  id: number;
+  name: string;
+};
+
 function Row({
   id,
   name,
@@ -65,8 +71,16 @@ function Row({
   userId: number;
   creator: { displayname: string };
 }) {
-  const editRef = useRef<HTMLDialogElement | null>(null);
-  const migrateRef = useRef<HTMLDialogElement | null>(null);
+  const [migrateOpen, setMigrateOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+
+  function handleClickMigrate() {
+    setMigrateOpen((v) => !v);
+  }
+
+  function handleClickEdit() {
+    setEditOpen((v) => !v);
+  }
   return (
     <>
       <div className="edit-container">
@@ -81,47 +95,154 @@ function Row({
           <input type="hidden" name="name" value={name} />
           <input className="btn" type="submit" name="intent" value="Delete" />
         </Form>
-        <button className="btn" onClick={() => editRef.current!.showModal()}>
+        <button className="btn" onClick={handleClickEdit}>
           Edit
         </button>
-        <button className="btn" onClick={() => migrateRef.current!.showModal()}>
+        <button className="btn" onClick={handleClickMigrate}>
           Migrate
         </button>
       </div>
       {/* Edit dialog box */}
-      <dialog className="edit-modal" ref={editRef} open={false}>
-        <div>
-          <div className="title">Edit</div>
-          <Form>
-            <div>
-              <div>Old Name: {name}</div>
-              <input type="text" placeholder="New Name" />
-            </div>
-            <br />
-            <div className="btn-bar ">
-              <button className="btn" type="submit" name="intent" value="Edit">
-                Edit
-              </button>
-              <button className="btn" onClick={() => editRef.current!.close()}>
-                Close
-              </button>
-            </div>
-          </Form>
-        </div>
-      </dialog>
+      <EditDialog
+        id={id}
+        name={name}
+        open={editOpen}
+        handleClose={handleClickEdit}
+      />
+      {/* Migrate dialog box */}
+      <MigrationDialog
+        id={id}
+        name={name}
+        open={migrateOpen}
+        handleClose={handleClickMigrate}
+      />
+    </>
+  );
+}
+
+function EditDialog({
+  id,
+  name,
+  open,
+  handleClose,
+}: {
+  id: number;
+  name: string;
+  open: boolean;
+  handleClose: () => void;
+}) {
+  const editRef = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    open ? editRef.current?.showModal() : editRef.current?.close();
+  }, [open]);
+
+  return (
+    <dialog className="edit-modal" ref={editRef}>
+      <div>
+        Edit
+        <Form method="post">
+          <input type="hidden" name="id" value={id} />
+          <input type="hidden" name="name" value={name} />
+
+          <input
+            className="search-input"
+            type="text"
+            name="newName"
+            placeholder="New Name"
+          />
+          <div className="btn-bar ">
+            <button className="btn" type="submit" name="intent" value="Edit">
+              Edit
+            </button>
+            <button className="btn" onClick={handleClose}>
+              Close
+            </button>
+          </div>
+        </Form>
+      </div>
+    </dialog>
+  );
+}
+
+function MigrationDialog({
+  id,
+  name,
+  open,
+  handleClose,
+}: {
+  id: number;
+  name: string;
+  open: boolean;
+  handleClose: () => void;
+}) {
+  const [input, setInput] = useState<string>("");
+  const [options, setOptions] = useState<Person[]>([]);
+  const migrateRef = useRef<HTMLDialogElement>(null);
+
+  // Debounce timer
+  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+
+  // Debounce update search terms
+  useEffect(() => {
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(undefined);
+    }
+    const TO = setTimeout(() => {
+      const searchParams = new URLSearchParams();
+      searchParams.set("terms", input);
+      apiRequest({ endpoint: "/people/", method: "get", searchParams }).then(
+        ({ status, data }) => {
+          status === "success" && setOptions(data.people);
+        }
+      );
+    }, 750);
+    setTimer(TO);
+  }, [input]);
+
+  useEffect(() => {
+    open ? migrateRef.current?.showModal() : migrateRef.current?.close();
+  }, [open]);
+
+  return (
+    <>
       {/* Migrate dialog box */}
       <dialog className="edit-modal" ref={migrateRef} open={false}>
         <div>
           Migrate
-          <Form>
-            <input type="text" placeholder="New Name" />
+          <Form method="post">
+            <input type="hidden" name="id" value={id} />
+            <input type="hidden" name="name" value={name} />
+            <input
+              className="search-input"
+              type="text"
+              list="people"
+              name="migrateName"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              autoComplete="off"
+            />
+            <datalist id="people">
+              {options.map((val) => (
+                <option value={val.name} key={val.id} />
+              ))}
+            </datalist>
+
             <div className="btn-bar ">
-              <button className="btn" type="submit" name="intent" value="Edit">
+              <button
+                className="btn"
+                type="submit"
+                name="intent"
+                value="Migrate"
+              >
                 Migrate
               </button>
               <button
                 className="btn"
-                onClick={() => migrateRef.current!.close()}
+                onClick={() => {
+                  migrateRef.current!.close();
+                  handleClose();
+                }}
               >
                 Close
               </button>

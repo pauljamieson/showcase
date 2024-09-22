@@ -71,15 +71,15 @@ function Row({
   userId: number;
   creator: { displayname: string };
 }) {
-  const [open, setOpen] = useState<boolean>(false);
-  const editRef = useRef<HTMLDialogElement | null>(null);
+  const [migrateOpen, setMigrateOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
 
-  function closeMigrateDialog() {
-    setOpen(false);
+  function handleClickMigrate() {
+    setMigrateOpen((v) => !v);
   }
 
-  function handleClick() {
-    setOpen(true);
+  function handleClickEdit() {
+    setEditOpen((v) => !v);
   }
 
   return (
@@ -96,41 +96,72 @@ function Row({
           <input type="hidden" name="name" value={name} />
           <input className="btn" type="submit" name="intent" value="Delete" />
         </Form>
-        <button className="btn" onClick={() => editRef.current!.showModal()}>
+        <button className="btn" onClick={handleClickEdit}>
           Edit
         </button>
-        <button className="btn" onClick={handleClick}>
+        <button className="btn" onClick={handleClickMigrate}>
           Migrate
         </button>
       </div>
       {/* Edit dialog box */}
-      <dialog className="edit-modal" ref={editRef}>
-        <div>
-          Edit
-          <Form method="post">
-            <input type="hidden" name="id" value={id} />
-            <input type="hidden" name="name" value={name} />
-
-            <input type="text" name="newName" placeholder="New Name" />
-            <div className="btn-bar ">
-              <button className="btn" type="submit" name="intent" value="Edit">
-                Edit
-              </button>
-              <button className="btn" onClick={() => editRef.current!.close()}>
-                Close
-              </button>
-            </div>
-          </Form>
-        </div>
-      </dialog>
+      <EditDialog
+        id={id}
+        name={name}
+        open={editOpen}
+        handleClose={handleClickEdit}
+      />
       {/* Migrate dialog box */}
       <MigrationDialog
         id={id}
         name={name}
-        open={open}
-        handleClose={closeMigrateDialog}
+        open={migrateOpen}
+        handleClose={handleClickMigrate}
       />
     </>
+  );
+}
+
+function EditDialog({
+  id,
+  name,
+  open,
+  handleClose,
+}: {
+  id: number;
+  name: string;
+  open: boolean;
+  handleClose: () => void;
+}) {
+  const editRef = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    open ? editRef.current?.showModal() : editRef.current?.close();
+  }, [open]);
+
+  return (
+    <dialog className="edit-modal" ref={editRef}>
+      <div>
+        Edit
+        <Form method="post">
+          <input type="hidden" name="id" value={id} />
+          <input type="hidden" name="name" value={name} />
+
+          <input
+            className="search-input"
+            type="text"
+            name="newName"
+            placeholder="New Name"
+          />
+          <div className="btn-bar ">
+            <button className="btn" type="submit" name="intent" value="Edit">
+              Edit
+            </button>
+            <button className="btn" onClick={handleClose}>
+              Close
+            </button>
+          </div>
+        </Form>
+      </div>
+    </dialog>
   );
 }
 

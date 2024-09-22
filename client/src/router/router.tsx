@@ -26,6 +26,7 @@ import AdminTagLoader from "../loaders/adminTag";
 import AdminTagAction from "../actions/adminTag";
 import AdminPerson from "../pages/AdminPerson";
 import AdminPersonLoader from "../loaders/adminPerson";
+import AdminPersonAction from "../actions/adminPerson";
 
 export const router = createBrowserRouter([
   {
@@ -81,6 +82,7 @@ export const router = createBrowserRouter([
         path: "/admin/people",
         element: <AdminPerson />,
         loader: AdminPersonLoader,
+        action: AdminPersonAction,
       },
       { path: "/profile", element: <Profile />, loader: ProfileLoader },
     ],

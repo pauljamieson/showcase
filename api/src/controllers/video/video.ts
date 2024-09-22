@@ -10,7 +10,10 @@ async function GET(req: Request, res: Response) {
     const { id } = req.params;
     const video = await prisma.videoFile.findFirst({
       where: { id: parseInt(id) },
-      include: { tags: true, people: true },
+      include: {
+        tags: { orderBy: { name: "asc" } },
+        people: { orderBy: { name: "asc" } },
+      },
     });
     res.json({ status: "success", data: { video } });
   } catch (error) {
