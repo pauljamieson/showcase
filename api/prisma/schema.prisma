@@ -90,11 +90,13 @@ model Person {
   updatedAt  DateTime    @updatedAt
 }
 
-model UserRatings {
+model VideoRatings {
   video    VideoFile @relation(fields: [videoId], references: [id])
   videoId  Int
   user     User @relation(fields: [userId], references: [id])
   userId   Int
+
+  rating   Int 
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
