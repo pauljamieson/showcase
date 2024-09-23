@@ -60,7 +60,7 @@ model VideoFile {
   videoCodec    String
   audioCodec    String
   views         Int      @default(0)
-  rating        Int      @default(0)
+  
   tags          Tag[]
   people        Person[]
   convertId     Int? @unique
