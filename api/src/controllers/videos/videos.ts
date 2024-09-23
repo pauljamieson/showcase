@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
 import { Prisma } from "@prisma/client";
-import video from "../video/video";
+
 
 async function GET(req: Request, res: Response) {
   try {

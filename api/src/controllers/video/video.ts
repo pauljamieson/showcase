@@ -121,10 +121,6 @@ async function POST(req: Request, res: Response) {
     }
 
     if (intent === "rating") {
-      await prisma.videoFile.update({
-        where: { id: +videoId },
-        data: { rating: +rating },
-      });
       await prisma.videoRatings.upsert({
         where: {
           videoId_userId: { videoId: +videoId, userId: +res.locals.user },
