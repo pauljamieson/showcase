@@ -1,5 +1,6 @@
 //import { redirect } from "react-router-dom";
 
+import { redirect } from "react-router-dom";
 import apiRequest from "../lib/api";
 
 export default async ({ request }: { request: Request }) => {
@@ -29,12 +30,12 @@ export default async ({ request }: { request: Request }) => {
       endpoint: "/auth/signup/",
       body,
     });
-
-    if (status === "failure" && data.error.code === "P2002")
+    if (status === "failure" && data?.error?.code === "P2002") {
       throw "Email Address or Display Name already registered.";
-    return { status, auth: data };
-  } catch (error: any) {
-    console.error(error);
-    return { status: "failure", auth: undefined };
+    }
+    if (status === "success") return redirect("/login");
+    throw "Email Address or Display Name already registered.";
+  } catch (error) {
+    return { status: "failure", error: error, auth: undefined };
   }
 };

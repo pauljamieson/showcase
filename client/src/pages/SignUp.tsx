@@ -6,6 +6,7 @@ type Data = {
 
 export default function SignUp() {
   const actionData: Data = useActionData() as Data;
+
   return (
     <div className="signup-container">
       <Form className="signup-form" method="post">

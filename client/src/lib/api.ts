@@ -22,10 +22,10 @@ export default async function apiRequest(rc: RequestConfig) {
     const token = resp.headers.get("Authorization");
     if (token) localStorage.setItem("showcase", token.substring(7));
     else localStorage.removeItem("showcase");
-    var { status, data } = await resp.json();
+    var { status, data, error } = await resp.json();
   } catch (error) {
     console.error(error);
   } finally {
-    return { status, data };
+    return { status, data, error };
   }
 }

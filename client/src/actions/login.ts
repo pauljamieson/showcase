@@ -8,15 +8,16 @@ export default async ({ request }: { request: Request }) => {
   };
 
   try {
-    const { status } = await apiRequest({
+    const { status, error } = await apiRequest({
       method: "post",
       endpoint: "/auth/login/",
       body,
     });
-
+    if (status === "failure") throw error;
     return { status, data: { auth: localStorage.getItem("showcase") } };
   } catch (error: any) {
-    console.error(error);
-    return { status: "failure", auth: "" };
+    //console.error(error);
+    console.log("hger");
+    return { status: "failure", error, auth: "" };
   }
 };
