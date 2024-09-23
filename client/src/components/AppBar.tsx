@@ -1,4 +1,4 @@
-import { Link, Navigate, useMatch, useNavigate } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 export default function AppBar() {
