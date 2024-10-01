@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { Form, Navigate, useLoaderData } from "react-router-dom";
+import {
+  Form,
+  Navigate,
+  useLoaderData,
+  useSearchParams,
+} from "react-router-dom";
 import TagModal from "../components/TagModal";
 import TagChip from "../components/TagChip";
 import PersonChip from "../components/PersonChip";
 import PersonModal from "../components/PersonModal";
 import useAuth from "../hooks/useAuth";
+import PlaylistAddDialog from "../components/PlaylistAddDialog";
 
 type Person = {
   id: number;
@@ -38,15 +44,11 @@ type LoaderData = {
   video: VideoData;
 };
 
-/*type ActionData = {
-  status: string;
-  intent: string;
-};*/
-
 function Video() {
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/" />;
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     video: {
       filename,
@@ -70,8 +72,6 @@ function Video() {
   useEffect(() => {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
   }, []);
-
-  //const actionData = useActionData() as ActionData;
 
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
@@ -130,6 +130,11 @@ function Video() {
     localStorage.setItem("volume", e.target.volume.toString());
   }
 
+  function handleOpenPlaylistModal() {
+    searchParams.set("modal", "playlist");
+    setSearchParams(searchParams);
+  }
+
   return (
     <div className="video-container">
       <div>
@@ -137,7 +142,7 @@ function Video() {
           {filename.slice(filename.lastIndexOf("/") + 1)}
         </p>
         <div className="video-details">
-          <span> Size: {formatSize(size)}</span>
+          <span>Size: {formatSize(size)}</span>
           <span>Views: {views}</span>
           <span>Duration: {formatDuration(duration)} </span>
           <span>
@@ -146,39 +151,48 @@ function Video() {
           <span>Video Codec: {videoCodec}</span>
           <span>Audio Codec: {audioCodec}</span>
         </div>
-        <div className="rating-selector">
-          Rating:{" "}
-          {[...Array(rating.rating)].map((_, i) => (
-            <Form key={i} method="post">
-              <input type="hidden" name="videoId" value={id} />
-              <input type="hidden" name="rating" value={i + 1} />
-              <button
-                key={i}
-                className="rating-star-btn-on"
-                type="submit"
-                name="intent"
-                value="rating"
-              >
-                &#9733;
-              </button>
-            </Form>
-          ))}
-          {[...Array(5 - rating.rating)].map((_, i) => (
-            <Form key={i} method="post">
-              <input type="hidden" name="videoId" value={id} />
-              <input type="hidden" name="rating" value={rating.rating + i + 1} />
-              <button
-                key={i}
-                className="rating-star-btn-off"
-                type="submit"
-                name="intent"
-                value="rating"
-              >
-                &#9733;
-              </button>
-            </Form>
-          ))}
-          <span className="half-text">({rating.userRating})</span>
+        <div className="flex">
+          <button className="btn" onClick={handleOpenPlaylistModal}>
+            +Playlist
+          </button>
+          <div className="rating-selector">
+            Rating:{" "}
+            {[...Array(rating.rating)].map((_, i) => (
+              <Form key={i} method="post">
+                <input type="hidden" name="videoId" value={id} />
+                <input type="hidden" name="rating" value={i + 1} />
+                <button
+                  key={i}
+                  className="rating-star-btn-on"
+                  type="submit"
+                  name="intent"
+                  value="rating"
+                >
+                  &#9733;
+                </button>
+              </Form>
+            ))}
+            {[...Array(5 - rating.rating)].map((_, i) => (
+              <Form key={i} method="post">
+                <input type="hidden" name="videoId" value={id} />
+                <input
+                  type="hidden"
+                  name="rating"
+                  value={rating.rating + i + 1}
+                />
+                <button
+                  key={i}
+                  className="rating-star-btn-off"
+                  type="submit"
+                  name="intent"
+                  value="rating"
+                >
+                  &#9733;
+                </button>
+              </Form>
+            ))}
+            <span className="half-text">({rating.userRating})</span>
+          </div>
         </div>
         <div className="chip-container">
           <span>Tags: </span>
@@ -227,6 +241,10 @@ function Video() {
           ></source>
         </video>
       </div>
+      {searchParams.has("modal", "playlist") && (
+        <PlaylistAddDialog videoId={id} />
+      )}{" "}
+    
     </div>
   );
 }

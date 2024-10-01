@@ -582,7 +582,7 @@ input:checked + .toggler:before {
   display: flex;
   flex-direction: column;
   text-align: center;
-  gap: var(--spacing)
+  gap: var(--spacing);
 }
 
 .edit-modal::backdrop {
@@ -594,3 +594,43 @@ input:checked + .toggler:before {
   margin-top: 80px;
   border-radius: var(--input-radius);
 }
+
+/* Playlist modal */
+
+.playlist-modal {
+  max-height: 500px;
+  min-height: fit-content;
+  margin-top: 70px;
+  border: 1px solid black;
+}
+
+.playlist-modal::backdrop {
+  background-color: gray;
+  opacity: 60%;
+}
+
+.playlist-modal .playlist-item {
+  display: flex;
+  padding: 2.5px 0;
+}
+
+.playlist-item > * {
+  margin: 0 5px;
+}
+
+.playlist-modal .create-input {
+  display: flex;
+  gap: var(--spacing);
+  padding: 10px 0;
+}
+/* End */
+
+/* Flex quick classes */
+
+.center-items {
+  display: flex;
+  gap: var(--spacing);
+  justify-content: center;
+}
+
+/* End Flex quick classes */

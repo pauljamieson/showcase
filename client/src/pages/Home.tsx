@@ -8,6 +8,11 @@ export function homeLoader() {
 export default function Home() {
   const isAuthed = useAuth();
 
-  if (isAuthed.auth) return <Navigate to="videos?page=1&limit=8" />;
+  if (isAuthed.auth)
+    return (
+      <Navigate
+        to={`videos?page=${sessionStorage.getItem("page") || 1}&limit=8`}
+      />
+    );
   else return <div>Sign up now!</div>;
 }

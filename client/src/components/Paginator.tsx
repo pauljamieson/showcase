@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 function Paginator({ count }: { count: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const limit = searchParams.get("limit") || 8;
   const pageCount = Math.ceil(count / +limit);
+
+  
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -16,15 +18,18 @@ function Paginator({ count }: { count: number }) {
       case "next":
         if (curPage === pageCount) break;
         searchParams.set("page", (curPage + 1).toString());
+        sessionStorage.setItem("page", (curPage + 1).toString());
         setSearchParams(searchParams);
         break;
       case "previous":
         if (curPage === 1) break;
         searchParams.set("page", (curPage - 1).toString());
+        sessionStorage.setItem("page", (curPage - 1).toString());
         setSearchParams(searchParams);
         break;
       case "goto":
         searchParams.set("page", value);
+        sessionStorage.setItem("page", value.toString());
         setSearchParams(searchParams);
         break;
       default:

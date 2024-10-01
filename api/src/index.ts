@@ -14,6 +14,7 @@ import PersonRouter from "./routes/person/person";
 import PeopleRouter from "./routes/people/people";
 import ProfileRouter from "./routes/profile/profile";
 import MigrateRouter from "./routes/migrate/migrate";
+import PlaylistRouter from "./routes/playlist/playlist";
 import { middleWare } from "./middleware/middleware";
 const compression = require("compression");
 dotenv.config();
@@ -43,6 +44,7 @@ app.use("/people", PeopleRouter);
 app.use("/videos", VideosRouter);
 app.use("/video", VideoRouter);
 app.use("/profile", ProfileRouter);
+app.use("/playlist", PlaylistRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
