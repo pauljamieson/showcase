@@ -634,3 +634,53 @@ input:checked + .toggler:before {
 }
 
 /* End Flex quick classes */
+
+/* playlists */
+.playlist-card-container {
+  padding: 5px;
+  display: grid;
+  gap: var(--spacing);
+}
+
+@media only screen and (max-width: 500px) {
+  .playlist-card-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media only screen and (min-width: 500px) {
+  .playlist-card-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media only screen and (min-width: 1000px) {
+  .playlist-card-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media only screen and (min-width: 1250px) {
+  .playlist-card-container {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+@media only screen and (min-width: 1500px) {
+  .playlist-card-container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.playlist-card {
+  border: 1px solid black;
+  width: 100%;
+  background-color: red;
+  border-radius: 10px;
+}
+
+.playlist-card-img-container {
+  
+}
+
+.playlist-card img {
+  max-width: 100%;
+}
+
+/* end playlists */

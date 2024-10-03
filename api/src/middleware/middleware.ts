@@ -79,12 +79,16 @@ type RouteClass = {
 
 const routes: RouteClass[] = [
   { path: "", type: "PUBLIC" },
-  { path: "auth", type: "PUBLIC" },
   { path: "admin", type: "ADMIN" },
+  { path: "auth", type: "PUBLIC" },
+  { path: "migrate", type: "USER" },
+  { path: "people", type: "USER" },
+  { path: "person", type: "USER" },
+  { path: "playlist", type: "USER" },
+  { path: "playlists", type: "USER" },
+  { path: "profile", type: "USER" },
   { path: "tag", type: "USER" },
   { path: "tags", type: "USER" },
-  { path: "person", type: "USER" },
-  { path: "people", type: "USER" },
   { path: "video", type: "USER" },
   { path: "videos", type: "USER" },
 ];

@@ -27,6 +27,11 @@ export default function AppBar() {
                   <p>{user?.name}</p>
                 </Link>
               </li>
+              <li>
+                <Link to={"/playlists"}>
+                  <p>Playlists</p>
+                </Link>
+              </li>
             </>
           ) : (
             <>

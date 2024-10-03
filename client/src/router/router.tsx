@@ -29,6 +29,8 @@ import AdminPersonLoader from "../loaders/adminPerson";
 import AdminPersonAction from "../actions/adminPerson";
 import PlaylistLoader from "../loaders/playlist";
 import PlaylistAction from "../actions/playlist";
+import Playlists from "../pages/Playlists";
+import PlaylistsLoader from "../loaders/playlists";
 
 export const router = createBrowserRouter([
   {
@@ -87,7 +89,12 @@ export const router = createBrowserRouter([
         action: AdminPersonAction,
       },
       { path: "/profile", element: <Profile />, loader: ProfileLoader },
-      { path: "/playlist/:videoId", loader: PlaylistLoader, action: PlaylistAction },
+      {
+        path: "/playlist/:videoId",
+        loader: PlaylistLoader,
+        action: PlaylistAction,
+      },
+      { path: "/playlists", element: <Playlists />, loader: PlaylistsLoader },
     ],
   },
 ]);

@@ -28,7 +28,7 @@ export default function Profile() {
           <input type="text" value={loader.profile.displayname} />
         </label>
       </Form>
-
+      
       <button className="btn" onClick={() => clearToken()}>
         LogOut
       </button>
