@@ -20,6 +20,7 @@ interface Playlist {
   name: string;
   updatedAt: Date;
   playlistItems: [PlaylistItem];
+  _count: { playlistItems: number };
 }
 
 interface LoaderData {
@@ -32,7 +33,9 @@ export default function Playlists() {
   const { data, error } = useLoaderData() as LoaderData;
   return (
     <div>
-      <p>Playlists</p>
+      <div className="flex p5 flex-cen ">
+        <span className="txt-lg">Playlists</span>
+      </div>
       <div className="playlist-card-container">
         {data.playlists.map((v) => (
           <PlaylistCard {...v} />
@@ -52,14 +55,39 @@ function PlaylistCard({ ...playlist }: Playlist) {
     videoFile.filename.lastIndexOf("/") + 1
   );
   return (
-    <div className="playlist-card">
-      <div className="playlist-card-img-container">
-        <img
-          alt="image"
-          src={`${filePath}/thumbs/${encodeURIComponent(
-            filename.slice(0, filename.lastIndexOf("."))
-          )}-3.jpg`}
-        />
+    <div className="playlist-card cursor-def">
+      <div className="relative">
+        <div className="playlist-card-img-container">
+          <img
+            className="opac-1"
+            alt="image"
+            src={`${filePath}/thumbs/${encodeURIComponent(
+              filename.slice(0, filename.lastIndexOf("."))
+            )}-3.jpg`}
+          />
+          <div className="absolute playlist-playall-text">
+            <span className=" txt-hover ">Play All</span>
+          </div>
+
+          <div className="absolute bot-10 r-10 bg1 border1 p2 cursor-pass">
+            <span className="txt-sm">
+              Length: {playlist._count.playlistItems}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div>
+          <span className="txt-md">{playlist.name}</span>
+        </div>
+        <div>
+          <span className="txt-sm">
+            Updated: {new Date(playlist.updatedAt).toLocaleString()}
+          </span>
+        </div>
+        <div>
+          <span className="txt-sm txt-hover">View Full List</span>
+        </div>
       </div>
     </div>
   );

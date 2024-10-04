@@ -6,7 +6,9 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   --bg-prim: #15c757;
+  --bg-highlight: #398154;
   --text-prim: #000;
+  --text-highlight: #888;
   --highlight: #15c7b0;
   --btn-prim: #40eb57;
   --btn-prim-hover: #51fc68;
@@ -16,6 +18,7 @@
   --toggle-off: #d8d3d3;
   --toggle-on: #15c7b0;
   --input-radius: 15px;
+  --border-color1: black;
 }
 
 body {
@@ -640,6 +643,7 @@ input:checked + .toggler:before {
   padding: 5px;
   display: grid;
   gap: var(--spacing);
+  row-gap: calc(var(--spacing) * 2);
 }
 
 @media only screen and (max-width: 500px) {
@@ -669,18 +673,156 @@ input:checked + .toggler:before {
 }
 
 .playlist-card {
-  border: 1px solid black;
-  width: 100%;
-  background-color: red;
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .playlist-card-img-container {
-  
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
-.playlist-card img {
-  max-width: 100%;
+.playlist-card-img-container img {
+  height: 200px;
 }
 
-/* end playlists */
+.playlist-playall-btn {
+  opacity: 100%;
+}
+
+/* opactiy */
+
+.opac-1:hover {
+  opacity: 50%;
+}
+
+/* Text classes */
+
+.txt-sm {
+  font-size: small;
+}
+
+.txt-md {
+  font-size: medium;
+}
+
+.txt-lg {
+  font-size: large;
+}
+
+.txt-cen {
+  text-align: center;
+}
+
+.txt-hover:hover {
+  color: var(--text-highlight);
+}
+
+/* Width */
+
+.w-full {
+  width: 100%;
+}
+
+/* position */
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+.fixed {
+  position: fixed;
+}
+.bot-10 {
+  bottom: 10px;
+}
+.r-10 {
+  right: 10px;
+}
+
+/* Displays */
+
+.flex {
+  display: flex;
+}
+
+.block {
+  display: block;
+}
+
+/* flex controls */
+
+.flex-cen {
+  justify-content: center;
+}
+
+/* paddings */
+
+.p1 {
+  padding: 1px;
+}
+.p2 {
+  padding: 2px;
+}
+.p5 {
+  padding: 5px;
+}
+.p10 {
+  padding: 10px;
+}
+
+/* DEBUG */
+
+.bug-red {
+  background-color: red;
+}
+
+.bug-bor {
+  border: 1px solid red;
+}
+
+/*  backgrounds */
+
+.bg1 {
+  background-color: var(--bg-highlight);
+}
+
+/* borders */
+
+.border1 {
+  border: 1px solid var(--border-color1);
+}
+
+/* cursors */
+
+.pointer {
+  cursor: pointer;
+}
+
+.cursor-def {
+  cursor: default;
+}
+
+.cursor-pass {
+  pointer-events: none;
+}
+
+/* z's */
+
+.z1 {
+  z-index: 10;
+}
+.z2 {
+  z-index: 20;
+}
+.z3 {
+  z-index: 30;
+}
+.z4 {
+  z-index: 40;
+}
