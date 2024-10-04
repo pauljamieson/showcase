@@ -59,20 +59,20 @@ function PlaylistCard({ ...playlist }: Playlist) {
       <div className="relative">
         <div className="playlist-card-img-container">
           <img
-            className="opac-1"
+            id="playlist-thumb"
             alt="image"
             src={`${filePath}/thumbs/${encodeURIComponent(
               filename.slice(0, filename.lastIndexOf("."))
             )}-3.jpg`}
           />
-          <div className="absolute playlist-playall-text">
-            <span className=" txt-hover ">Play All</span>
-          </div>
 
           <div className="absolute bot-10 r-10 bg1 border1 p2 cursor-pass">
             <span className="txt-sm">
               Length: {playlist._count.playlistItems}
             </span>
+          </div>
+          <div id="playall-text" className="absolute playlist-playall-text">
+            <span>Play All</span>
           </div>
         </div>
       </div>

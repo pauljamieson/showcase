@@ -689,9 +689,16 @@ input:checked + .toggler:before {
 .playlist-card-img-container img {
   height: 200px;
 }
+.playlist-card-img-container:hover {
+  opacity: 50%;
+}
 
-.playlist-playall-btn {
-  opacity: 100%;
+.playlist-card-img-container:hover  #playall-text {
+  padding: 2px;
+  opacity: unset;
+  color:red;
+  
+
 }
 
 /* opactiy */
