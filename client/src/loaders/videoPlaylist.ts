@@ -3,12 +3,13 @@ import apiRequest from "../lib/api";
 
 export default async ({ params }: { params: Params<"id"> }) => {
   try {
-    const { status, data, error } = await apiRequest({
+    const { status, data } = await apiRequest({
       method: "get",
-      endpoint: `/playlist/${params.id}`,
+      endpoint: `/video/${params.id}/playlist`,
     });
-    console.log(data);
-    if (status === "success") return { status, data, error };
+
+    if (status === "success") return { status, data };
+
     throw "Failed request to api.";
   } catch (error: any) {
     console.error(error);

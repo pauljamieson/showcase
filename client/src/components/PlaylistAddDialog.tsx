@@ -12,7 +12,7 @@ export default function PlaylistAddDialog({ videoId }: p) {
 
   useEffect(() => {
     if (fetcher.state === "idle" && !fetcher.data) {
-      fetcher.load(`/playlist/${videoId}`);
+      fetcher.load(`/video/${videoId}/playlist`);
     }
   }, [fetcher]);
 
@@ -28,7 +28,7 @@ export default function PlaylistAddDialog({ videoId }: p) {
 
   return (
     <dialog ref={ref} className="playlist-modal">
-      <fetcher.Form action={`/playlist/${videoId}`} method="POST">
+      <fetcher.Form action={`/video/${videoId}/playlist/`} method="POST">
         <div>
           {fetcher.data?.data?.playlists?.map(
             (playlist: { name: string; id: number }) => (

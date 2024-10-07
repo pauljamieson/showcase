@@ -27,10 +27,12 @@ import AdminTagAction from "../actions/adminTag";
 import AdminPerson from "../pages/AdminPerson";
 import AdminPersonLoader from "../loaders/adminPerson";
 import AdminPersonAction from "../actions/adminPerson";
-import PlaylistLoader from "../loaders/playlist";
-import PlaylistAction from "../actions/playlist";
+import VideoPlaylistLoader from "../loaders/videoPlaylist";
+import VideoPlaylistAction from "../actions/videoPlaylist";
 import Playlists from "../pages/Playlists";
 import PlaylistsLoader from "../loaders/playlists";
+import Playlist from "../pages/Playlist";
+import PlaylistLoader from "../loaders/playlist";
 
 export const router = createBrowserRouter([
   {
@@ -68,6 +70,11 @@ export const router = createBrowserRouter([
           { path: "tag/chip", action: TagChipAction },
           { path: "person", action: PersonAction },
           { path: "person/chip", action: PersonChipAction },
+          {
+            path: "playlist",
+            loader: VideoPlaylistLoader,
+            action: VideoPlaylistAction,
+          },
         ],
       },
       {
@@ -89,12 +96,9 @@ export const router = createBrowserRouter([
         action: AdminPersonAction,
       },
       { path: "/profile", element: <Profile />, loader: ProfileLoader },
-      {
-        path: "/playlist/:videoId",
-        loader: PlaylistLoader,
-        action: PlaylistAction,
-      },
+
       { path: "/playlists", element: <Playlists />, loader: PlaylistsLoader },
+      { path: "/playlist/:id", element: <Playlist />, loader: PlaylistLoader },
     ],
   },
 ]);

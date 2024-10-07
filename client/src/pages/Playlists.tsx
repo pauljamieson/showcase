@@ -1,5 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 import Playlist from "../components/Playlist";
+import { Link } from "react-router-dom";
 
 interface Video {
   id: number;
@@ -47,7 +48,7 @@ export default function Playlists() {
 }
 
 function PlaylistCard({ ...playlist }: Playlist) {
-  const videoFile = playlist.playlistItems[0].video;
+  const videoFile = playlist.playlistItems[0]?.video;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     videoFile.id / 1000
   )}/${videoFile.id % 1000}`;
@@ -86,7 +87,9 @@ function PlaylistCard({ ...playlist }: Playlist) {
           </span>
         </div>
         <div>
-          <span className="txt-sm txt-hover">View Full List</span>
+          <Link to={`/playlist/${playlist.id}`}>
+            <span className="txt-sm txt-hover">View Full List</span>
+          </Link>
         </div>
       </div>
     </div>

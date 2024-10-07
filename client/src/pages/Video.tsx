@@ -243,8 +243,7 @@ function Video() {
       </div>
       {searchParams.has("modal", "playlist") && (
         <PlaylistAddDialog videoId={id} />
-      )}{" "}
-    
+      )}
     </div>
   );
 }

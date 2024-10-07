@@ -689,16 +689,22 @@ input:checked + .toggler:before {
 .playlist-card-img-container img {
   height: 200px;
 }
-.playlist-card-img-container:hover {
-  opacity: 50%;
+.playlist-card-img-container img:hover {
+  opacity: 0.2;
 }
 
-.playlist-card-img-container:hover  #playall-text {
-  padding: 2px;
-  opacity: unset;
-  color:red;
-  
+#playall-text {
+  color: var(--text-prim);
+  opacity: 0;
+}
 
+img:has(~ #playall-text:hover) {
+  opacity: 0.2;
+}
+
+.playlist-card-img-container:hover > #playall-text {
+  opacity: 1;
+  color: var(--text-prim);
 }
 
 /* opactiy */
@@ -756,6 +762,11 @@ input:checked + .toggler:before {
 
 .flex {
   display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }
 
 .block {
@@ -819,17 +830,90 @@ input:checked + .toggler:before {
   pointer-events: none;
 }
 
-/* z's */
+/* Playlist view */
 
-.z1 {
-  z-index: 10;
+.playlist-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
 }
-.z2 {
-  z-index: 20;
+
+.playlist-titlecard-container {
+  display: flex;
+
+  gap: var(--spacing);
+  margin: auto;
 }
-.z3 {
-  z-index: 30;
+
+.playlist-titlecard-img {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
 }
-.z4 {
-  z-index: 40;
+
+.playlist-titlecard-img img {
+  height: 200px;
+}
+
+.playlist-entrycard-img {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  width: 100px;
+  background-color: #000;
+}
+
+.playlist-entrycard-img img {
+  height: 75px;
+}
+
+.playlist-container {
+  margin: auto;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+}
+
+.playlist-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+}
+
+.playlist-entry-container {
+  display: flex;
+  border-radius: 15px;
+  padding: 5px;
+}
+
+.playlist-entry-container:hover {
+  background-color: lightgray;
+}
+
+.burger-handle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 5px;
+  cursor: grab;
+}
+
+.burger-handle span {
+  height: 5px;
+  width: 20px;
+  border-top: 2px solid black;
+}
+
+.playlist-entry-info {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
 }
