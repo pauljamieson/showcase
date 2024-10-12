@@ -122,7 +122,6 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
   function handleDragStart(e: any) {
     e.stopPropagation();
     e.target.style.opacity = ".3";
-    dragged = e.target;
     e.dataTransfer.setData("draggedId", e.target.id);
   }
 
