@@ -43,11 +43,21 @@ export default function Playlist() {
   return (
     <div className="playlist-container">
       <PlaylistTitleCard playlist={playlist} />
-      <div className="playlist-items-container">
+      <div
+        className="playlist-items-container"
+        draggable={false}
+        onDragStart={() => {
+          return false;
+        }}
+      >
         {playlist.playlistItems
           .sort((a, b) => a.position - b.position)
           .map((v) => (
-            <PlaylistEntry key={v.videoId} playlistItem={v} />
+            <PlaylistEntry
+              key={v.videoId}
+              playlist={playlist}
+              position={v.position - 1}
+            />
           ))}
       </div>
     </div>
@@ -92,43 +102,134 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
   );
 }
 
-function PlaylistEntry({ playlistItem }: { playlistItem: PlaylistItem }) {
-  const videoFile = playlistItem.video;
+interface PlaylistEntryInterface {
+  playlist: Playlist;
+  position: number;
+}
+function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
+  const playlistItem = playlist.playlistItems[position];
+  const videoFile = playlist.playlistItems[position].video;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     videoFile.id / 1000
   )}/${videoFile.id % 1000}`;
   const filename = videoFile.filename.slice(
     videoFile.filename.lastIndexOf("/") + 1
   );
+
+  let dragged;
+
+  function handleDragStartInvalid() {
+    return false;
+  }
+
+  function handleDragStart(e: any) {
+    e.stopPropagation();
+    e.target.style.opacity = ".3";
+    dragged = e.target;
+    e.dataTransfer.setData("draggedId", e.target.id);
+  }
+
+  function handleDragEnd(e: any) {
+    e.stopPropagation();
+    e.target.style.opacity = "1";
+  }
+
+  function handleDrop(e: any) {
+    e.stopPropagation();
+
+    // get dragged entry and the container it came from
+    const draggedId = e.dataTransfer.getData("draggedId");
+    const dragged = document.getElementById(draggedId);
+    const fromCont = dragged?.parentElement;
+
+    // get the entry dropped onto and container it came from
+    const dropped = document.getElementById(e.currentTarget.id);
+    const toCont = dropped?.parentElement;
+
+    if (fromCont !== toCont) {
+      const draggedPosition = +(dragged?.dataset.position || 0);
+      const droppedPosition = +(dropped?.dataset.position || 0);
+
+      playlist.playlistItems[+draggedPosition].position = +droppedPosition;
+      playlist.playlistItems[droppedPosition].position = draggedPosition;
+      toCont?.appendChild(dragged!);
+      fromCont?.appendChild(dropped!);
+    }
+  }
+
+  function handleDragOver(e: any) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
   return (
-    <Link to={`/video/${playlistItem.videoId}`}>
-      <div className="playlist-entry-container">
-        <div>
-          <div className="burger-handle">
-            <span></span>
-            <span></span>
-            <span></span>
+    <div id={playlistItem.position.toString()}>
+      <div
+        draggable="true"
+        id={`item-${playlistItem.id.toString()}`}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        className="playlist-entry-container"
+        data-position={playlistItem.position}
+      >
+        <div draggable={false} onDragStart={handleDragStartInvalid}>
+          <div
+            className="burger-handle"
+            draggable={false}
+            onDragStart={handleDragStartInvalid}
+          >
+            <span draggable={false} onDragStart={handleDragStartInvalid}></span>
+            <span draggable={false} onDragStart={handleDragStartInvalid}></span>
+            <span draggable={false} onDragStart={handleDragStartInvalid}></span>
           </div>
         </div>
-        <div className="flex">
-          <div className="playlist-entrycard-img ">
+        <div
+          className="flex"
+          draggable={false}
+          onDragStart={handleDragStartInvalid}
+        >
+          <div
+            className="playlist-entrycard-img "
+            draggable={false}
+            onDragStart={handleDragStartInvalid}
+          >
             <img
               id="playlist-thumb"
               alt="image"
               src={`${filePath}/thumbs/${encodeURIComponent(
                 filename.slice(0, filename.lastIndexOf("."))
               )}-3.jpg`}
+              draggable={false}
+              onDragStart={handleDragStartInvalid}
             />
           </div>
-          <div className="playlist-entry-info">
-            <span>{playlistItem.video.filename}</span>
-            <span className="txt-sm">{playlistItem.video.views} views</span>
-            <span className="txt-sm">
+          <div
+            className="playlist-entry-info"
+            draggable={false}
+            onDragStart={handleDragStartInvalid}
+          >
+            <span draggable={false} onDragStart={handleDragStartInvalid}>
+              {playlistItem.video.filename}
+            </span>
+            <span
+              className="txt-sm"
+              draggable={false}
+              onDragStart={handleDragStartInvalid}
+            >
+              {playlistItem.video.views} views
+            </span>
+            <span
+              className="txt-sm"
+              draggable={false}
+              onDragStart={handleDragStartInvalid}
+            >
               {formatDuration(playlistItem.video.duration)}
             </span>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

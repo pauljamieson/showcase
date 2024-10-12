@@ -20,7 +20,7 @@ export default async ({ request }: { request: Request }) => {
 
     const { status, data } = await apiRequest({
       method: "post",
-      endpoint: `/playlist/${videoId}`,
+      endpoint: `/video/${videoId}/playlist`,
       body,
     });
 

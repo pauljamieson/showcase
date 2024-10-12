@@ -14,6 +14,7 @@ import PersonRouter from "./routes/person/person";
 import PeopleRouter from "./routes/people/people";
 import ProfileRouter from "./routes/profile/profile";
 import MigrateRouter from "./routes/migrate/migrate";
+
 import PlaylistRouter from "./routes/playlist/playlist";
 import PlaylistsRouter from "./routes/playlists/playlists";
 
@@ -33,6 +34,7 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 app.use("/migrate", MigrateRouter);
+app.use("/migrate/video", MigrateRouter);
 
 app.use(middleWare);
 app.use(express.json());

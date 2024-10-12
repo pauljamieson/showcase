@@ -61,7 +61,7 @@ model VideoFile {
   audioCodec    String
   views         Int      @default(0)
   
-  tags          Tag[]
+  tags          Tag[] 
   people        Person[]
   convertId     Int? @unique
   convertVideo  CovertVideo?
@@ -126,7 +126,7 @@ model PlaylistItem {
 
   video       VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId     Int
-  playlist    Playlist @relation(fields: [playlistId], references: [id])
+  playlist    Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   playlistId  Int
 
   createdAt   DateTime    @default(now())
