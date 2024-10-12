@@ -1,6 +1,5 @@
 import { useLoaderData } from "react-router-dom";
 import { formatDuration } from "../lib/formats";
-import { Link } from "react-router-dom";
 
 interface Playlist {
   id: number;
@@ -115,8 +114,6 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
   const filename = videoFile.filename.slice(
     videoFile.filename.lastIndexOf("/") + 1
   );
-
-  let dragged;
 
   function handleDragStartInvalid() {
     return false;
