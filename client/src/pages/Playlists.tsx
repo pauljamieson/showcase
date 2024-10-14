@@ -39,7 +39,7 @@ export default function Playlists() {
       </div>
       <div className="playlist-card-container">
         {data.playlists.map((v) => (
-          <PlaylistCard {...v} />
+          <PlaylistCard key={v.id} {...v} />
         ))}
         {error && <div>{error}</div>}
       </div>
@@ -48,6 +48,7 @@ export default function Playlists() {
 }
 
 function PlaylistCard({ ...playlist }: Playlist) {
+  
   const videoFile = playlist.playlistItems[0]?.video;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     videoFile.id / 1000
@@ -87,7 +88,11 @@ function PlaylistCard({ ...playlist }: Playlist) {
           </span>
         </div>
         <div>
-          <Link to={`/playlist/${playlist.id}`}>
+          <Link
+            to={`/playlist/${playlist.id}?playlist=${btoa(
+              playlist.playlistItems.toString()
+            )}`}
+          >
             <span className="txt-sm txt-hover">View Full List</span>
           </Link>
         </div>

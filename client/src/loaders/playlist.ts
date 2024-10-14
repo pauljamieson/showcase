@@ -7,7 +7,7 @@ export default async ({ params }: { params: Params<"id"> }) => {
       method: "get",
       endpoint: `/playlist/${params.id}`,
     });
-    console.log(data);
+
     if (status === "success") return { status, data, error };
     throw "Failed request to api.";
   } catch (error: any) {

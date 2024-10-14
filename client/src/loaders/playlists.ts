@@ -7,7 +7,6 @@ export default async () => {
       endpoint: "/playlists/",
     });
 
-
     if (status === "success") return { status, data, error };
     throw "Failed request to api.";
   } catch (error: any) {

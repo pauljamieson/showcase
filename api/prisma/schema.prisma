@@ -132,6 +132,6 @@ model PlaylistItem {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  @@unique([videoId, playlistId])
+  @@unique([videoId, playlistId]) 
   @@unique([playlistId, position])
 }

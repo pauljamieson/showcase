@@ -1,5 +1,5 @@
 export type RequestConfig = {
-  method: "get" | "post" | "patch" | "delete" | "head";
+  method: "get" | "post" | "patch" | "delete" | "head" | "put";
   endpoint: string;
   body?: object; // skksk
   searchParams?: URLSearchParams;
@@ -16,7 +16,11 @@ export default async function apiRequest(rc: RequestConfig) {
         Authorization: "Bearer " + localStorage.getItem("showcase"),
       },
     };
-    if ((rc.body && rc.method === "post") || rc.method === "delete")
+    if (
+      (rc.body && rc.method === "post") ||
+      rc.method === "delete" ||
+      rc.method === "put"
+    )
       config = { ...{ body: JSON.stringify(rc.body) }, ...config };
     const resp = await fetch(apiUrl, config);
     const token = resp.headers.get("Authorization");
