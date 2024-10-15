@@ -1,4 +1,3 @@
-import { redirect } from "react-router-dom";
 import apiRequest from "../lib/api";
 
 export default async ({ request }: { request: Request }) => {
@@ -26,9 +25,6 @@ export default async ({ request }: { request: Request }) => {
       body,
     });
 
-    
-    console.log(status, intent);  
-    
     return { status, intent };
   } catch (error) {
     localStorage.removeItem("showcase");
