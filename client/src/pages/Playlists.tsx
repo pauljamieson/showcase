@@ -48,8 +48,9 @@ export default function Playlists() {
 }
 
 function PlaylistCard({ ...playlist }: Playlist) {
-  
+
   const videoFile = playlist.playlistItems[0]?.video;
+  if (!videoFile) return <div>Nope</div>;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     videoFile.id / 1000
   )}/${videoFile.id % 1000}`;

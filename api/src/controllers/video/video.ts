@@ -109,12 +109,12 @@ async function POST(req: Request, res: Response) {
     const filePath = `./app_data/videos/${Math.floor(+videoId / 1000)}/${
       +videoId % 1000
     }`;
-    if (intent === "delete") {
+    /*if (intent === "delete") {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";
       await rm(filePath, { recursive: true, force: true });
       await prisma.videoFile.delete({ where: { id: +videoId } });
       // TODO on delete remove tags\persons that dont have other matches
-    }
+    }*/
     if (intent === "regen") {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";
       await createThumbs(+videoId, `${filePath}/thumbs`);

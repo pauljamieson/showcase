@@ -26,7 +26,9 @@ export default async ({ request }: { request: Request }) => {
       body,
     });
 
-    if (status === "success" && body.intent === "delete") return redirect("/");
+    
+    console.log(status, intent);  
+    
     return { status, intent };
   } catch (error) {
     localStorage.removeItem("showcase");

@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import {
   Form,
   Navigate,
+  useActionData,
   useLoaderData,
+  useLocation,
+  useNavigate,
   useSearchParams,
 } from "react-router-dom";
 import TagModal from "../components/TagModal";
@@ -47,7 +50,8 @@ type LoaderData = {
 function Video() {
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/" />;
-
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     video: {
@@ -66,6 +70,12 @@ function Video() {
       rating,
     },
   } = useLoaderData() as LoaderData;
+
+  const actionData = useActionData() as { status: string; intent: string };
+
+  if (actionData?.intent === "delete" && actionData?.status === "success")
+    navigate("/" + state?.search);
+
 
   const ref = useRef<HTMLVideoElement | null>(null);
 
@@ -133,6 +143,11 @@ function Video() {
   function handleOpenPlaylistModal() {
     searchParams.set("modal", "playlist");
     setSearchParams(searchParams);
+  }
+
+  function handleGoBackClick() {
+    navigate(-1);
+    //console.log(navigate);
   }
 
   return (
@@ -211,18 +226,33 @@ function Video() {
         </div>
 
         {auth.user?.admin && (
-          <Form className="flexer3" method="POST">
-            <input type="hidden" name="videoId" value={id} />
-            <button className="btn" type="submit" name="intent" value="delete">
-              Delete
+          <>
+            <Form className="flexer3" method="POST">
+              <input type="hidden" name="videoId" value={id} />
+              <button
+                className="btn"
+                type="submit"
+                name="intent"
+                value="delete"
+              >
+                Delete
+              </button>
+              <button className="btn" type="submit" name="intent" value="regen">
+                Regen Thumbs
+              </button>
+              <button
+                className="btn"
+                type="submit"
+                name="intent"
+                value="convert"
+              >
+                Convert Video
+              </button>
+            </Form>
+            <button className="btn" onClick={handleGoBackClick}>
+              GoBack
             </button>
-            <button className="btn" type="submit" name="intent" value="regen">
-              Regen Thumbs
-            </button>
-            <button className="btn" type="submit" name="intent" value="convert">
-              Convert Video
-            </button>
-          </Form>
+          </>
         )}
       </div>
       <div className="grow" />

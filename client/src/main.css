@@ -154,17 +154,13 @@ nav ol {
   padding: 5px;
 }
 
-.video-card {
-  width: auto;
-  border: 1px solid var(--highlight);
-  overflow: hidden;
-  border-radius: 10px;
-}
+/* Video Card styles */
 
 .video-card-container {
   width: 100vw;
   display: grid;
-  gap: 5px;
+  gap: 10px;
+  row-gap: 20px;
   grid-template-columns: 1fr;
   padding: 5px 15px;
 }
@@ -175,35 +171,66 @@ nav ol {
   }
 }
 
-@media all and (min-width: 960px) {
+@media all and (min-width: 780px) {
   .video-card-container {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
-@media all and (min-width: 1440px) {
+@media all and (min-width: 960px) {
   .video-card-container {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }
 
+@media all and (min-width: 1440px) {
+  .video-card-container {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+}
+
+.video-card {
+  width: auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
 .video-card img {
-  height: 100%;
   position: absolute;
+  width: 110%;
+  height: 110%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(50%);
+  bottom: 50%;
 }
 
 .video-card-img-wrapper {
-  height: 300px;
+  height: 200px;
   display: block;
   overflow: hidden;
   position: relative;
+  border-radius: 10px;
 }
 
 .video-card-details {
+  display: flex;
+  flex-direction: column;
   word-break: break-word;
   padding: var(--spacing);
+}
+
+.video-card-duration-container {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.duration-txt {
+  opacity: 0.7;
+  color: white;
 }
 
 .flex {
@@ -404,7 +431,6 @@ input:checked + .toggler:before {
   transform: translateX(15px);
 }
 
-/* END TOGGLE*/
 .centerpoint {
   top: 150px;
   left: 50%;
@@ -550,6 +576,19 @@ input:checked + .toggler:before {
   flex-wrap: wrap;
 }
 
+/* Videos page  */
+
+.videos-container {
+  display: flex;
+  flex-direction: column;
+  
+  height: 100%;
+}
+
+.videos-spacer {
+  height: 40px;
+}
+
 .search-bar {
   display: flex;
   flex-wrap: wrap;
@@ -626,7 +665,6 @@ input:checked + .toggler:before {
   gap: var(--spacing);
   padding: 10px 0;
 }
-/* End */
 
 /* Flex quick classes */
 
@@ -635,8 +673,6 @@ input:checked + .toggler:before {
   gap: var(--spacing);
   justify-content: center;
 }
-
-/* End Flex quick classes */
 
 /* playlists */
 .playlist-card-container {

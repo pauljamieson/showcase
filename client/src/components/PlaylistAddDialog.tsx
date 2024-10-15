@@ -33,6 +33,7 @@ export default function PlaylistAddDialog({ videoId }: p) {
           {fetcher.data?.data?.playlists?.map(
             (playlist: { name: string; id: number }) => (
               <Checkbox
+                key={playlist.id}
                 {...playlist}
                 checked={fetcher.data?.data?.inList.includes(playlist.id)}
               />
