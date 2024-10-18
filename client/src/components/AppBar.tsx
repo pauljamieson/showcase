@@ -6,49 +6,51 @@ export default function AppBar() {
 
   return (
     <div className="appbar-container">
-      <Link to={"/"} >
-        <p className="title">Showcase</p>
-      </Link>
-      <div className="grow" />
-      <nav>
-        <ol>
-          {isLoggedIn ? (
-            <>
-              {user?.admin && (
+      <div className="appbar-inner-container">
+        <Link to={"/"}>
+          <p className="title">Showcase</p>
+        </Link>
+        <div className="grow" />
+        <nav>
+          <ol>
+            {isLoggedIn ? (
+              <>
+                {user?.admin && (
+                  <li>
+                    <Link to={"/admin"}>
+                      <p>Admin</p>
+                    </Link>
+                  </li>
+                )}
+
                 <li>
-                  <Link to={"/admin"}>
-                    <p>Admin</p>
+                  <Link to={"/profile"}>
+                    <p>{user?.name}</p>
                   </Link>
                 </li>
-              )}
-
-              <li>
-                <Link to={"/profile"}>
-                  <p>{user?.name}</p>
-                </Link>
-              </li>
-              <li>
-                <Link to={"/playlists"}>
-                  <p>Playlists</p>
-                </Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to={"/login"}>
-                  <p>Login</p>
-                </Link>
-              </li>
-              <li>
-                <Link to={"/signup"}>
-                  <p>Signup</p>
-                </Link>
-              </li>
-            </>
-          )}
-        </ol>
-      </nav>
+                <li>
+                  <Link to={"/playlists"}>
+                    <p>Playlists</p>
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to={"/login"}>
+                    <p>Login</p>
+                  </Link>
+                </li>
+                <li>
+                  <Link to={"/signup"}>
+                    <p>Signup</p>
+                  </Link>
+                </li>
+              </>
+            )}
+          </ol>
+        </nav>
+      </div>
     </div>
   );
 }

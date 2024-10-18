@@ -8,6 +8,7 @@ async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
     const { id } = req.params;
+    const playlist = req.query.playlist as string;
 
     const t1 = prisma.videoFile.findFirst({
       where: { id: +id },
@@ -26,6 +27,27 @@ async function GET(req: Request, res: Response) {
 
     const [video, rating, myRating] = await prisma.$transaction([t1, t2, t3]);
 
+    const list = playlist
+      ? await prisma.playlist.findFirst({
+          where: { id: +playlist },
+          include: {
+            playlistItems: {
+              include: {
+                video: {
+                  select: {
+                    duration: true,
+                    filename: true,
+                    filepath: true,
+                    id: true,
+                    views: true,
+                  },
+                },
+              },
+            },
+          },
+        })
+      : [];
+
     res.json({
       status: "success",
       data: {
@@ -36,6 +58,7 @@ async function GET(req: Request, res: Response) {
             userRating: myRating?.rating || 0,
           },
         },
+        playlist: list,
       },
     });
   } catch (error) {

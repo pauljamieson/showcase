@@ -8,44 +8,19 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import TagModal from "../components/TagModal";
-import TagChip from "../components/TagChip";
-import PersonChip from "../components/PersonChip";
-import PersonModal from "../components/PersonModal";
+
 import useAuth from "../hooks/useAuth";
 import PlaylistAddDialog from "../components/PlaylistAddDialog";
+import { useFileSize } from "../hooks/useFileSize";
 
-type Person = {
-  id: number;
-  name: string;
-};
+import type { Video, VideoData, Playlist } from "../types/custom";
 
-type Tag = {
-  id: number;
-  name: string;
-};
+import useVideoDuration from "../hooks/useVideoDuration";
 
-type VideoData = {
-  id: number;
-  filename: string;
-  filepath: string;
-  videoCodec: string;
-  height: number;
-  width: number;
-  audioCodec: string;
-  duration: number;
-  size: number;
-  views: number;
-  rating: { rating: number; userRating: number };
-  people: Person[];
-  tags: Tag[];
-  updatedAt: string;
-  createdAt: string;
-};
-
-type LoaderData = {
+interface LoaderData {
   video: VideoData;
-};
+  playlist: Playlist;
+}
 
 function Video() {
   const auth = useAuth();
@@ -54,28 +29,15 @@ function Video() {
   const { state } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    video: {
-      filename,
-      filepath,
-      size,
-      views,
-      height,
-      width,
-      videoCodec,
-      audioCodec,
-      id,
-      duration,
-      tags,
-      people,
-      rating,
-    },
+    video,
+    video: { filename, filepath, id },
+    playlist,
   } = useLoaderData() as LoaderData;
 
   const actionData = useActionData() as { status: string; intent: string };
 
   if (actionData?.intent === "delete" && actionData?.status === "success")
     navigate("/" + state?.search);
-
 
   const ref = useRef<HTMLVideoElement | null>(null);
 
@@ -86,27 +48,6 @@ function Video() {
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
   const [isViewed, setIsViewed] = useState<boolean>(false);
-
-  function formatSize(s: number) {
-    const kb = s / 1024;
-    if (kb < 1000) return `${kb.toFixed(2)}kb`;
-    const mb = s / 1024 / 1024;
-    if (mb < 1000) return `${mb.toFixed(2)}mb`;
-    const gb = s / 1024 / 1024 / 1024;
-    if (gb < 1000) return `${gb.toFixed(2)}gb`;
-    return "That sucker is huge!";
-  }
-
-  function formatDuration(d: number) {
-    const s = (d % 60).toString().padStart(2, "0");
-    const m = Math.floor((d / 60) % 60)
-      .toString()
-      .padStart(2, "0");
-    const h = Math.floor(d / 3600)
-      .toString()
-      .padStart(2, "0");
-    return `${h}:${m}:${s}`;
-  }
 
   async function handleProgress(e: any) {
     if (isViewed) return;
@@ -145,117 +86,8 @@ function Video() {
     setSearchParams(searchParams);
   }
 
-  function handleGoBackClick() {
-    navigate(-1);
-    //console.log(navigate);
-  }
-
   return (
     <div className="video-container">
-      <div>
-        <p className="video-title">
-          {filename.slice(filename.lastIndexOf("/") + 1)}
-        </p>
-        <div className="video-details">
-          <span>Size: {formatSize(size)}</span>
-          <span>Views: {views}</span>
-          <span>Duration: {formatDuration(duration)} </span>
-          <span>
-            Dimensions: {width}x{height}
-          </span>
-          <span>Video Codec: {videoCodec}</span>
-          <span>Audio Codec: {audioCodec}</span>
-        </div>
-        <div className="flex">
-          <button className="btn" onClick={handleOpenPlaylistModal}>
-            +Playlist
-          </button>
-          <div className="rating-selector">
-            Rating:{" "}
-            {[...Array(rating.rating)].map((_, i) => (
-              <Form key={i} method="post">
-                <input type="hidden" name="videoId" value={id} />
-                <input type="hidden" name="rating" value={i + 1} />
-                <button
-                  key={i}
-                  className="rating-star-btn-on"
-                  type="submit"
-                  name="intent"
-                  value="rating"
-                >
-                  &#9733;
-                </button>
-              </Form>
-            ))}
-            {[...Array(5 - rating.rating)].map((_, i) => (
-              <Form key={i} method="post">
-                <input type="hidden" name="videoId" value={id} />
-                <input
-                  type="hidden"
-                  name="rating"
-                  value={rating.rating + i + 1}
-                />
-                <button
-                  key={i}
-                  className="rating-star-btn-off"
-                  type="submit"
-                  name="intent"
-                  value="rating"
-                >
-                  &#9733;
-                </button>
-              </Form>
-            ))}
-            <span className="half-text">({rating.userRating})</span>
-          </div>
-        </div>
-        <div className="chip-container">
-          <span>Tags: </span>
-          {tags.map((data) => (
-            <TagChip key={data.id} {...data} videoId={id} />
-          ))}
-          <TagModal />
-        </div>
-        <div className="chip-container">
-          <span>People: </span>
-          {people.length > 0 &&
-            people.map((data) => (
-              <PersonChip key={data.id} {...data} videoId={id} />
-            ))}
-          <PersonModal />
-        </div>
-
-        {auth.user?.admin && (
-          <>
-            <Form className="flexer3" method="POST">
-              <input type="hidden" name="videoId" value={id} />
-              <button
-                className="btn"
-                type="submit"
-                name="intent"
-                value="delete"
-              >
-                Delete
-              </button>
-              <button className="btn" type="submit" name="intent" value="regen">
-                Regen Thumbs
-              </button>
-              <button
-                className="btn"
-                type="submit"
-                name="intent"
-                value="convert"
-              >
-                Convert Video
-              </button>
-            </Form>
-            <button className="btn" onClick={handleGoBackClick}>
-              GoBack
-            </button>
-          </>
-        )}
-      </div>
-      <div className="grow" />
       <div className="video-player-container">
         <video
           ref={ref}
@@ -270,6 +102,17 @@ function Video() {
             )}`}
           ></source>
         </video>
+
+        <div>
+          <VideoInfo video={video} />
+        </div>
+      </div>
+      <div className="video-card-playlist-container">
+        {playlist?.playlistItems
+          .sort((a, b) => a.position - b.position)
+          .map((v) => (
+            <PlaylistCard video={v.video} />
+          ))}
       </div>
       {searchParams.has("modal", "playlist") && (
         <PlaylistAddDialog videoId={id} />
@@ -279,3 +122,106 @@ function Video() {
 }
 
 export default Video;
+
+function AdminBar({ id }: { id: string }) {
+  return (
+    <Form className="flexer3" method="POST">
+      <input type="hidden" name="videoId" value={id} />
+      <button className="btn" type="submit" name="intent" value="delete">
+        Delete
+      </button>
+      <button className="btn" type="submit" name="intent" value="regen">
+        Regen Thumbs
+      </button>
+      <button className="btn" type="submit" name="intent" value="convert">
+        Convert Video
+      </button>
+    </Form>
+  );
+}
+
+interface Rating {
+  rating: number;
+  userRating: number;
+}
+
+function StarBar({ rating, id }: { rating: Rating; id: string }) {
+  return (
+    <div className="rating-selector">
+      {[...Array(rating.rating)].map((_, i) => (
+        <Form key={i} method="post">
+          <input type="hidden" name="videoId" value={id} />
+          <input type="hidden" name="rating" value={i + 1} />
+          <button
+            key={i}
+            className="rating-star-btn-on txt-sm"
+            type="submit"
+            name="intent"
+            value="rating"
+          >
+            &#9733;
+          </button>
+        </Form>
+      ))}
+      {[...Array(5 - rating.rating)].map((_, i) => (
+        <Form key={i} method="post">
+          <input type="hidden" name="videoId" value={id} />
+          <input type="hidden" name="rating" value={rating.rating + i + 1} />
+          <button
+            key={i}
+            className="rating-star-btn-off txt-sm"
+            type="submit"
+            name="intent"
+            value="rating"
+          >
+            &#9733;
+          </button>
+        </Form>
+      ))}
+      <span className="txt-sm">({rating.userRating})</span>
+    </div>
+  );
+}
+
+function VideoInfo({ video }: { video: VideoData }) {
+  const size = useFileSize(video.size);
+
+  return (
+    <div className="video-info-container">
+      <span className="video-title txt-lg txt-bold">{video.filename}</span>
+      <span className="txt-sm">
+        {video.height}x{video.width} ({video.videoCodec}/{video.audioCodec})
+      </span>
+      <span className="txt-sm">{size}</span>
+      <span className="txt-sm">{video.views} views</span>
+    </div>
+  );
+}
+
+function PlaylistCard({ video }: { video: Video }) {
+  const duration = useVideoDuration(video.duration);
+  const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
+    video.id / 1000
+  )}/${video.id % 1000}`;
+
+  return (
+    <div className="video-playlist-card">
+      <div className="video-playlist-img-wrapper">
+        <img
+          id="playlist-thumb"
+          alt="image"
+          src={`${filePath}/thumbs/${encodeURIComponent(
+            video.filename.slice(0, video.filename.lastIndexOf("."))
+          )}-3.jpg`}
+        />
+        <div className="video-card-duration-container">
+          <span className="duration-txt txt-sm">{duration}</span>
+        </div>
+      </div>
+      <div className="video-info-container">
+        <span className="txt-sm ">{video.filename}</span>
+        <span className="txt-tiny">{video.views} views</span>
+      </div>
+    </div>
+  );
+}

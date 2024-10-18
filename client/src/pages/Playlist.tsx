@@ -39,8 +39,6 @@ export default function Playlist() {
   const {
     data: { playlist },
   } = useLoaderData() as LoaderData;
-  console.log(playlist.playlistItems);
-  console.log(playlist);
   return (
     <div className="playlist-container">
       <PlaylistTitleCard playlist={playlist} />
@@ -74,32 +72,36 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
     videoFile.filename.lastIndexOf("/") + 1
   );
   return (
-    <div className="playlist-titlecard-container">
-      <div className="playlist-titlecard-img ">
-        <img
-          id="playlist-thumb"
-          alt="image"
-          src={`${filePath}/thumbs/${encodeURIComponent(
-            filename.slice(0, filename.lastIndexOf("."))
-          )}-3.jpg`}
-        />
-      </div>
-      <div className="playlist-info-container">
-        <span className="txt-lg">Name: {playlist?.name}</span>
-        <div className="flex-col">
-          <span className="txt-sm">
-            {playlist.playlistItems.length} Videos (
-            {formatDuration(
-              playlist.playlistItems.reduce((a, v) => a + v.video.duration, 0)
-            )}
-            )
-          </span>
-          <span className="txt-sm">
-            Updated: {new Date(playlist?.updatedAt).toLocaleString()}
-          </span>
+    <Link
+      to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}`}
+    >
+      <div className="playlist-titlecard-container">
+        <div className="playlist-titlecard-img ">
+          <img
+            id="playlist-thumb"
+            alt="image"
+            src={`${filePath}/thumbs/${encodeURIComponent(
+              filename.slice(0, filename.lastIndexOf("."))
+            )}-3.jpg`}
+          />
+        </div>
+        <div className="playlist-info-container">
+          <span className="txt-lg">Name: {playlist?.name}</span>
+          <div className="flex-col">
+            <span className="txt-sm">
+              {playlist.playlistItems.length} Videos (
+              {formatDuration(
+                playlist.playlistItems.reduce((a, v) => a + v.video.duration, 0)
+              )}
+              )
+            </span>
+            <span className="txt-sm">
+              Updated: {new Date(playlist?.updatedAt).toLocaleString()}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -150,8 +152,7 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
     const toPosition = +toCont?.id!;
 
     const body = { fromPosition, toPosition, playlistId: playlist.id };
-    console.log(body);
-    console.log(playlist.playlistItems);
+
     if (fromPosition && toPosition && fromCont !== toCont) {
       await apiRequest({
         endpoint: `/playlist/${playlist.id}`,
@@ -189,7 +190,9 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
             <span draggable={false} onDragStart={handleDragStartInvalid}></span>
           </div>
         </div>
-        <Link to={`/video/${videoFile.id}`}>
+        <Link
+          to={`/video/${videoFile.id}?playlist=${playlist.id}&position=${playlistItem.position}`}
+        >
           <div
             className="flex"
             draggable={false}

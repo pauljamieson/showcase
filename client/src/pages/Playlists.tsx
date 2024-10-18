@@ -48,7 +48,6 @@ export default function Playlists() {
 }
 
 function PlaylistCard({ ...playlist }: Playlist) {
-
   const videoFile = playlist.playlistItems[0]?.video;
   if (!videoFile) return <div>Nope</div>;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
@@ -60,24 +59,28 @@ function PlaylistCard({ ...playlist }: Playlist) {
   return (
     <div className="playlist-card cursor-def">
       <div className="relative">
-        <div className="playlist-card-img-container">
-          <img
-            id="playlist-thumb"
-            alt="image"
-            src={`${filePath}/thumbs/${encodeURIComponent(
-              filename.slice(0, filename.lastIndexOf("."))
-            )}-3.jpg`}
-          />
+        <Link
+          to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}`}
+        >
+          <div className="playlist-card-img-container">
+            <img
+              id="playlist-thumb"
+              alt="image"
+              src={`${filePath}/thumbs/${encodeURIComponent(
+                filename.slice(0, filename.lastIndexOf("."))
+              )}-3.jpg`}
+            />
 
-          <div className="absolute bot-10 r-10 bg1 border1 p2 cursor-pass">
-            <span className="txt-sm">
-              Length: {playlist._count.playlistItems}
-            </span>
+            <div className="absolute bot-10 r-10 bg1 border1 p2 cursor-pass">
+              <span className="txt-sm">
+                Length: {playlist._count.playlistItems}
+              </span>
+            </div>
+            <div id="playall-text" className="absolute playlist-playall-text">
+              <span>Play All</span>
+            </div>
           </div>
-          <div id="playall-text" className="absolute playlist-playall-text">
-            <span>Play All</span>
-          </div>
-        </div>
+        </Link>
       </div>
       <div>
         <div>
