@@ -56,9 +56,9 @@ function Video() {
     try {
       if (!seeked && currentTime - start > 30) {
         setIsViewed(true);
-        await fetch(`${import.meta.env.VITE_API_URL}/video/${id}`, {
+        await fetch(`${import.meta.env.VITE_API_URL}/video/${video.id}`, {
           method: "PATCH",
-          body: JSON.stringify({ update: "views", id }),
+          body: JSON.stringify({ update: "views", id: video.id }),
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + localStorage.getItem("showcase"),
@@ -81,14 +81,6 @@ function Video() {
   }
 
   function handleOpenPlaylistModal() {
-    searchParams.set("modal", "playlist");
-    setSearchParams(searchParams);
-  }
-  function handleOpenTagModal() {
-    searchParams.set("modal", "tag");
-    setSearchParams(searchParams);
-  }
-  function handleOpenPeopleModal() {
     searchParams.set("modal", "playlist");
     setSearchParams(searchParams);
   }
