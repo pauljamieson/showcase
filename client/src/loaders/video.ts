@@ -1,6 +1,5 @@
 import { Params } from "react-router-dom";
 import apiRequest from "../lib/api";
-import playlist from "./playlist";
 
 export default async ({
   params,

@@ -7,6 +7,7 @@ import {
   useLocation,
   useNavigate,
   useSearchParams,
+  Link,
 } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
@@ -16,10 +17,12 @@ import { useFileSize } from "../hooks/useFileSize";
 import type { Video, VideoData, Playlist } from "../types/custom";
 
 import useVideoDuration from "../hooks/useVideoDuration";
+import TagModal from "../components/TagModal";
+import PersonModal from "../components/PersonModal";
 
 interface LoaderData {
   video: VideoData;
-  playlist: Playlist;
+  playlist: Playlist | Video[];
 }
 
 function Video() {
@@ -28,11 +31,7 @@ function Video() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const {
-    video,
-    video: { filename, filepath, id },
-    playlist,
-  } = useLoaderData() as LoaderData;
+  const { video, playlist } = useLoaderData() as LoaderData;
 
   const actionData = useActionData() as { status: string; intent: string };
 
@@ -85,6 +84,14 @@ function Video() {
     searchParams.set("modal", "playlist");
     setSearchParams(searchParams);
   }
+  function handleOpenTagModal() {
+    searchParams.set("modal", "tag");
+    setSearchParams(searchParams);
+  }
+  function handleOpenPeopleModal() {
+    searchParams.set("modal", "playlist");
+    setSearchParams(searchParams);
+  }
 
   return (
     <div className="video-container">
@@ -98,7 +105,7 @@ function Video() {
         >
           <source
             src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
-              `${filepath}/${filename}`
+              `${video.filepath}/${video.filename}`
             )}`}
           ></source>
         </video>
@@ -106,16 +113,37 @@ function Video() {
         <div>
           <VideoInfo video={video} />
         </div>
+        <AdminBar id={video.id.toString()} />
+        <button className="btn" onClick={handleOpenPlaylistModal}>
+          Open Playlists
+        </button>
+        <span>
+          Tags:
+          <TagModal />
+        </span>
+        <span>
+          People:
+          <PersonModal />
+        </span>
+        <StarBar rating={video.rating} id={video.id.toString()} />
       </div>
       <div className="video-card-playlist-container">
-        {playlist?.playlistItems
-          .sort((a, b) => a.position - b.position)
-          .map((v) => (
-            <PlaylistCard video={v.video} />
-          ))}
+        {"playlistItems" in playlist
+          ? playlist.playlistItems
+              .sort((a, b) => a.position - b.position)
+              .map((v) => (
+                <PlaylistCard
+                  video={v.video}
+                  position={v.position}
+                  playlistId={v.playlistId}
+                />
+              ))
+          : playlist
+              .sort((a, b) => a.id - b.id)
+              .map((v) => <PlaylistCard video={v} />)}
       </div>
       {searchParams.has("modal", "playlist") && (
-        <PlaylistAddDialog videoId={id} />
+        <PlaylistAddDialog videoId={video.id} />
       )}
     </div>
   );
@@ -125,18 +153,20 @@ export default Video;
 
 function AdminBar({ id }: { id: string }) {
   return (
-    <Form className="flexer3" method="POST">
-      <input type="hidden" name="videoId" value={id} />
-      <button className="btn" type="submit" name="intent" value="delete">
-        Delete
-      </button>
-      <button className="btn" type="submit" name="intent" value="regen">
-        Regen Thumbs
-      </button>
-      <button className="btn" type="submit" name="intent" value="convert">
-        Convert Video
-      </button>
-    </Form>
+    <>
+      <Form className="flexer3" method="POST">
+        <input type="hidden" name="videoId" value={id} />
+        <button className="btn" type="submit" name="intent" value="delete">
+          Delete
+        </button>
+        <button className="btn" type="submit" name="intent" value="regen">
+          Regen Thumbs
+        </button>
+        <button className="btn" type="submit" name="intent" value="convert">
+          Convert Video
+        </button>
+      </Form>
+    </>
   );
 }
 
@@ -198,30 +228,45 @@ function VideoInfo({ video }: { video: VideoData }) {
   );
 }
 
-function PlaylistCard({ video }: { video: Video }) {
+function PlaylistCard({
+  video,
+  position = 0,
+  playlistId = 0,
+}: {
+  video: Video;
+  position?: number;
+  playlistId?: number;
+}) {
   const duration = useVideoDuration(video.duration);
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     video.id / 1000
   )}/${video.id % 1000}`;
 
+  const link =
+    playlistId > 0
+      ? `/video/${video.id}?playlist=${playlistId}&position=${position}`
+      : `/video/${video.id}?`;
+
   return (
-    <div className="video-playlist-card">
-      <div className="video-playlist-img-wrapper">
-        <img
-          id="playlist-thumb"
-          alt="image"
-          src={`${filePath}/thumbs/${encodeURIComponent(
-            video.filename.slice(0, video.filename.lastIndexOf("."))
-          )}-3.jpg`}
-        />
-        <div className="video-card-duration-container">
-          <span className="duration-txt txt-sm">{duration}</span>
+    <Link to={link} reloadDocument>
+      <div className="video-playlist-card">
+        <div className="video-playlist-img-wrapper">
+          <img
+            id="playlist-thumb"
+            alt="image"
+            src={`${filePath}/thumbs/${encodeURIComponent(
+              video.filename.slice(0, video.filename.lastIndexOf("."))
+            )}-3.jpg`}
+          />
+          <div className="video-card-duration-container">
+            <span className="duration-txt txt-sm">{duration}</span>
+          </div>
+        </div>
+        <div className="video-info-container">
+          <span className="txt-sm ">{video.filename}</span>
+          <span className="txt-tiny">{video.views} views</span>
         </div>
       </div>
-      <div className="video-info-container">
-        <span className="txt-sm ">{video.filename}</span>
-        <span className="txt-tiny">{video.views} views</span>
-      </div>
-    </div>
+    </Link>
   );
 }
