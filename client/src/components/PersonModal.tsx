@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useFetcher, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import apiRequest from "../lib/api";
 
 type Person = { id: number; name: string };
 
 export default function PersonModal() {
   const { id } = useParams();
-  const fetcher = useFetcher();
   const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<HTMLInputElement | null>(null);
   const [input, setInput] = useState<string>("");
@@ -47,7 +46,7 @@ export default function PersonModal() {
 
   function handleSubmit(e: any) {
     e.preventDefault();
-    const data = {};
+
     apiRequest({ endpoint: `/video/${id}/person`, method: "post" });
   }
 
