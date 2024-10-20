@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef,} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useFetcher, useParams } from "react-router-dom";
 import apiRequest from "../lib/api";
 
@@ -45,6 +45,12 @@ export default function PersonModal() {
     if (value.length === 0) setOptions([]);
   }
 
+  function handleSubmit(e: any) {
+    e.preventDefault();
+    const data = {};
+    apiRequest({ endpoint: `/video/${id}/person`, method: "post" });
+  }
+
   return (
     <>
       <button className="btn" name="intent" value="open" onClick={handleClick}>
@@ -54,11 +60,7 @@ export default function PersonModal() {
         <dialog className="modal" open={open}>
           <div className="modal-container">
             <span>People</span>
-            <fetcher.Form
-              className="modal-form"
-              method="POST"
-              action="/video/:id/person"
-            >
+            <form className="modal-form" method="post" onSubmit={handleSubmit}>
               <input
                 className="search-input"
                 type="text"
@@ -86,7 +88,7 @@ export default function PersonModal() {
                   Close
                 </button>
               </div>
-            </fetcher.Form>
+            </form>
           </div>
         </dialog>
       </div>

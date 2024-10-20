@@ -32,6 +32,9 @@ function Video() {
   const { state } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { video, playlist } = useLoaderData() as LoaderData;
+  const [curList, setCurList] = useState<Playlist | Video[] | undefined>(
+    undefined
+  );
 
   const actionData = useActionData() as { status: string; intent: string };
 
@@ -42,6 +45,10 @@ function Video() {
 
   useEffect(() => {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
+  }, []);
+
+  useEffect(() => {
+    if (!curList) setCurList(playlist);
   }, []);
 
   const [start, setStart] = useState<number>(0);
@@ -120,19 +127,20 @@ function Video() {
         <StarBar rating={video.rating} id={video.id.toString()} />
       </div>
       <div className="video-card-playlist-container">
-        {"playlistItems" in playlist
-          ? playlist.playlistItems
-              .sort((a, b) => a.position - b.position)
-              .map((v) => (
-                <PlaylistCard
-                  video={v.video}
-                  position={v.position}
-                  playlistId={v.playlistId}
-                />
-              ))
-          : playlist
-              .sort((a, b) => a.id - b.id)
-              .map((v) => <PlaylistCard video={v} />)}
+        {curList &&
+          ("playlistItems" in curList
+            ? curList.playlistItems
+                .sort((a, b) => a.position - b.position)
+                .map((v) => (
+                  <PlaylistCard
+                    video={v.video}
+                    position={v.position}
+                    playlistId={v.playlistId}
+                  />
+                ))
+            : curList
+                .sort((a, b) => a.id - b.id)
+                .map((v) => <PlaylistCard video={v} />))}
       </div>
       {searchParams.has("modal", "playlist") && (
         <PlaylistAddDialog videoId={video.id} />

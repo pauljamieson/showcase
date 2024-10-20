@@ -83,7 +83,7 @@ async function getRandomVideos(take: number = 10) {
   while (rand >= count - 10) {
     rand = Math.floor(Math.random() * count);
   }
-  console.log(rand);
+  
   return await prisma.videoFile.findMany({
     select: {
       duration: true,
