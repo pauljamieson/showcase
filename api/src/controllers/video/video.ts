@@ -8,8 +8,6 @@ async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
     const { id } = req.params;
-    const playlist = req.query.playlist as string;
-    const position = (req.query.position as string) || "1";
 
     const t1 = prisma.videoFile.findFirst({
       where: { id: +id },
@@ -18,6 +16,7 @@ async function GET(req: Request, res: Response) {
         people: { orderBy: { name: "asc" } },
       },
     });
+
     const t2 = prisma.videoRatings.aggregate({
       where: { videoId: +id },
       _avg: { rating: true },
@@ -27,11 +26,6 @@ async function GET(req: Request, res: Response) {
     });
 
     const [video, rating, myRating] = await prisma.$transaction([t1, t2, t3]);
-
-    // get entries for playlist or random videos
-    const list = playlist
-      ? await getPlaylistVideos(+playlist, +position)
-      : await getRandomVideos();
 
     res.json({
       status: "success",
@@ -43,58 +37,12 @@ async function GET(req: Request, res: Response) {
             userRating: myRating?.rating || 0,
           },
         },
-        playlist: list,
       },
     });
   } catch (error) {
     console.error(error);
     res.json({ status: "failure" });
   }
-}
-
-async function getPlaylistVideos(playlist: number, position: number) {
-  console.log("AAAAs");
-  return await prisma.playlist.findFirst({
-    where: { id: playlist },
-    include: {
-      playlistItems: {
-        where: { position: { gte: position } },
-        include: {
-          video: {
-            select: {
-              duration: true,
-              filename: true,
-              filepath: true,
-              id: true,
-              views: true,
-            },
-          },
-        },
-        take: 10,
-      },
-    },
-  });
-}
-
-async function getRandomVideos(take: number = 10) {
-  const count = await prisma.videoFile.count();
-  let rand = count;
-
-  while (rand >= count - 10) {
-    rand = Math.floor(Math.random() * count);
-  }
-  
-  return await prisma.videoFile.findMany({
-    select: {
-      duration: true,
-      filename: true,
-      filepath: true,
-      id: true,
-      views: true,
-    },
-    take,
-    skip: rand,
-  });
 }
 
 async function PATCH(req: Request, res: Response) {

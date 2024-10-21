@@ -16,8 +16,7 @@ export default async ({
       searchParams: url.searchParams,
     });
 
-    if (status === "success")
-      return { video: data.video, playlist: data.playlist };
+    if (status === "success") return { video: data.video };
     throw "Failed request to api.";
   } catch (error: any) {
     console.error(error);

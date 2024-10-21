@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useFetcher, useParams } from "react-router-dom";
+import { useFetcher, useParams, useSearchParams } from "react-router-dom";
 import apiRequest from "../lib/api";
 
 type Tag = { id: number; name: string };
 
 export default function TagModal() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const fetcher = useFetcher();
   const [open, setOpen] = useState<boolean>(false);
@@ -16,7 +17,6 @@ export default function TagModal() {
     if (input.length > 0) {
       const sp = new URLSearchParams();
       sp.set("terms", input.trim());
-
       apiRequest({ method: "get", endpoint: "/tags", searchParams: sp }).then(
         (resp) => {
           resp.status === "success" && setOptions(resp.data.tags);
@@ -29,6 +29,10 @@ export default function TagModal() {
     if (open) ref.current?.focus();
   }, [open]);
 
+  useEffect(() => {
+    searchParams.has("modal", "tags") ? setOpen(true) : setOpen(false);
+  }, [searchParams]);
+
   function handleClick(e: any) {
     e.preventDefault();
     const { value } = e.target;
@@ -36,7 +40,8 @@ export default function TagModal() {
       setOptions([]);
       setInput("");
     }
-    setOpen(value === "open" ? true : false);
+    searchParams.delete("modal");
+    setSearchParams(searchParams);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -48,10 +53,6 @@ export default function TagModal() {
 
   return (
     <>
-      <button className="btn" name="intent" value="open" onClick={handleClick}>
-        +
-      </button>
-
       <div className="centerpoint">
         <dialog className="modal" open={open}>
           <div className="modal-container">

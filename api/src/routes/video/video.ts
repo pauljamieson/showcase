@@ -1,7 +1,10 @@
 import { Router } from "express";
 import VideoController from "../../controllers/video/video";
 import VideoPlaylistController from "../../controllers/video/playlist";
+import VideoQueueController from "../../controllers/video/queue";
 const router: Router = Router();
+
+router.route("/queue").get(VideoQueueController.GET);
 
 router
   .route("/:id/playlist")

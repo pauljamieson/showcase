@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useFetcher, useParams, useSearchParams } from "react-router-dom";
 import apiRequest from "../lib/api";
 
 type Person = { id: number; name: string };
 
 export default function PersonModal() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
+  const fetcher = useFetcher();
   const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<HTMLInputElement | null>(null);
   const [input, setInput] = useState<string>("");
@@ -27,6 +29,10 @@ export default function PersonModal() {
     if (open) ref.current?.focus();
   }, [open]);
 
+  useEffect(() => {
+    searchParams.has("modal", "people") ? setOpen(true) : setOpen(false);
+  }, [searchParams]);
+
   function handleClick(e: any) {
     e.preventDefault();
     const { value } = e.target;
@@ -34,7 +40,8 @@ export default function PersonModal() {
       setOptions([]);
       setInput("");
     }
-    setOpen(value === "open" ? true : false);
+    searchParams.delete("modal");
+    setSearchParams(searchParams);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -44,22 +51,17 @@ export default function PersonModal() {
     if (value.length === 0) setOptions([]);
   }
 
-  function handleSubmit(e: any) {
-    e.preventDefault();
-
-    apiRequest({ endpoint: `/video/${id}/person`, method: "post" });
-  }
-
   return (
     <>
-      <button className="btn" name="intent" value="open" onClick={handleClick}>
-        +
-      </button>
       <div className="centerpoint">
         <dialog className="modal" open={open}>
           <div className="modal-container">
             <span>People</span>
-            <form className="modal-form" method="post" onSubmit={handleSubmit}>
+            <fetcher.Form
+              className="modal-form"
+              method="POST"
+              action="/video/:id/person"
+            >
               <input
                 className="search-input"
                 type="text"
@@ -87,7 +89,7 @@ export default function PersonModal() {
                   Close
                 </button>
               </div>
-            </form>
+            </fetcher.Form>
           </div>
         </dialog>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Form,
   Navigate,
@@ -8,47 +8,51 @@ import {
   useNavigate,
   useSearchParams,
   Link,
+  useFetcher,
 } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
 import PlaylistAddDialog from "../components/PlaylistAddDialog";
 import { useFileSize } from "../hooks/useFileSize";
-
-import type { Video, VideoData, Playlist } from "../types/custom";
-
+import type { Video, VideoData } from "../types/custom";
 import useVideoDuration from "../hooks/useVideoDuration";
 import TagModal from "../components/TagModal";
 import PersonModal from "../components/PersonModal";
-
+import useVideoQueue from "../hooks/useVideoQueue";
+import apiRequest from "../lib/api";
+1
 interface LoaderData {
   video: VideoData;
-  playlist: Playlist | Video[];
 }
 
 function Video() {
+  //auth
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/" />;
+
+  // go back to videos page prep
   const navigate = useNavigate();
   const { state } = useLocation();
+
+  // Get search params
   const [searchParams, setSearchParams] = useSearchParams();
-  const { video, playlist } = useLoaderData() as LoaderData;
-  const [curList, setCurList] = useState<Playlist | Video[] | undefined>(
-    undefined
-  );
+  const playlistId = searchParams.get("playlist");
 
+  // react router fetching hooks
+  const { video } = useLoaderData() as LoaderData;
   const actionData = useActionData() as { status: string; intent: string };
-
   if (actionData?.intent === "delete" && actionData?.status === "success")
     navigate("/" + state?.search);
 
+  // Get sidebar\below queue items
+  const queue = useVideoQueue(playlistId ? +playlistId : undefined);
+
+  // get reference to video element
   const ref = useRef<HTMLVideoElement | null>(null);
 
+  // Load volume from localstorage
   useEffect(() => {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
-  }, []);
-
-  useEffect(() => {
-    if (!curList) setCurList(playlist);
   }, []);
 
   const [start, setStart] = useState<number>(0);
@@ -63,13 +67,10 @@ function Video() {
     try {
       if (!seeked && currentTime - start > 30) {
         setIsViewed(true);
-        await fetch(`${import.meta.env.VITE_API_URL}/video/${video.id}`, {
-          method: "PATCH",
-          body: JSON.stringify({ update: "views", id: video.id }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("showcase"),
-          },
+        apiRequest({
+          endpoint: `${import.meta.env.VITE_API_URL}/video/${video.id}`,
+          method: "patch",
+          body: { update: "views", id: video.id },
         });
       }
 
@@ -109,42 +110,27 @@ function Video() {
           ></source>
         </video>
 
-        <div>
-          <VideoInfo video={video} />
-        </div>
+        <VideoInfo video={video} />
+
         <AdminBar id={video.id.toString()} />
         <button className="btn" onClick={handleOpenPlaylistModal}>
           Open Playlists
         </button>
-        <span>
-          Tags:
-          <TagModal />
-        </span>
-        <span>
-          People:
-          <PersonModal />
-        </span>
-        <StarBar rating={video.rating} id={video.id.toString()} />
       </div>
-      <div className="video-card-playlist-container">
-        {curList &&
-          ("playlistItems" in curList
-            ? curList.playlistItems
-                .sort((a, b) => a.position - b.position)
-                .map((v) => (
-                  <PlaylistCard
-                    video={v.video}
-                    position={v.position}
-                    playlistId={v.playlistId}
-                  />
-                ))
-            : curList
-                .sort((a, b) => a.id - b.id)
-                .map((v) => <PlaylistCard video={v} />))}
+      <div className="video-queue-items-container">
+        {queue?.map((v: QueueItem) => (
+          <VideoQueueCard
+            key={v.id}
+            video={v}
+            playlistId={playlistId ? +playlistId : undefined}
+          />
+        ))}
       </div>
       {searchParams.has("modal", "playlist") && (
         <PlaylistAddDialog videoId={video.id} />
       )}
+      {searchParams.has("modal", "tags") && <TagModal />}
+      {searchParams.has("modal", "people") && <PersonModal />}
     </div>
   );
 }
@@ -215,7 +201,11 @@ function StarBar({ rating, id }: { rating: Rating; id: string }) {
 
 function VideoInfo({ video }: { video: VideoData }) {
   const size = useFileSize(video.size);
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  function handleClick(e: React.BaseSyntheticEvent) {
+    searchParams.set("modal", e.target.name);
+    setSearchParams(searchParams);
+  }
   return (
     <div className="video-info-container">
       <span className="video-title txt-lg txt-bold">{video.filename}</span>
@@ -223,20 +213,56 @@ function VideoInfo({ video }: { video: VideoData }) {
         {video.height}x{video.width} ({video.videoCodec}/{video.audioCodec})
       </span>
       <span className="txt-sm">{size}</span>
-      <span className="txt-sm">{video.views} views</span>
+      <span className="txt-sm">
+        {video.views} views{" "}
+        <StarBar rating={video.rating} id={video.id.toString()} />
+      </span>
+      <br />
+      <div className="txt-sm">
+        <span>Tags: </span>
+        {video.tags.map((v) => (
+          <TagChip key={v.id} tag={v} videoId={video.id} />
+        ))}{" "}
+        <button className="btn btn-sm" name="tags" onClick={handleClick}>
+          +
+        </button>
+      </div>
+      <div className="txt-sm">
+        <span>People: </span>
+        {video.people.map((v) => (
+          <PersonChip key={v.id} person={v} videoId={video.id} />
+        ))}{" "}
+        <button className="btn btn-sm" name="people" onClick={handleClick}>
+          +
+        </button>
+      </div>
     </div>
   );
 }
 
-function PlaylistCard({
+interface QueueItem {
+  duration: number;
+  filename: string;
+  filepath: string;
+  id: number;
+  position: number;
+  views: number;
+}
+
+function VideoQueueCard({
   video,
-  position = 0,
   playlistId = 0,
 }: {
-  video: Video;
-  position?: number;
+  video: QueueItem;
   playlistId?: number;
 }) {
+  const [searchParams, _] = useSearchParams();
+  const [active, setActive] = useState<boolean>(false);
+  useEffect(() => {
+    if (searchParams.get("position") === video.position.toString())
+      setActive(true);
+  }, [searchParams]);
+
   const duration = useVideoDuration(video.duration);
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     video.id / 1000
@@ -244,15 +270,15 @@ function PlaylistCard({
 
   const link =
     playlistId > 0
-      ? `/video/${video.id}?playlist=${playlistId}&position=${position}`
+      ? `/video/${video.id}?playlist=${playlistId}&position=${video.position}`
       : `/video/${video.id}?`;
 
   return (
     <Link to={link} reloadDocument>
-      <div className="video-playlist-card">
-        <div className="video-playlist-img-wrapper">
+      <div className={`video-queue-item-card ${active && "active-queue-item"}`}>
+        <div className="video-queue-item-img-wrapper">
           <img
-            id="playlist-thumb"
+            id="queue-item-thumb"
             alt="image"
             src={`${filePath}/thumbs/${encodeURIComponent(
               video.filename.slice(0, video.filename.lastIndexOf("."))
@@ -262,11 +288,51 @@ function PlaylistCard({
             <span className="duration-txt txt-sm">{duration}</span>
           </div>
         </div>
-        <div className="video-info-container">
+        <div className="queue-item-info-container">
           <span className="txt-sm ">{video.filename}</span>
           <span className="txt-tiny">{video.views} views</span>
         </div>
       </div>
     </Link>
+  );
+}
+
+interface PersonChip {
+  person: { name: string; id: number };
+  videoId: number;
+}
+
+function PersonChip({ person, videoId }: PersonChip) {
+  const fetcher = useFetcher();
+  return (
+    <fetcher.Form
+      className="inline tag-list info-chip"
+      method="POST"
+      action="/video/:id/person/chip"
+    >
+      <input type="submit" className="span-chip" value={person.name} />
+      <input type="hidden" name="personId" value={person.id.toString()} />
+      <input type="hidden" name="videoId" value={videoId.toString()} />
+    </fetcher.Form>
+  );
+}
+
+interface TagChip {
+  tag: { name: string; id: number };
+  videoId: number;
+}
+
+function TagChip({ tag, videoId }: TagChip) {
+  const fetcher = useFetcher();
+  return (
+    <fetcher.Form
+      className="inline person-list info-chip"
+      method="POST"
+      action="/video/:id/tag/chip"
+    >
+      <input type="submit" className="span-chip" value={tag.name} />
+      <input type="hidden" name="tagId" value={tag.id.toString()} />
+      <input type="hidden" name="videoId" value={videoId.toString()} />
+    </fetcher.Form>
   );
 }
