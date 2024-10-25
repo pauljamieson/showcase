@@ -17,7 +17,7 @@ export const middleWare: RequestHandler = (
 ) => {
   // matches for thumbs
   if (req.url.match(/[0-9]+\/[0-9]+\/thumbs/)) return next();
-  console.log("HERE");
+
   // gets the route class
   const routeClass = getRouteClass(req.url);
 
