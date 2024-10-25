@@ -7,8 +7,8 @@ import {
   useLocation,
   useNavigate,
   useSearchParams,
-  Link,
   useFetcher,
+  Link,
 } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
@@ -18,9 +18,9 @@ import type { Video, VideoData } from "../types/custom";
 import useVideoDuration from "../hooks/useVideoDuration";
 import TagModal from "../components/TagModal";
 import PersonModal from "../components/PersonModal";
-import useVideoQueue from "../hooks/useVideoQueue";
+import useVideoQueue, { VideoQueue } from "../hooks/useVideoQueue";
 import apiRequest from "../lib/api";
-1
+
 interface LoaderData {
   video: VideoData;
 }
@@ -37,6 +37,7 @@ function Video() {
   // Get search params
   const [searchParams, setSearchParams] = useSearchParams();
   const playlistId = searchParams.get("playlist");
+  const position: number = +(searchParams.get("position") || 1);
 
   // react router fetching hooks
   const { video } = useLoaderData() as LoaderData;
@@ -47,47 +48,6 @@ function Video() {
   // Get sidebar\below queue items
   const queue = useVideoQueue(playlistId ? +playlistId : undefined);
 
-  // get reference to video element
-  const ref = useRef<HTMLVideoElement | null>(null);
-
-  // Load volume from localstorage
-  useEffect(() => {
-    ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
-  }, []);
-
-  const [start, setStart] = useState<number>(0);
-  const [seeked, setSeeked] = useState<boolean>(false);
-  const [isViewed, setIsViewed] = useState<boolean>(false);
-
-  async function handleProgress(e: any) {
-    if (isViewed) return;
-    const {
-      target: { currentTime },
-    } = e;
-    try {
-      if (!seeked && currentTime - start > 30) {
-        setIsViewed(true);
-        apiRequest({
-          endpoint: `${import.meta.env.VITE_API_URL}/video/${video.id}`,
-          method: "patch",
-          body: { update: "views", id: video.id },
-        });
-      }
-
-      if (seeked) setSeeked(false);
-    } catch (error) {}
-  }
-
-  function handleSeeking(e: any) {
-    if (isViewed) return;
-    setSeeked(true);
-    setStart(e.target.currentTime);
-  }
-
-  function handleVolumeChange(e: any) {
-    localStorage.setItem("volume", e.target.volume.toString());
-  }
-
   function handleOpenPlaylistModal() {
     searchParams.set("modal", "playlist");
     setSearchParams(searchParams);
@@ -96,19 +56,7 @@ function Video() {
   return (
     <div className="video-container">
       <div className="video-player-container">
-        <video
-          ref={ref}
-          controls
-          onSeeking={handleSeeking}
-          onProgress={handleProgress}
-          onVolumeChange={handleVolumeChange}
-        >
-          <source
-            src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
-              `${video.filepath}/${video.filename}`
-            )}`}
-          ></source>
-        </video>
+        <VideoPlayer video={video} queue={queue} />
 
         <VideoInfo video={video} />
 
@@ -118,9 +66,9 @@ function Video() {
         </button>
       </div>
       <div className="video-queue-items-container">
-        {queue?.map((v: QueueItem) => (
+        {queue?.items.map((v: QueueItem) => (
           <VideoQueueCard
-            key={v.id}
+            key={v.id * position}
             video={v}
             playlistId={playlistId ? +playlistId : undefined}
           />
@@ -334,5 +282,88 @@ function TagChip({ tag, videoId }: TagChip) {
       <input type="hidden" name="tagId" value={tag.id.toString()} />
       <input type="hidden" name="videoId" value={videoId.toString()} />
     </fetcher.Form>
+  );
+}
+
+function VideoPlayer({
+  video,
+  queue,
+}: {
+  video: VideoData;
+  queue: VideoQueue;
+}) {
+  // get reference to video element
+  const ref = useRef<HTMLVideoElement | null>(null);
+
+  const navigate = useNavigate();
+  const [searchParams, _] = useSearchParams();
+  const [start, setStart] = useState<number>(0);
+  const [seeked, setSeeked] = useState<boolean>(false);
+  const [isViewed, setIsViewed] = useState<boolean>(false);
+  const [src, setSrc] = useState<string>(
+    `${import.meta.env.VITE_API_URL}/${encodeURIComponent(
+      `${video.filepath}/${video.filename}`
+    )}`
+  );
+
+  // Load volume from localstorage
+  useEffect(() => {
+    ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
+  }, []);
+
+  async function handleProgress(e: any) {
+    if (isViewed) return;
+    const {
+      target: { currentTime },
+    } = e;
+    try {
+      if (!seeked && currentTime - start > 30) {
+        setIsViewed(true);
+        apiRequest({
+          endpoint: `/video/${video.id}/`,
+          method: "PATCH",
+          body: { update: "views", id: video.id },
+        });
+      }
+
+      if (seeked) setSeeked(false);
+    } catch (error) {}
+  }
+
+  function handleSeeking(e: any) {
+    if (isViewed) return;
+    setSeeked(true);
+    setStart(e.target.currentTime);
+  }
+
+  function handleVolumeChange(e: any) {
+    localStorage.setItem("volume", e.target.volume.toString());
+  }
+
+  function handleOnEnded() {
+    if (!searchParams.has("playlist")) return;
+    if (+(searchParams.get("position") || 1) !== queue.items.length) {
+      const pos = +(searchParams.get("position") || 1);
+      const nextVideo = queue.items[pos];
+      const next = `${import.meta.env.VITE_API_URL}/${encodeURIComponent(
+        `${nextVideo.filepath}/${nextVideo.filename}`
+      )}`;
+      setSrc(next);
+      searchParams.set("position", (pos + 1).toString());
+      navigate(`/video/${nextVideo.id}?${searchParams.toString()}`);
+    }
+  }
+
+  return (
+    <video
+      ref={ref}
+      controls
+      onSeeking={handleSeeking}
+      onProgress={handleProgress}
+      onVolumeChange={handleVolumeChange}
+      onEnded={handleOnEnded}
+      preload="metadata"
+      src={src}
+    ></video>
   );
 }

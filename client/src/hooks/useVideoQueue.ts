@@ -7,20 +7,37 @@ export interface VideoQueue {
 }
 
 interface VideoQueueItem {
-  videoId: number;
+  duration: number;
+  filename: string;
+  filepath: string;
+  id: number;
   position: number;
+  views: number;
 }
 
-export default function useVideoQueue(playlistId?: number) {
-  const [queue, setQueue] = useState([]);
+const initialState: VideoQueue = {
+  items: [],
+};
+
+export default function useVideoQueue(playlistId?: number): VideoQueue {
+  const [queue, setQueue] = useState<VideoQueue>(initialState);
   const [searchParams, _] = useSearchParams();
 
   useEffect(() => {
     apiRequest({ endpoint: `/video/queue`, method: "get", searchParams }).then(
-      ({ status, data, error }) => {
+      ({
+        status,
+        data,
+        error,
+      }: {
+        status: string;
+        data: { queue: VideoQueueItem[] };
+        error: string;
+      }) => {
         if (error) console.error(error);
+        const newQueue: VideoQueue = { items: data.queue };
         if (status === "success") {
-          setQueue(data.queue);
+          setQueue(newQueue);
         }
       }
     );

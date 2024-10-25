@@ -28,7 +28,6 @@ const port: string | undefined = process.env.PORT;
 app.use(
   cors({
     exposedHeaders: ["Authorization"],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
 

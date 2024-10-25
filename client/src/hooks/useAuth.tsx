@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// will error if auth not set
+// will error if auth not setcker 
 export default function useAuth() {
   const context = useContext(AuthContext);
   if (context.auth === undefined)

@@ -1,9 +1,11 @@
-export type RequestConfig = {
-  method: "get" | "post" | "patch" | "delete" | "head" | "put";
+const methods = ["get", "post", "patch", "delete", "head", "put", "PATCH"];
+
+export interface RequestConfig {
+  method: "get" | "post" | "patch" | "delete" | "head" | "put" | "PATCH";
   endpoint: string;
-  body?: object; // skksk
+  body?: object;
   searchParams?: URLSearchParams;
-};
+}
 
 export default async function apiRequest(rc: RequestConfig) {
   try {
@@ -16,11 +18,7 @@ export default async function apiRequest(rc: RequestConfig) {
         Authorization: "Bearer " + localStorage.getItem("showcase"),
       },
     };
-    if (
-      (rc.body && rc.method === "post") ||
-      rc.method === "delete" ||
-      rc.method === "put"
-    )
+    if (rc.body && methods.includes(rc.method))
       config = { ...{ body: JSON.stringify(rc.body) }, ...config };
     const resp = await fetch(apiUrl, config);
     const token = resp.headers.get("Authorization");
