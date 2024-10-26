@@ -35,11 +35,8 @@ export default function PersonModal() {
 
   function handleClick(e: any) {
     e.preventDefault();
-    const { value } = e.target;
-    if (open === false && value === "open") {
-      setOptions([]);
-      setInput("");
-    }
+    setOptions([]);
+    setInput("");
     searchParams.delete("modal");
     setSearchParams(searchParams);
   }

@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Form,
   Navigate,
-  useActionData,
   useLoaderData,
-  useLocation,
   useNavigate,
   useSearchParams,
   useFetcher,
@@ -30,10 +28,6 @@ function Video() {
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/" />;
 
-  // go back to videos page prep
-  const navigate = useNavigate();
-  const { state } = useLocation();
-
   // Get search params
   const [searchParams, setSearchParams] = useSearchParams();
   const playlistId = searchParams.get("playlist");
@@ -41,12 +35,14 @@ function Video() {
 
   // react router fetching hooks
   const { video } = useLoaderData() as LoaderData;
-  const actionData = useActionData() as { status: string; intent: string };
-  if (actionData?.intent === "delete" && actionData?.status === "success")
-    navigate("/" + state?.search);
+  //const actionData = useActionData() as { status: string; intent: string };
 
   // Get sidebar\below queue items
   const queue = useVideoQueue(playlistId ? +playlistId : undefined);
+
+  useEffect(() => {
+    console.log(searchParams);
+  }, [searchParams]);
 
   function handleOpenPlaylistModal() {
     searchParams.set("modal", "playlist");
@@ -57,9 +53,7 @@ function Video() {
     <div className="video-container">
       <div className="video-player-container">
         <VideoPlayer video={video} queue={queue} />
-
         <VideoInfo video={video} />
-
         <AdminBar id={video.id.toString()} />
         <button className="btn" onClick={handleOpenPlaylistModal}>
           Open Playlists
@@ -77,8 +71,8 @@ function Video() {
       {searchParams.has("modal", "playlist") && (
         <PlaylistAddDialog videoId={video.id} />
       )}
-      {searchParams.has("modal", "tags") && <TagModal />}
-      {searchParams.has("modal", "people") && <PersonModal />}
+      <TagModal />
+      <PersonModal />
     </div>
   );
 }

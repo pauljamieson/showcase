@@ -57,7 +57,7 @@ a {
   height: 60px;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
 }
 
 .appbar-inner-container {
@@ -452,7 +452,7 @@ input:checked + .toggler:before {
 }
 
 .modal {
-  position: relative;
+  position: absolute;
   border-radius: 10px;
   width: 225px;
   margin-left: -112px;

@@ -1,3 +1,4 @@
+import { redirect } from "react-router-dom";
 import apiRequest from "../lib/api";
 
 export default async ({ request }: { request: Request }) => {
@@ -24,7 +25,7 @@ export default async ({ request }: { request: Request }) => {
       endpoint: "/video/${body.videoId}/",
       body,
     });
-
+    if (intent === "delete" && status === "success") return redirect("/videos");
     return { status, intent };
   } catch (error) {
     localStorage.removeItem("showcase");

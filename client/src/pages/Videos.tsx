@@ -49,7 +49,7 @@ export default function Videos() {
   if (!auth.isLoggedIn) return <Navigate to="/login" />;
 
   useEffect(() => {
-    const curLimit = searchParams.get("limit") || size;
+    const curLimit = searchParams.get("limit") || 10;
     if (+curLimit !== size) {
       searchParams.set("limit", size.toString());
       setSearchParams(searchParams);
