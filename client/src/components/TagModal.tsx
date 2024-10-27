@@ -1,11 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useFetcher, useParams, useSearchParams } from "react-router-dom";
+import {
+  useFetcher,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import apiRequest from "../lib/api";
 
 type Tag = { id: number; name: string };
 
 export default function TagModal() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { id } = useParams();
   const fetcher = useFetcher();
   const [open, setOpen] = useState<boolean>(false);
@@ -38,7 +46,7 @@ export default function TagModal() {
     setOptions([]);
     setInput("");
     searchParams.delete("modal");
-    setSearchParams(searchParams);
+    navigate(location.pathname, { replace: true });
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

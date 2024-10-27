@@ -135,11 +135,17 @@ function StarBar({ rating, id }: { rating: Rating; id: string }) {
 
 function VideoInfo({ video }: { video: VideoData }) {
   const size = useFileSize(video.size);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, _] = useSearchParams();
+
   function handleClick(e: React.BaseSyntheticEvent) {
     searchParams.set("modal", e.target.name);
-    setSearchParams(searchParams);
+    navigate(`${location.pathname}?${searchParams.toString()}`, {
+      replace: true,
+    });
   }
+
   return (
     <div className="video-info-container">
       <span className="video-title txt-lg txt-bold">{video.filename}</span>
