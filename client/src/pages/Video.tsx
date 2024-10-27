@@ -65,9 +65,7 @@ function Video() {
           />
         ))}
       </div>
-      {searchParams.has("modal", "playlist") && (
-        <PlaylistAddDialog videoId={video.id} />
-      )}
+      <PlaylistAddDialog videoId={video.id} />
       <TagModal />
       <PersonModal />
     </div>
