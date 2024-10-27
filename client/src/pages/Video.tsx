@@ -55,9 +55,6 @@ function Video() {
         <VideoPlayer video={video} queue={queue} />
         <VideoInfo video={video} />
         <AdminBar id={video.id.toString()} />
-        <button className="btn" onClick={handleOpenPlaylistModal}>
-          Open Playlists
-        </button>
       </div>
       <div className="video-queue-items-container">
         {queue?.items.map((v: QueueItem) => (
@@ -81,7 +78,7 @@ export default Video;
 
 function AdminBar({ id }: { id: string }) {
   return (
-    <>
+    <div className="video-info-container">
       <Form className="flexer3" method="POST">
         <input type="hidden" name="videoId" value={id} />
         <button className="btn" type="submit" name="intent" value="delete">
@@ -94,7 +91,7 @@ function AdminBar({ id }: { id: string }) {
           Convert Video
         </button>
       </Form>
-    </>
+    </div>
   );
 }
 
@@ -176,6 +173,11 @@ function VideoInfo({ video }: { video: VideoData }) {
         ))}{" "}
         <button className="btn btn-sm" name="people" onClick={handleClick}>
           +
+        </button>
+      </div>
+      <div className="txt-sm">
+        <button className="btn btn-sm" name="playlist" onClick={handleClick}>
+          Playlist
         </button>
       </div>
     </div>
