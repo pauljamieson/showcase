@@ -1,11 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  useFetcher,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useFetcher, useParams, useSearchParams } from "react-router-dom";
 import apiRequest from "../lib/api";
 
 type Tag = { id: number; name: string };
@@ -14,8 +8,6 @@ export default function TagModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const fetcher = useFetcher();
-  //const navigate = useNavigate()
-  const location = useLocation();
   const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<HTMLInputElement | null>(null);
   const [input, setInput] = useState<string>("");
@@ -39,11 +31,6 @@ export default function TagModal() {
 
   useEffect(() => {
     searchParams.has("modal", "tags") ? setOpen(true) : setOpen(false);
-  }, [searchParams]);
-
-  useEffect(() => {
-    //console.log(searchParams.toString());
-    console.log(location.state);
   }, [searchParams]);
 
   function handleClick(e: any) {

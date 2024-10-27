@@ -7,6 +7,7 @@ import {
   useSearchParams,
   useFetcher,
   Link,
+  useLocation,
 } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
@@ -28,31 +29,27 @@ function Video() {
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/" />;
 
+  const { state } = useLocation();
+
   // Get search params
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const playlistId = searchParams.get("playlist");
   const position: number = +(searchParams.get("position") || 1);
 
   // react router fetching hooks
   const { video } = useLoaderData() as LoaderData;
-  //const actionData = useActionData() as { status: string; intent: string };
 
   // Get sidebar\below queue items
   const queue = useVideoQueue(playlistId ? +playlistId : undefined);
 
-  useEffect(() => {
-    console.log(searchParams);
-  }, [searchParams]);
-
-  function handleOpenPlaylistModal() {
-    searchParams.set("modal", "playlist");
-    setSearchParams(searchParams);
-  }
-
   return (
-    <div className="video-container">
+    <div className="video-container" key={video.id}>
       <div className="video-player-container">
-        <VideoPlayer video={video} queue={queue} />
+        <VideoPlayer
+          video={video}
+          queue={queue}
+          autoPlay={state?.autoPlay ? true : false}
+        />
         <VideoInfo video={video} />
         <AdminBar id={video.id.toString()} />
       </div>
@@ -282,28 +279,29 @@ function TagChip({ tag, videoId }: TagChip) {
 function VideoPlayer({
   video,
   queue,
+  autoPlay = false,
 }: {
   video: VideoData;
   queue: VideoQueue;
+  autoPlay?: boolean;
 }) {
   // get reference to video element
   const ref = useRef<HTMLVideoElement | null>(null);
-
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
   const [isViewed, setIsViewed] = useState<boolean>(false);
-  const [src, setSrc] = useState<string>(
-    `${import.meta.env.VITE_API_URL}/${encodeURIComponent(
-      `${video.filepath}/${video.filename}`
-    )}`
-  );
 
   // Load volume from localstorage
   useEffect(() => {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
   }, []);
+
+  useEffect(() => {
+    // if autoplay add slight delay
+    if (autoPlay) setTimeout(() => ref.current?.play(), 750);
+  }, [autoPlay]);
 
   async function handleProgress(e: any) {
     if (isViewed) return;
@@ -339,12 +337,10 @@ function VideoPlayer({
     if (+(searchParams.get("position") || 1) !== queue.items.length) {
       const pos = +(searchParams.get("position") || 1);
       const nextVideo = queue.items[pos];
-      const next = `${import.meta.env.VITE_API_URL}/${encodeURIComponent(
-        `${nextVideo.filepath}/${nextVideo.filename}`
-      )}`;
-      setSrc(next);
       searchParams.set("position", (pos + 1).toString());
-      navigate(`/video/${nextVideo.id}?${searchParams.toString()}`);
+      navigate(`/video/${nextVideo.id}?${searchParams.toString()}`, {
+        state: { autoPlay: true },
+      });
     }
   }
 
@@ -357,7 +353,9 @@ function VideoPlayer({
       onVolumeChange={handleVolumeChange}
       onEnded={handleOnEnded}
       preload="metadata"
-      src={src}
+      src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
+        `${video.filepath}/${video.filename}`
+      )}`}
     ></video>
   );
 }
