@@ -11,7 +11,7 @@ import apiRequest from "../lib/api";
 type Person = { id: number; name: string };
 
 export default function PersonModal() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
