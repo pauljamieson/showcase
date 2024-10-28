@@ -68,7 +68,7 @@ async function processFile(file: ConvertVideoInfo) {
         .videoCodec("libx265")
         .addOption("-crf 20")
         .output(dst)
-        .on("error", (error) => console.log(error))
+        .on("error", (error) => console.error(error))
         .on("end", async (end) => {
           // Move to incoming
           const incPath = path.join(INCOMINGFOLDER, nanoid(6));

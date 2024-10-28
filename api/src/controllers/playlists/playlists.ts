@@ -19,13 +19,13 @@ async function GET(req: Request, res: Response) {
       },
       orderBy: { name: "asc" },
     });
-    console.log(playlists);
+
     res.json({
       status: "success",
       data: { playlists },
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({ status: "failure" });
   }
 }

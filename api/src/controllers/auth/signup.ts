@@ -20,7 +20,7 @@ async function POST(req: Request, res: Response) {
     res.json({ status: "success" });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
-      if (error.code === "P2002") console.log("P2002");
+      if (error.code === "P2002") console.error("P2002");
       res.json({
         status: "failure",
         error: "Email or Display Name already taken.",

@@ -34,7 +34,7 @@ async function DELETE(req: Request, res: Response) {
     const tag = await prisma.tag.delete({
       where: { id: +id },
     });
-    console.log(tag);
+
     res.json({ status: "success" });
   } catch (error) {
     console.error(error);

@@ -157,10 +157,7 @@ async function PUT(req: Request, res: Response) {
       data: {},
     });
   } catch (error: any) {
-    console.log(error);
-    console.log(error?.code);
-    console.log(error?.meta);
-    console.log(error?.message);
+    console.error(error);
     res.json({ status: "failure" });
   }
 }

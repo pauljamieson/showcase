@@ -116,9 +116,9 @@ function processFile(file: IncomingFile) {
       //console.error(error);
       if (error.code === 10001) {
         console.error(`FFProbe failed for ${file.filename}`);
-        console.log(error.msg);
+        console.error(error.msg);
       } else if (error.code === 10002) {
-        console.log(error.msg);
+        console.error(error.msg);
       }
     } finally {
       resolve(true);
@@ -186,7 +186,7 @@ function createThumbs(
               folder: outputPath,
             })
             .on("error", (error) =>
-              console.log(`Thumbnail Encoding Error: ${error.message}`)
+              console.error(`Thumbnail Encoding Error: ${error.message}`)
             )
             .on("end", () => resolve(true));
         })

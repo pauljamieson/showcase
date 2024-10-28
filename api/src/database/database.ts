@@ -16,7 +16,6 @@ export async function getPlaylistPanel({
       where: { id: playlist },
       select: { playlistItems: { select: { position: true, video: true } } },
     });
-    console.log(list);
   } else {
     const count = await prisma.videoFile.count();
     let rand = count;
@@ -27,7 +26,6 @@ export async function getPlaylistPanel({
         rand = Math.floor(Math.random() * count);
       }
       videos.push(rand);
-      console.log(videos);
       total += 1;
     }
 
