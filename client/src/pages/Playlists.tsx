@@ -1,5 +1,4 @@
 import { useLoaderData } from "react-router-dom";
-import Playlist from "../components/Playlist";
 import { Link } from "react-router-dom";
 
 interface Video {
