@@ -1,14 +1,20 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import useAuth, { User } from "../hooks/useAuth";
 import React, { useState } from "react";
 
 export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
-
+  const { state } = useLocation();
+  const link = state === null ? "/" : `/videos${state?.search}`;
   return (
     <div className="appbar-container">
       <div className="appbar-inner-container">
-        <Link to={"/"}>
+        <Link to={link}>
           <p className="title">Showcase</p>
         </Link>
         <div className="grow" />
@@ -83,4 +89,3 @@ function UserIcon({ name }: User) {
     </div>
   );
 }
-

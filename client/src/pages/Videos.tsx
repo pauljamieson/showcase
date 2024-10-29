@@ -81,7 +81,6 @@ function AdvanceSearch() {
 
   return (
     <div>
-      {" "}
       <div className="search-bar">
         <PersonSearch /> <TagSearch />
       </div>
