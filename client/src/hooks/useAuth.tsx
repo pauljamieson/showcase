@@ -6,12 +6,10 @@ import {
   useEffect,
 } from "react";
 
-type User =
-  | {
-      name: string;
-      admin: boolean;
-    }
-  | undefined;
+export interface User {
+  name: string;
+  admin: boolean;
+}
 
 interface AuthContextValue {
   auth: string | null | undefined;
@@ -21,10 +19,12 @@ interface AuthContextValue {
   clearToken: () => void;
 }
 
+const initialUser = { name: "", admin: false };
+
 const AuthContext = createContext<AuthContextValue>({
   auth: undefined,
   isLoggedIn: undefined,
-  user: undefined,
+  user: initialUser,
   setToken: () => null,
   clearToken: () => null,
 });
@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextValue>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIisLoggedIn] = useState<boolean>(false);
   const [auth, setAuth] = useState<string | null>(null);
-  const [user, setUser] = useState<User>(undefined);
+  const [user, setUser] = useState<User>(initialUser);
 
   function decodeToken(token: string) {
     const { name, admin } = JSON.parse(atob(token.split(".")[1]));
@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// will error if auth not setcker 
+// will error if auth not setcker
 export default function useAuth() {
   const context = useContext(AuthContext);
   if (context.auth === undefined)

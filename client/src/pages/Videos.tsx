@@ -1,13 +1,12 @@
 import { Navigate, useLoaderData, useSearchParams } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
-import SearchBar from "../components/SearchBar";
-import PersonSearch from "../components/PersonSearch";
-import TagSearch from "../components/TagSearch";
 import useAuth from "../hooks/useAuth";
-import SortOrder from "../components/SortOrder";
 import useLimitSize from "../hooks/useLimitSize";
 import { useEffect } from "react";
+import PersonSearch from "../components/PersonSearch";
+import TagSearch from "../components/TagSearch";
+import SortOrder from "../components/SortOrder";
 
 type LoaderData = {
   files: VideoFile[];
@@ -57,27 +56,10 @@ export default function Videos() {
   }, [size]);
 
   const data: LoaderData = useLoaderData() as LoaderData;
-  const orders: any[] = [
-    { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
-    { name: "views", options: ["Least Views", "Most Views"] },
-    { name: "duration", options: ["Shortest", "Longest"] },
-    { name: "size", options: ["Small", "Big"] },
-    { name: "alpha", options: ["A-Z", "Z-A"] },
-  ];
   return (
     <>
       <div className="videos-container">
-        <div className="search-bar">
-          <SearchBar /> <PersonSearch /> <TagSearch />
-        </div>
-        <div className="toggle-bar">
-          <SortOrder {...orders[0]} />
-          <SortOrder {...orders[1]} />
-          <SortOrder {...orders[2]} />
-          <SortOrder {...orders[3]} />
-          <SortOrder {...orders[4]} />
-        </div>
-        <div className="videos-spacer" />
+        <AdvanceSearch />
         <Paginator count={data.count} />
         <div className="video-card-container">
           {data &&
@@ -85,5 +67,32 @@ export default function Videos() {
         </div>
       </div>
     </>
+  );
+}
+
+function AdvanceSearch() {
+  const orders: any[] = [
+    { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
+    { name: "views", options: ["Least Views", "Most Views"] },
+    { name: "duration", options: ["Shortest", "Longest"] },
+    { name: "size", options: ["Small", "Big"] },
+    { name: "alpha", options: ["A-Z", "Z-A"] },
+  ];
+
+  return (
+    <div>
+      {" "}
+      <div className="search-bar">
+        <PersonSearch /> <TagSearch />
+      </div>
+      <div className="toggle-bar">
+        <SortOrder {...orders[0]} />
+        <SortOrder {...orders[1]} />
+        <SortOrder {...orders[2]} />
+        <SortOrder {...orders[3]} />
+        <SortOrder {...orders[4]} />
+      </div>
+      <div className="videos-spacer" />
+    </div>
   );
 }

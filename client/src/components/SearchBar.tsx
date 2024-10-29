@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function SearchBar() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [input, setInput] = useState<string>(searchParams.get("search") || "");
-  //React.FormEvent<HTMLFormElement>
+  const navigate = useNavigate();
+
   function handleSubmit(e: any) {
     e.preventDefault();
     const {
@@ -16,7 +17,9 @@ export default function SearchBar() {
       ? searchParams.set("search", value.trim())
       : searchParams.delete("search");
     searchParams.set("page", "1");
-    setSearchParams(searchParams);
+    //setSearchParams(searchParams);
+    console.log("weiner");
+    navigate(`/videos?${searchParams.toString()}`);
   }
 
   return (

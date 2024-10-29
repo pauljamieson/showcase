@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import useAuth, { User } from "../hooks/useAuth";
+import React, { useState } from "react";
 
 export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
@@ -15,23 +16,11 @@ export default function AppBar() {
           <ol>
             {isLoggedIn ? (
               <>
-                {user?.admin && (
-                  <li>
-                    <Link to={"/admin"}>
-                      <p>Admin</p>
-                    </Link>
-                  </li>
-                )}
-
                 <li>
-                  <Link to={"/profile"}>
-                    <p>{user?.name}</p>
-                  </Link>
+                  <SearchBar />
                 </li>
                 <li>
-                  <Link to={"/playlists"}>
-                    <p>Playlists</p>
-                  </Link>
+                  <UserIcon {...user} />
                 </li>
               </>
             ) : (
@@ -54,3 +43,44 @@ export default function AppBar() {
     </div>
   );
 }
+
+function SearchBar() {
+  const navigate = useNavigate();
+  const [searchParams, _] = useSearchParams();
+  const [input, setInput] = useState<string>("");
+
+  function handleSubmit(e: any) {
+    e.preventDefault();
+    input.length > 0
+      ? searchParams.set("search", input.trim())
+      : searchParams.delete("search");
+    searchParams.set("page", "1");
+    navigate(`/videos?${searchParams.toString()}`);
+  }
+
+  return (
+    <div className="searchbar-container">
+      <form onSubmit={handleSubmit}>
+        <input
+          className="searchbar"
+          type="search"
+          name="search"
+          placeholder="Search"
+          value={input}
+          onChange={(e: React.FormEvent<HTMLInputElement>) =>
+            setInput(e.currentTarget.value)
+          }
+        />
+      </form>
+    </div>
+  );
+}
+
+function UserIcon({ name }: User) {
+  return (
+    <div className="usericon-container">
+      <Link to={"/profile"}>{name.at(0)}</Link>
+    </div>
+  );
+}
+

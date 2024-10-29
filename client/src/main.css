@@ -47,7 +47,7 @@ a {
   justify-content: center;
 }
 
-/* App bar component */
+/* Appbar component */
 
 .appbar-container {
   display: flex;
@@ -73,13 +73,25 @@ a {
   margin: 0;
 }
 
-nav p {
-  text-transform: uppercase;
-}
-
 nav li {
   list-style: none;
 }
+
+.searchbar-container {
+  align-content: center;
+}
+
+.searchbar {
+  padding: 5px;
+  outline: none;
+  border: none;
+}
+
+.usericon-container {
+  padding: 5px;
+}
+
+/* Login and Signup */
 
 .signup-container,
 .login-container {

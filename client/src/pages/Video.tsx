@@ -95,7 +95,12 @@ interface Rating {
   userRating: number;
 }
 
-function StarBar({ rating, id }: { rating: Rating; id: string }) {
+interface StarBar {
+  rating: Rating;
+  id: string;
+}
+
+function StarBar({ rating, id }: StarBar) {
   return (
     <div className="rating-selector">
       {[...Array(rating.rating)].map((_, i) => (
@@ -194,13 +199,12 @@ interface QueueItem {
   views: number;
 }
 
-function VideoQueueCard({
-  video,
-  playlistId = 0,
-}: {
+interface VideoQueueCard {
   video: QueueItem;
   playlistId?: number;
-}) {
+}
+
+function VideoQueueCard({ video, playlistId = 0 }: VideoQueueCard) {
   const [searchParams, _] = useSearchParams();
   const [active, setActive] = useState<boolean>(false);
   useEffect(() => {
@@ -282,15 +286,13 @@ function TagChip({ tag, videoId }: TagChip) {
   );
 }
 
-function VideoPlayer({
-  video,
-  queue,
-  autoPlay = false,
-}: {
+interface VideoPlayer {
   video: VideoData;
   queue: VideoQueue;
   autoPlay?: boolean;
-}) {
+}
+
+function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
   // get reference to video element
   const ref = useRef<HTMLVideoElement | null>(null);
   const navigate = useNavigate();
