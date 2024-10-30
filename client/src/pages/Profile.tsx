@@ -1,4 +1,4 @@
-import { Form, useLoaderData } from "react-router-dom";
+import { Form, useLoaderData, Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 
@@ -28,7 +28,9 @@ export default function Profile() {
           <input type="text" value={loader.profile.displayname} />
         </label>
       </Form>
-      
+      <Link className="btn" to="/playlists">
+        Playlists
+      </Link>
       <button className="btn" onClick={() => clearToken()}>
         LogOut
       </button>
