@@ -7,6 +7,7 @@ import path from "path";
 async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
+
     const { id } = req.params;
 
     const t1 = prisma.videoFile.findFirst({
@@ -32,6 +33,7 @@ async function GET(req: Request, res: Response) {
       data: {
         video: {
           ...video,
+          exists: video ? true : false,
           rating: {
             rating: Math.floor(rating._avg.rating || 0),
             userRating: myRating?.rating || 0,
@@ -114,7 +116,6 @@ async function POST(req: Request, res: Response) {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";
       await rm(filePath, { recursive: true, force: true });
       await prisma.videoFile.delete({ where: { id: +videoId } });
-      // TODO on delete remove tags\persons that dont have other matches
     }
     if (intent === "regen") {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";

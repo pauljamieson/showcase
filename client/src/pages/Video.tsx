@@ -8,6 +8,7 @@ import {
   useFetcher,
   Link,
   useLocation,
+  useActionData,
 } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
@@ -20,8 +21,13 @@ import PersonModal from "../components/PersonModal";
 import useVideoQueue, { VideoQueue } from "../hooks/useVideoQueue";
 import apiRequest from "../lib/api";
 
+interface vData extends VideoData {
+  exists: boolean;
+}
+
 interface LoaderData {
-  video: VideoData;
+  video: vData;
+  exists: boolean;
 }
 
 function Video() {
@@ -29,18 +35,29 @@ function Video() {
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/" />;
 
-  const { state } = useLocation();
-
   // Get search params
   const [searchParams, _] = useSearchParams();
   const playlistId = searchParams.get("playlist");
   const position: number = +(searchParams.get("position") || 1);
+
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const actionData = useActionData() as { status: string; intent: string };
 
   // react router fetching hooks
   const { video } = useLoaderData() as LoaderData;
 
   // Get sidebar\below queue items
   const queue = useVideoQueue(playlistId ? +playlistId : undefined);
+
+  useEffect(() => {
+    if (
+      video.exists === false ||
+      (actionData?.status === "success" && actionData?.intent === "delete")
+    )
+      navigate(`/videos${state?.search}`);
+  }, [video, actionData]);
 
   return (
     <div className="video-container" key={video.id}>

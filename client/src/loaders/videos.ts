@@ -8,7 +8,6 @@ export default async ({ request }: { request: Request }) => {
       endpoint: "/videos",
       searchParams: url.searchParams,
     });
-
     if (status === "success") return { files: data.files, count: data.count };
     if (status === "failure") return { data };
   } catch (error: any) {
