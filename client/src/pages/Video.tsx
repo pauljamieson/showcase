@@ -51,9 +51,14 @@ function Video() {
   // Get sidebar\below queue items
   const queue = useVideoQueue(playlistId ? +playlistId : undefined);
 
+  // go back to videos page on delete
   useEffect(() => {
-    if (actionData?.status === "success" && actionData?.intent === "delete")
-      navigate(`/videos${state?.search}`);
+    if (actionData?.status === "success" && actionData?.intent === "delete") {
+      // If previous page was videos page go back with last search active
+      // Otherwise go back to root of videos
+      const path = state?.search ? `/videos${state.search}` : `/videos`;
+      navigate(path);
+    }
   }, [actionData]);
 
   return (
