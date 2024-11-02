@@ -52,12 +52,9 @@ function Video() {
   const queue = useVideoQueue(playlistId ? +playlistId : undefined);
 
   useEffect(() => {
-    if (
-      video.exists === false ||
-      (actionData?.status === "success" && actionData?.intent === "delete")
-    )
+    if (actionData?.status === "success" && actionData?.intent === "delete")
       navigate(`/videos${state?.search}`);
-  }, [video, actionData]);
+  }, [actionData]);
 
   return (
     <div className="video-container" key={video.id}>
