@@ -13,9 +13,9 @@ function getWindowDimensions(): Dimensions {
 function getSize(): number {
   const { width } = getWindowDimensions();
   if (width < 779) return 10;
-  if (width < 959) return 6;
-  if (width < 1439) return 8;
-  return 10;
+  if (width < 959) return 9;
+  if (width < 1439) return 12;
+  return 15;
 }
 
 export default function useLimitSize(): number {
