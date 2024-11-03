@@ -17,7 +17,7 @@ export default function AppBar() {
         <Link to={link}>
           <p className="title">Showcase</p>
         </Link>
-        <Link to={"/admin"}>A</Link>
+
         <div className="grow" />
         <nav>
           <ol>

@@ -31,9 +31,12 @@ export default function Profile() {
       <Link className="btn" to="/playlists">
         Playlists
       </Link>
-      <button className="btn" onClick={() => clearToken()}>
-        LogOut
-      </button>
+      <Link className="btn" to="/admin">
+        Admin
+      </Link>
+      <Link to="/" className="btn" onClick={() => clearToken()}>
+        Logout
+      </Link>
     </div>
   );
 }
