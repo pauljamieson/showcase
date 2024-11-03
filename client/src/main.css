@@ -575,10 +575,9 @@ input:checked + .toggler:before {
   align-self: center;
 }
 
-.profile-container a.btn { 
+.profile-container a.btn {
   width: 100%;
 }
-
 
 .file-names {
   display: flex;
@@ -764,6 +763,10 @@ img:has(~ #playall-text:hover) {
 
 .txt-bold {
   font-weight: bold;
+}
+
+.txt-underlined {
+  text-decoration: underline;
 }
 
 .txt-tiny {
@@ -1061,4 +1064,29 @@ video {
 .info-chip input {
   padding: 0px;
   text-decoration: underline;
+}
+
+/* Advanced Search */
+
+.advanced-search-container {
+
+  margin-bottom: 5px;
+  height: fit-content;
+}
+
+.callapsible {
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  interpolate-size: allow-keywords;
+  transition: height 1s ease, visibility 1s;
+}
+
+.callapsible.opened {
+  height: auto;
+  visibility: visible;
+}
+
+li {
+  margin: auto;
 }

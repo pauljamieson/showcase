@@ -5,12 +5,30 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import useAuth, { User } from "../hooks/useAuth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
   const { state } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const link = state === null ? "/" : `/videos${state?.search}`;
+  const [underlined, setUnderlined] = useState<string>("");
+
+  useEffect(() => {
+    const name = "advanced-search";
+    searchParams.has(name, "open")
+      ? setUnderlined("txt-underlined")
+      : setUnderlined("");
+  }, [searchParams]);
+
+  function handleClick() {
+    const name = "advanced-search";
+    searchParams.has(name, "open")
+      ? searchParams.delete(name)
+      : searchParams.set(name, "open");
+    setSearchParams(searchParams);
+  }
+
   return (
     <div className="appbar-container">
       <div className="appbar-inner-container">
@@ -24,7 +42,15 @@ export default function AppBar() {
             {isLoggedIn ? (
               <>
                 <li>
-                  <SearchBar />
+                  <div>
+                    <SearchBar />
+                    <span
+                      className={`txt-sm ${underlined}`}
+                      onClick={handleClick}
+                    >
+                      Advanced Search
+                    </span>
+                  </div>
                 </li>
                 <li>
                   <UserIcon {...user} />

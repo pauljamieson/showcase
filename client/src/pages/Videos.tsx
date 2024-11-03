@@ -3,7 +3,7 @@ import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
 import useAuth from "../hooks/useAuth";
 import useLimitSize from "../hooks/useLimitSize";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
 import SortOrder from "../components/SortOrder";
@@ -71,6 +71,9 @@ export default function Videos() {
 }
 
 function AdvanceSearch() {
+  const [searchParams, _] = useSearchParams();
+  const [opened, setOpened] = useState<string>("");
+
   const orders: any[] = [
     { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
     { name: "views", options: ["Least Views", "Most Views"] },
@@ -79,8 +82,13 @@ function AdvanceSearch() {
     { name: "alpha", options: ["A-Z", "Z-A"] },
   ];
 
+  useEffect(() => {
+    const name = "advanced-search";
+    searchParams.has(name, "open") ? setOpened("opened") : setOpened("");
+  }, [searchParams]);
+
   return (
-    <div>
+    <div className={`advanced-search-container callapsible ${opened}`}>
       <div className="search-bar">
         <PersonSearch /> <TagSearch />
       </div>
@@ -91,7 +99,6 @@ function AdvanceSearch() {
         <SortOrder {...orders[3]} />
         <SortOrder {...orders[4]} />
       </div>
-      <div className="videos-spacer" />
     </div>
   );
 }
