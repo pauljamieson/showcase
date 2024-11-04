@@ -184,8 +184,10 @@ function VideoInfo({ video }: { video: VideoData }) {
       <br />
       <div className="txt-sm">
         <span>Tags: </span>
-        {video.tags.map((v) => (
-          <TagChip key={v.id} tag={v} videoId={video.id} />
+        {video.tags.map(({ tag }) => (
+          <>
+            <TagChip key={tag.id} tag={tag} videoId={video.id} />
+          </>
         ))}{" "}
         <button className="btn btn-sm" name="tags" onClick={handleClick}>
           +
@@ -193,8 +195,8 @@ function VideoInfo({ video }: { video: VideoData }) {
       </div>
       <div className="txt-sm">
         <span>People: </span>
-        {video.people.map((v) => (
-          <PersonChip key={v.id} person={v} videoId={video.id} />
+        {video.people.map(({ person }) => (
+          <PersonChip key={person.id} person={person} videoId={video.id} />
         ))}{" "}
         <button className="btn btn-sm" name="people" onClick={handleClick}>
           +

@@ -9,7 +9,13 @@ async function POST(req: Request, res: Response) {
 
     const result = await prisma.person.update({
       where: { id: +personId },
-      data: { videoFiles: { disconnect: { id: +videoId } } },
+      data: {
+        videoFiles: {
+          delete: {
+            videoId_personId: { videoId: +videoId, personId: +personId },
+          },
+        },
+      },
       include: { _count: true },
     });
 

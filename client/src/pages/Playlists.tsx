@@ -59,7 +59,7 @@ function PlaylistCard({ ...playlist }: Playlist) {
     <div className="playlist-card cursor-def">
       <div className="relative">
         <Link
-          to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}`}
+          to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}&position=1`}
         >
           <div className="playlist-card-img-container">
             <img

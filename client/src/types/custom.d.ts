@@ -1,11 +1,15 @@
 export interface Person {
-  id: number;
-  name: string;
+  person: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface Tag {
-  id: number;
-  name: string;
+  tag: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface VideoData {

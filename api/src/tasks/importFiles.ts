@@ -4,6 +4,12 @@ import Ffmpeg, { ffprobe } from "fluent-ffmpeg";
 import { IncomingFile } from "@prisma/client";
 import { mkdir, opendir, rename, rm, rmdir } from "fs/promises";
 import path from "path";
+import {
+  createVideoFile,
+  deleteIncomingFileById,
+  getVideoFile,
+  updateVideoFile,
+} from "../database/database";
 
 type FileInfo = {
   filename: string;
@@ -47,9 +53,9 @@ function processFile(file: IncomingFile) {
       // read file in processing folders
       fileInfo = await getFileInfo(file);
 
+      // If dupe delete file and incoming table entry
       const isDupe = await isDuplicate(fileInfo);
       if (isDupe) {
-        // Delete file\folder from processing and entry from incoming table
         await rm(path.dirname(file.filename), {
           recursive: true,
           force: true,
@@ -65,18 +71,8 @@ function processFile(file: IncomingFile) {
         };
       }
 
-      // Create new database entry
-      const { id } = await prisma.videoFile.create({
-        data: {
-          ...fileInfo,
-          tags: {
-            connectOrCreate: {
-              where: { name: "new" },
-              create: { name: "new", userId: 1 },
-            },
-          },
-        },
-      });
+      // create videofile db entry
+      const { id } = await createVideoFile(fileInfo);
 
       // Create new folders based on database id
       fileInfo.filepath = `${Math.floor(id / 1000)}/${id % 1000}`;
@@ -94,20 +90,17 @@ function processFile(file: IncomingFile) {
       });
 
       // Update table with proper file folder using databse id
-      await prisma.videoFile.update({
-        where: { id },
+      const update = {
+        id,
         data: {
           filename: fileInfo.filename,
           filepath: fileInfo.filepath,
         },
-      });
+      };
+      await updateVideoFile(update);
 
       // Delete the entry from the incoming table
-      await prisma.incomingFile.delete({
-        where: {
-          id: file.id,
-        },
-      });
+      await deleteIncomingFileById(file.id);
 
       // generate thumb nails for preview
       await createThumbs(fileInfo.duration, newFilePath, `${destPath}/thumbs`);
@@ -217,9 +210,9 @@ async function removeEmptyFolders(folder: string, isRoot = true) {
 
 async function isDuplicate(info: FileInfo) {
   try {
-    const isFound = await prisma.videoFile.findFirst({
-      where: { filename: info.filename, size: info.size },
-    });
+    const data = { filename: info.filename, size: info.size };
+    const isFound = await getVideoFile(data);
+
     if (!isFound) return false;
     return true;
   } catch (error) {

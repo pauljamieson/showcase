@@ -3,6 +3,7 @@ import prisma from "../../lib/prisma";
 import { rm } from "fs/promises";
 import Ffmpeg from "fluent-ffmpeg";
 import path from "path";
+import { deleteFile } from "../../database/database";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -13,8 +14,11 @@ async function GET(req: Request, res: Response) {
     const t1 = prisma.videoFile.findFirst({
       where: { id: +id },
       include: {
-        tags: { orderBy: { name: "asc" } },
-        people: { orderBy: { name: "asc" } },
+        tags: { include: { tag: true }, orderBy: { tag: { name: "asc" } } },
+        people: {
+          include: { person: true },
+          orderBy: { person: { name: "asc" } },
+        },
       },
     });
 
@@ -27,7 +31,7 @@ async function GET(req: Request, res: Response) {
     });
 
     const [video, rating, myRating] = await prisma.$transaction([t1, t2, t3]);
-
+    
     res.json({
       status: "success",
       data: {
@@ -114,8 +118,10 @@ async function POST(req: Request, res: Response) {
     }`;
     if (intent === "delete") {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";
+      /*
       await rm(filePath, { recursive: true, force: true });
-      await prisma.videoFile.delete({ where: { id: +videoId } });
+      await prisma.videoFile.delete({ where: { id: +videoId } });*/
+      deleteFile(+videoId);
     }
     if (intent === "regen") {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";

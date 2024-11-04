@@ -61,8 +61,8 @@ model VideoFile {
   audioCodec    String
   views         Int      @default(0)
   
-  tags          Tag[] 
-  people        Person[]
+  tags          VideoTag[] 
+  people        VideoPerson[]
   convertId     Int? @unique
   convertVideo  CovertVideo?
   ratings       VideoRatings[]
@@ -76,7 +76,7 @@ model VideoFile {
 model Tag {
   id         Int         @id @default(autoincrement())
   name       String      @unique
-  videoFiles VideoFile[]
+  videoFiles VideoTag[]
   userId     Int
   creator    User        @relation(fields: [userId], references: [id])
 
@@ -87,7 +87,7 @@ model Tag {
 model Person {
   id         Int         @id @default(autoincrement())
   name       String      @unique
-  videoFiles VideoFile[]
+  videoFiles VideoPerson[]
   userId     Int
   creator    User        @relation(fields: [userId], references: [id])
 
@@ -135,3 +135,34 @@ model PlaylistItem {
   @@unique([videoId, playlistId]) 
   @@unique([playlistId, position])
 }
+
+model VideoTag {
+  id          Int @id @default(autoincrement())
+  
+  video       VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId     Int
+  tag         Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId       Int
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([videoId, tagId]) 
+}
+
+model VideoPerson {
+  id          Int @id @default(autoincrement())
+  
+  video       VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId     Int
+  person      Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  personId    Int
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([videoId, personId]) 
+}
+
+
+

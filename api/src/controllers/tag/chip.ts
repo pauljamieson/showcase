@@ -8,7 +8,11 @@ async function POST(req: Request, res: Response) {
 
     const result = await prisma.tag.update({
       where: { id: +tagId },
-      data: { videoFiles: { disconnect: { id: +videoId } } },
+      data: {
+        videoFiles: {
+          delete: { videoId_tagId: { videoId: +videoId, tagId: +tagId } },
+        },
+      },
       include: { _count: true },
     });
 

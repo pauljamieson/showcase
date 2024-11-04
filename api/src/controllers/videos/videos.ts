@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
 import { Prisma } from "@prisma/client";
-
+import { getVideoFiles, getVideoFilesCount } from "../../database/database";
+import { get } from "http";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -18,76 +19,67 @@ async function GET(req: Request, res: Response) {
     const duration = searchParams.get("duration");
     const size = searchParams.get("size");
 
-    const x = [
-      tags.map((t) => {
-        return { tags: { some: { name: t } } };
-      }),
-      people.map((p) => {
-        return { people: { some: { name: p } } };
-      }),
-      search.split(" ").map((word) => {
-        return { filename: { contains: word, mode: "insensitive" } };
-      }),
-    ].flat() as Prisma.VideoFileWhereInput[];
-
-    const files = await prisma.videoFile.findMany({
+    const data = {
       skip: +page * +limit - +limit,
       take: +limit,
-
       include: {
-        tags: { orderBy: { name: "asc" } },
-        people: { orderBy: { name: "asc" } },
+        tags: { orderBy: { tag: { name: "asc" } } },
+        people: { orderBy: { person: { name: "asc" } } },
         ratings: true,
-      },
-
+      } as Prisma.VideoFileInclude,
       orderBy: [
         views ? { views: views as Prisma.SortOrder } : {},
         duration ? { duration: duration as Prisma.SortOrder } : {},
         size ? { size: size as Prisma.SortOrder } : {},
         alpha ? { filename: alpha as Prisma.SortOrder } : {},
         { createdAt: order as Prisma.SortOrder },
-      ],
-
+      ] as Prisma.VideoFileOrderByWithRelationInput,
       where: {
         AND: [
           tags.map((t) => {
-            return { tags: { some: { name: t } } };
+            return { tags: { some: { tag: { name: t } } } };
           }),
           people.map((p) => {
-            return { people: { some: { name: p } } };
+            return { people: { some: { person: { name: p } } } };
           }),
           search.split(" ").map((word) => {
             return { filename: { contains: word, mode: "insensitive" } };
           }),
-        ].flat() as Prisma.VideoFileWhereInput[],
-      },
-    });
+        ].flat(),
+      } as Prisma.VideoFileWhereInput,
+    };
+
+    /*await prisma.videoFile.findMany({
+      where: { AND: [{ tags: { some: { tag: { name: "new" } } } }] },
+    });*/
+
+    const files = await getVideoFiles(data);
 
     const ratedFiles = files.map((v) => {
       return {
         ...v,
         rating: Math.floor(
-          v.ratings.map((v) => v.rating).reduce((a, c) => a + c, 0) /
-            v.ratings.length || 0
+          (v.ratings ?? []).map((v) => v.rating).reduce((a, c) => a + c, 0) /
+            (v.ratings ?? []).length || 0
         ),
       };
     });
 
-    const count = await prisma.videoFile.count({
-      where: {
-        AND: [
-          tags.map((t) => {
-            return { tags: { some: { name: t } } };
-          }),
-          people.map((p) => {
-            return { people: { some: { name: p } } };
-          }),
-          search.split(" ").map((word) => {
-            return { filename: { contains: word, mode: "insensitive" } };
-          }),
-        ].flat() as Prisma.VideoFileWhereInput[],
-      },
-    });
+    const countWhere = {
+      AND: [
+        tags.map((t) => {
+          return { tags: { some: { tag: { name: t } } } };
+        }),
+        people.map((p) => {
+          return { people: { some: { person: { name: p } } } };
+        }),
+        search.split(" ").map((word) => {
+          return { filename: { contains: word, mode: "insensitive" } };
+        }),
+      ].flat(),
+    } as Prisma.VideoFileWhereInput;
+
+    const count = await getVideoFilesCount(countWhere);
 
     res.json({ status: "success", data: { files: ratedFiles, count } });
   } catch (error) {
