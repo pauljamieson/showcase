@@ -8,9 +8,9 @@ async function GET(req: Request, res: Response) {
 
     console.log(videoId, personId);
 
-    await prisma.videoFile.update({
-      where: { id: +videoId },
-      data: { people: { connect: { id: +personId } } },
+    await prisma.person.update({
+      where: { id: +personId },
+      data: { videoFiles: { create: { videoId: +videoId } } },
     });
 
     res.json({ status: "success" });
