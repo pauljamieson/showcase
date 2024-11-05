@@ -15,7 +15,7 @@ function getSize(): number {
   if (width < 779) return 10;
   if (width < 959) return 9;
   if (width < 1439) return 12;
-  return 10;
+  return 15;
 }
 
 export default function useLimitSize(): number {
