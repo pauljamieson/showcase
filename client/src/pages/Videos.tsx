@@ -43,16 +43,22 @@ export type Person = {
 export default function Videos() {
   const auth = useAuth();
   const size = useLimitSize();
+  const [lastSize, setLastSize] = useState<number>(size);
 
   const [searchParams, setSearchParams] = useSearchParams();
   if (!auth.isLoggedIn) return <Navigate to="/login" />;
 
   useEffect(() => {
     const curLimit = searchParams.get("limit") || 10;
+    const page = searchParams.get("page") || 1;
+    const lastTotal = lastSize * +page
+    const newPage = Math.floor(lastTotal / size) >= 1 ? Math.floor(lastTotal / size) : 1;
     if (+curLimit !== size) {
       searchParams.set("limit", size.toString());
+      searchParams.set("page", newPage.toString());
       setSearchParams(searchParams);
     }
+    setLastSize(size);
   }, [size]);
 
   const data: LoaderData = useLoaderData() as LoaderData;

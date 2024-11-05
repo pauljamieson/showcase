@@ -11,11 +11,11 @@ function getWindowDimensions(): Dimensions {
 }
 
 function getSize(): number {
-  const { width, height } = getWindowDimensions();
+  const { width } = getWindowDimensions();
   if (width < 779) return 10;
-  if (width < 959) return height < 425 ? 3 : height < 750 ? 6 : 9;
-  if (width < 1439) return height < 425 ? 4 : height < 750 ? 8 : 12;
-  return height < 425 ? 5 : height < 750 ? 10 : 15;
+  if (width < 959) return 9;
+  if (width < 1439) return 12;
+  return 10;
 }
 
 export default function useLimitSize(): number {
