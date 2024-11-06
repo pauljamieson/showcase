@@ -162,7 +162,6 @@ function VideoInfo({ video }: { video: VideoData }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, _] = useSearchParams();
-
   function handleClick(e: React.BaseSyntheticEvent) {
     searchParams.set("modal", e.target.name);
     navigate(`${location.pathname}?${searchParams.toString()}`, {
@@ -185,9 +184,7 @@ function VideoInfo({ video }: { video: VideoData }) {
       <div className="txt-sm">
         <span>Tags: </span>
         {video.tags.map(({ tag }) => (
-          <>
-            <TagChip key={tag.id} tag={tag} videoId={video.id} />
-          </>
+          <TagChip key={tag.id} tag={tag} videoId={video.id} />
         ))}{" "}
         <button className="btn btn-sm" name="tags" onClick={handleClick}>
           +
@@ -228,6 +225,7 @@ interface VideoQueueCard {
 function VideoQueueCard({ video, playlistId = 0 }: VideoQueueCard) {
   const [searchParams, _] = useSearchParams();
   const [active, setActive] = useState<boolean>(false);
+
   useEffect(() => {
     if (searchParams.get("position") === video.position.toString())
       setActive(true);

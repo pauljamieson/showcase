@@ -9,6 +9,8 @@ import {
 import prisma from "../lib/prisma";
 import { create } from "domain";
 
+/* PLAYLIST */
+
 interface GetPlaylistPanel {
   playlist?: number;
   position: number;
@@ -52,12 +54,14 @@ export async function getPlaylistPanel({
   }
 }
 
-export async function deleteFile(id: number) {
+export async function deleteVideo(id: number) {
   // get all play lists
   const lists = await getFilePlaylists(id);
   // delete video for all play lists
   for await (let list of lists) await deletePlaylistItem(id, list.playlist.id);
   await prisma.videoFile.delete({ where: { id: id } });
+  await deleteTagWithoutVideo();
+  await deletePeopleWithoutVideo();
 }
 
 export async function getFilePlaylists(id: number): Promise<
@@ -150,6 +154,31 @@ export async function deleteTagByName(name: string) {
   return await prisma.tag.delete({ where: { name: name } });
 }
 
+export async function deleteTagWithoutVideo() {
+  return await prisma.tag.deleteMany({
+    where: { videoFiles: { none: {} } },
+  });
+}
+
+/* People */
+
+export async function getPersonByName(name: string) {
+  return await prisma.person.findFirst({ where: { name: name } });
+}
+
+export async function getPersonById(id: number) {
+  return await prisma.person.findFirst({ where: { id: id } });
+}
+
+export async function getPeople() {
+  return await prisma.person.findMany();
+}
+
+export async function deletePeopleWithoutVideo() {
+  return await prisma.person.deleteMany({
+    where: { videoFiles: { none: {} } },
+  });
+}
 /* Video File */
 
 interface CreateVideoFile {
@@ -240,6 +269,11 @@ export async function updateVideoFile({ id, data }: UpdateVideoFile) {
     where: { id },
     data: data,
   });
+}
+
+export async function deleteVideoFileById(id: number) {
+  // delete all playlist entries
+  // delete video file
 }
 
 /* Incoming File */
