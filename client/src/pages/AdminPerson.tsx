@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoaderData, useSearchParams, Form } from "react-router-dom";
 import apiRequest from "../lib/api";
-import {  v4 as UUID } from "uuid"
+import { v4 as UUID } from "uuid";
 
 type LoaderData = {
   status: string;
@@ -196,6 +196,7 @@ function MigrationDialog({
       searchParams.set("terms", input);
       apiRequest({ endpoint: "/people/", method: "get", searchParams }).then(
         ({ status, data }) => {
+          console.log("data", data);
           status === "success" && setOptions(data.people);
         }
       );
@@ -232,7 +233,6 @@ function MigrationDialog({
             />
             <datalist id="people">
               {options.map((val) => (
-                
                 <option value={val.name} key={UUID()} />
               ))}
             </datalist>
