@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoaderData, useSearchParams, Form } from "react-router-dom";
 import apiRequest from "../lib/api";
-import { randomUUID } from "crypto";
+import {  v4 as UUID } from "uuid"
 
 type LoaderData = {
   status: string;
@@ -233,7 +233,7 @@ function MigrationDialog({
             <datalist id="people">
               {options.map((val) => (
                 
-                <option value={val.name} key={randomUUID()} />
+                <option value={val.name} key={UUID()} />
               ))}
             </datalist>
 
