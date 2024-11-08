@@ -7,7 +7,7 @@ export default async ({ request }: { request: Request }) => {
     id: formData.get("id") as string,
     name: formData.get("name") as string,
     newName: formData.get("newName") as string,
-    migrateName: formData.get("migrateName") as string,
+    migrateId: formData.get("migrateId") as string,
   };
 
   try {

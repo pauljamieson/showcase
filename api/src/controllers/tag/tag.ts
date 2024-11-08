@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
+import { deleteTagById } from "../../database/database";
 
 async function POST(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
     const { name, videoId }: { name: string; videoId: string } = req.body;
 
-    if (name === null) return res.json({ status: "ok" });
-    if (videoId === null) return res.json({ status: "ok" });
+    if (name === null) return res.json({ status: "failure", message: "Name is required." });
+    if (videoId === null) return res.json({ status: "failure",  message: "Video ID is required." });
 
     const tag = await prisma.tag.upsert({
       where: { name: name },
@@ -31,10 +32,8 @@ async function DELETE(req: Request, res: Response) {
     if (!res.locals.isLogged) throw "Not logged in.";
     const { id }: { id: string } = req.body;
     if (id === null) return res.json({ status: "failure" });
-    const tag = await prisma.tag.delete({
-      where: { id: +id },
-    });
-
+    await deleteTagById(+id)
+  
     res.json({ status: "success" });
   } catch (error) {
     console.error(error);

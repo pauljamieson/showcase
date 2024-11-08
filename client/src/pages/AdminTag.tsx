@@ -213,6 +213,11 @@ function MigrationDialog({
           Migrate
           <Form method="post">
             <input type="hidden" name="id" value={id} />
+            <input
+              type="hidden"
+              name="migrateId"
+              value={options.find((val) => val.name === input)?.id}
+            />
             <input type="hidden" name="name" value={name} />
             <input
               className="search-input"

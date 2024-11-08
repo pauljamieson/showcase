@@ -1,8 +1,8 @@
 import apiRequest from "../lib/api";
 
 export default async ({ request }: { request: Request }) => {
-  const url = new URL(request.url);
   try {
+    const url = new URL(request.url);
     const { status, data } = await apiRequest({
       method: "get",
       endpoint: "/tags/",

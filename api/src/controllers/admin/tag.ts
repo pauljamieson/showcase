@@ -1,18 +1,19 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
+import { migrateTagById } from "../../database/database";
 
 type RequestBody = {
   intent: string;
   id: string;
   name: string;
-  migrateName: string;
+  migrateId: string;
   newName: string;
 };
 
 async function POST(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
-    const { intent, id, name, migrateName, newName }: RequestBody = req.body;
+    const { intent, id, name, migrateId, newName }: RequestBody = req.body;
     if (name && name.toLowerCase() === "new")
       throw "Can not modify default tags.";
     switch (intent) {
@@ -20,34 +21,9 @@ async function POST(req: Request, res: Response) {
         await prisma.tag.delete({ where: { id: +id } });
         break;
       case "Migrate":
-        if (!migrateName) throw "Migrate ID not provided.";
-
-        // get all the files with the original tag name
-        const videoFiles = await prisma.videoFile.findMany({
-          select: { id: true },
-          where: { tags: { some: { id: +id } } },
-        });
-
+        if (!migrateId) throw "Migrate ID not provided.";
         // create new connections to migrate name
-        await Promise.allSettled(
-          videoFiles.map((v) => {
-            if (migrateName) {
-              const result = prisma.tag.upsert({
-                where: { name: migrateName },
-                create: {
-                  name: migrateName,
-                  creator: { connect: { id: +res.locals.user } },
-                  videoFiles: { connect: { id: +v.id } },
-                },
-                update: { videoFiles: { connect: { id: +v.id } } },
-              });
-              return result;
-            }
-          })
-        );
-
-        // remove the old tag after migration
-        const deleted = await prisma.tag.delete({ where: { name: name } });
+        await migrateTagById(+id, +migrateId);
         break;
       case "Edit":
         if (!newName) throw "New name not given.";

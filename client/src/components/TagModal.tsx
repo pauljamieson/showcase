@@ -79,7 +79,7 @@ export default function TagModal() {
               />
               <datalist id="tags">
                 {options.map((val) => (
-                  <option>{val.name}</option>
+                  <option key={val.id}>{val.name}</option>
                 ))}
               </datalist>
               <input type="hidden" name="video-id" value={id} />

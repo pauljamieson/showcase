@@ -1,52 +1,26 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
-import person from "../person/person";
+import { migratePersonById } from "../../database/database";
 
 type RequestBody = {
   intent: string;
   id: string;
   name: string;
-  migrateName: string;
+  migrateId: string;
   newName: string;
 };
 
 async function POST(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
-    const { intent, id, name, migrateName, newName }: RequestBody = req.body;
+    const { intent, id, migrateId, newName }: RequestBody = req.body;
     switch (intent) {
       case "Delete":
         await prisma.person.delete({ where: { id: +id } });
         break;
       case "Migrate":
-        if (!migrateName) throw "Migrate ID not provided.";
-
-        // get all the files with the original person name
-        const videoFiles = await prisma.videoFile.findMany({
-          select: { id: true },
-          where: { people: { some: { id: +id } } },
-        });
-
-        // create new connections to migrate name
-        await Promise.allSettled(
-          videoFiles.map((v) => {
-            if (migrateName) {
-              const result = prisma.person.upsert({
-                where: { name: migrateName },
-                create: {
-                  name: migrateName,
-                  creator: { connect: { id: +res.locals.user } },
-                  videoFiles: { connect: { id: +v.id } },
-                },
-                update: { videoFiles: { connect: { id: +v.id } } },
-              });
-              return result;
-            }
-          })
-        );
-
-        // remove the old person after migration
-        const deleted = await prisma.person.delete({ where: { name: name } });
+        if (!migrateId) throw "Migrate ID not provided.";
+        await migratePersonById(+id, +migrateId);
         break;
       case "Edit":
         if (!newName) throw "New name not given.";

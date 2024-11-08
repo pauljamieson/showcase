@@ -160,6 +160,29 @@ export async function deleteTagWithoutVideo() {
   });
 }
 
+export async function getVideoFilesByTagId(id: number) {
+  return await prisma.videoFile.findMany({
+    where: { tags: { some: { tagId: id } } },
+  });
+}
+
+export async function migrateTagById(id: number, migrateId: number) {
+  // get all video files with tag
+  const videoFiles = await getVideoFilesByTagId(id);
+  // create new connections
+  await Promise.allSettled(
+    videoFiles.map((v) => {
+      return prisma.videoTag.upsert({
+        where: { videoId_tagId: { videoId: v.id, tagId: migrateId } },
+        create: { videoId: v.id, tagId: migrateId },
+        update: { videoId: v.id, tagId: migrateId },
+      });
+    })
+  );
+  // delete old tag
+  await deleteTagById(id);
+}
+
 /* People */
 
 export async function getPersonByName(name: string) {
@@ -179,6 +202,34 @@ export async function deletePeopleWithoutVideo() {
     where: { videoFiles: { none: {} } },
   });
 }
+
+export async function migratePersonById(id: number, migrateId: number) {
+  // get all video files with person
+  const videoFiles = await getVideoFilesByPersonId(id);
+  // create new connections
+  await Promise.allSettled(
+    videoFiles.map((v) => {
+      return prisma.videoPerson.upsert({
+        where: { videoId_personId: { videoId: v.id, personId: migrateId } },
+        create: { videoId: v.id, personId: migrateId },
+        update: { videoId: v.id, personId: migrateId },
+      });
+    })
+  );
+  // delete old person
+  await deletePersonById(id);
+}
+
+export async function getVideoFilesByPersonId(id: number) {
+  return await prisma.videoFile.findMany({
+    where: { people: { some: { personId: id } } },
+  });
+}
+
+export async function deletePersonById(id: number) {
+  return await prisma.person.delete({ where: { id: id } });
+}
+
 /* Video File */
 
 interface CreateVideoFile {
