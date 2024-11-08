@@ -24,6 +24,7 @@ async function GET(req: Request, res: Response) {
         name: "asc",
       },
     });
+    console.log(result);
     res.json({ status: "success", data: { people: result } });
   } catch (error) {
     console.error(error);
