@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoaderData, useSearchParams, Form } from "react-router-dom";
 import apiRequest from "../lib/api";
+import { randomUUID } from "crypto";
 
 type LoaderData = {
   status: string;
@@ -189,6 +190,7 @@ function MigrationDialog({
       clearTimeout(timer);
       setTimer(undefined);
     }
+
     const TO = setTimeout(() => {
       const searchParams = new URLSearchParams();
       searchParams.set("terms", input);
@@ -230,7 +232,8 @@ function MigrationDialog({
             />
             <datalist id="people">
               {options.map((val) => (
-                <option value={val.name} key={val.id} />
+                
+                <option value={val.name} key={randomUUID()} />
               ))}
             </datalist>
 

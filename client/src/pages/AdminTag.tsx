@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoaderData, Form, useSearchParams } from "react-router-dom";
 import apiRequest from "../lib/api";
+import { randomUUID } from "crypto";
 
 type LoaderData = {
   status: string;
@@ -195,6 +196,7 @@ function MigrationDialog({
       apiRequest({ endpoint: "/tags/", method: "get", searchParams }).then(
         ({ status, data }) => {
           status === "success" && setOptions(data.tags);
+        
         }
       );
     }, 750);
@@ -230,7 +232,7 @@ function MigrationDialog({
             />
             <datalist id="tags">
               {options.map((val) => (
-                <option value={val.name} key={val.id} />
+                <option value={val.name} key={randomUUID()} />
               ))}
             </datalist>
 

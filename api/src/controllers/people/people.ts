@@ -4,7 +4,9 @@ import prisma from "../../lib/prisma";
 async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
+
     const terms = (req.query.terms as string) || "";
+    console.log(terms);
     const result = await prisma.person.findMany({
       select: {
         id: true,
@@ -22,7 +24,6 @@ async function GET(req: Request, res: Response) {
         name: "asc",
       },
     });
-
     res.json({ status: "success", data: { people: result } });
   } catch (error) {
     console.error(error);
