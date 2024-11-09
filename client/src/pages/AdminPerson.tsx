@@ -196,18 +196,12 @@ function MigrationDialog({
       searchParams.set("terms", input);
       apiRequest({ endpoint: "/people/", method: "get", searchParams }).then(
         ({ status, data }) => {
-          console.log("status", status);
-          console.log("data", data);
           status === "success" && setOptions(data.people);
         }
       );
     }, 750);
     setTimer(TO);
   }, [input]);
-
-  useEffect(() => {
-    console.log(options);
-  }, [options]);
 
   useEffect(() => {
     open ? migrateRef.current?.showModal() : migrateRef.current?.close();
@@ -236,7 +230,7 @@ function MigrationDialog({
               onChange={(e) => setInput(e.target.value)}
               autoComplete="off"
             />
-            <datalist id="people">
+            <datalist id="people" key={UUID()}>
               {options.map((val) => (
                 <option value={val.name} key={UUID()} />
               ))}

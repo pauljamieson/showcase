@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLoaderData, Form, useSearchParams } from "react-router-dom";
+import { useLoaderData, useSearchParams, Form } from "react-router-dom";
 import apiRequest from "../lib/api";
 import { v4 as UUID } from "uuid";
 
@@ -229,7 +229,7 @@ function MigrationDialog({
               onChange={(e) => setInput(e.target.value)}
               autoComplete="off"
             />
-            <datalist id="tags">
+            <datalist id="tags" key={UUID()}>
               {options.map((val) => (
                 <option value={val.name} key={UUID()} />
               ))}
