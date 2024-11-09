@@ -47,7 +47,7 @@ export default function AdminTag() {
         />
       </div>
       {tags.length > 0 ? (
-        tags.map((val) => <Row key={val.id} {...val} />)
+        tags.map((val) => <Row key={UUID()} {...val} />)
       ) : (
         <div className="flex-container-center">
           <p>No tags match.</p>

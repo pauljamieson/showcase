@@ -47,7 +47,7 @@ export default function AdminPerson() {
         />
       </div>
       {people.length > 0 ? (
-        people.map((val) => <Row key={val.id} {...val} />)
+        people.map((val) => <Row key={UUID()} {...val} />)
       ) : (
         <div className="flex-container-center">
           <p>No names match.</p>
