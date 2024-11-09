@@ -196,6 +196,7 @@ function MigrationDialog({
       searchParams.set("terms", input);
       apiRequest({ endpoint: "/people/", method: "get", searchParams }).then(
         ({ status, data }) => {
+          console.log("status", status);
           console.log("data", data);
           status === "success" && setOptions(data.people);
         }
