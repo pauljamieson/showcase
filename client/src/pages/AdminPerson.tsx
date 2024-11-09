@@ -206,6 +206,10 @@ function MigrationDialog({
   }, [input]);
 
   useEffect(() => {
+    console.log(options);
+  }, [options]);
+
+  useEffect(() => {
     open ? migrateRef.current?.showModal() : migrateRef.current?.close();
   }, [open]);
 
