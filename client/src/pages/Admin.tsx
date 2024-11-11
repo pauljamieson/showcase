@@ -16,7 +16,6 @@ export default function () {
         <Link className="btn" to={"people"}>
           Manage People
         </Link>
-        <button className="btn">Maintenance</button>
       </div>
     </div>
   );

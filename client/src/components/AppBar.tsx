@@ -11,7 +11,7 @@ export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
   const { state } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const link = state === null ? "/" : `/videos${state?.search}`;
+  const link = `/videos${state?.search ? state.search : ""}`;
   const [underlined, setUnderlined] = useState<string>("");
 
   useEffect(() => {

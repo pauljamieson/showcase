@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
-import { migratePersonById } from "../../database/database";
+import { migratePersonById, updatePersonById } from "../../database/database";
 
 type RequestBody = {
   intent: string;
@@ -25,10 +25,7 @@ async function POST(req: Request, res: Response) {
       case "Edit":
         if (!newName) throw "New name not given.";
         const n = capitalize(newName);
-        const resp = await prisma.person.update({
-          where: { id: +id },
-          data: { name: n },
-        });
+        await updatePersonById(+id, n); 
         break;
       default:
         break;

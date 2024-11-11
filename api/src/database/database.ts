@@ -230,6 +230,10 @@ export async function deletePersonById(id: number) {
   return await prisma.person.delete({ where: { id: id } });
 }
 
+export async function updatePersonById(id: number, name: string) { 
+  return await prisma.person.update({ where: { id }, data: { name } });
+ }
+
 /* Video File */
 
 interface CreateVideoFile {
