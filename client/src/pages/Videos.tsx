@@ -1,4 +1,9 @@
-import { Navigate, useLoaderData, useSearchParams } from "react-router-dom";
+import {
+  Navigate,
+  useLoaderData,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
 import useAuth from "../hooks/useAuth";
@@ -7,6 +12,7 @@ import { useEffect, useState } from "react";
 import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
 import SortOrder from "../components/SortOrder";
+import apiRequest, { RequestConfig } from "../lib/api";
 
 type LoaderData = {
   files: VideoFile[];
@@ -51,8 +57,9 @@ export default function Videos() {
   useEffect(() => {
     const curLimit = searchParams.get("limit") || 10;
     const page = searchParams.get("page") || 1;
-    const lastTotal = lastSize * +page
-    const newPage = Math.floor(lastTotal / size) >= 1 ? Math.floor(lastTotal / size) : 1;
+    const lastTotal = lastSize * +page;
+    const newPage =
+      Math.floor(lastTotal / size) >= 1 ? Math.floor(lastTotal / size) : 1;
     if (+curLimit !== size) {
       searchParams.set("limit", size.toString());
       searchParams.set("page", newPage.toString());
@@ -77,6 +84,7 @@ export default function Videos() {
 }
 
 function AdvanceSearch() {
+  const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [opened, setOpened] = useState<string>("");
 
@@ -93,10 +101,32 @@ function AdvanceSearch() {
     searchParams.has(name, "open") ? setOpened("opened") : setOpened("");
   }, [searchParams]);
 
+  function handleClick() {
+    const terms = searchParams.get("search") || "";
+    const people = searchParams.getAll("people");
+    const tags = searchParams.getAll("tags");
+    const body = { terms, people, tags };
+
+    const data: RequestConfig = {
+      method: "post",
+      endpoint: "/videos",
+      body,
+    };
+    apiRequest(data).then(({ status, data, error }) => {
+      if (error) return console.error(error);
+      if (status === "success") {
+        navigate(`/video/${data.id}`);
+      }
+    });
+  }
+
   return (
     <div className={`advanced-search-container callapsible ${opened}`}>
       <div className="search-bar">
-        <PersonSearch /> <TagSearch />
+        <PersonSearch /> <TagSearch />{" "}
+        <button className="btn" onClick={handleClick}>
+          I'm Feeling Lucky
+        </button>
       </div>
       <div className="toggle-bar">
         <SortOrder {...orders[0]} />

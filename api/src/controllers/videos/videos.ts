@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import prisma from "../../lib/prisma";
 import { Prisma } from "@prisma/client";
 import { getVideoFiles, getVideoFilesCount } from "../../database/database";
-import { get } from "http";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -49,10 +47,6 @@ async function GET(req: Request, res: Response) {
       } as Prisma.VideoFileWhereInput,
     };
 
-    /*await prisma.videoFile.findMany({
-      where: { AND: [{ tags: { some: { tag: { name: "new" } } } }] },
-    });*/
-
     const files = await getVideoFiles(data);
 
     const ratedFiles = files.map((v) => {
@@ -88,4 +82,38 @@ async function GET(req: Request, res: Response) {
   }
 }
 
-export default { GET };
+async function POST(req: Request, res: Response) {
+  try {
+    console.log(req.body);
+
+    const { terms, people, tags } = req.body;
+    const data = {
+      where: {
+        AND: [
+          tags.map((t: string) => {
+            return { tags: { some: { tag: { name: t } } } };
+          }),
+          people.map((p: string) => {
+            return { people: { some: { person: { name: p } } } };
+          }),
+          terms.split(" ").map((word: string) => {
+            return { filename: { contains: word, mode: "insensitive" } };
+          }),
+        ].flat(),
+      } as Prisma.VideoFileWhereInput,
+    };
+    const count: number = await getVideoFilesCount(data.where);
+    const randomVideo = Math.floor(Math.random() * count + 1);
+    const videoFiles = await getVideoFiles({
+      where: data.where,
+      skip: randomVideo,
+      take: 1,
+    });
+    res.json({ status: "success", data: { id: videoFiles[0].id } });
+  } catch (error) {
+    console.error(error);
+    res.json({ status: "failure" });
+  }
+}
+
+export default { GET, POST };
