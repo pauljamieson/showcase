@@ -32,10 +32,16 @@ async function importFile() {
       orderBy: { filename: "asc" },
     });
 
-    for await (const file of files) {
+    const orderedFiles = files.sort((b, a) => {
+      return a.filename
+        .slice(a.filename.lastIndexOf("/"))
+        .localeCompare(b.filename.slice(b.filename.lastIndexOf("/")));
+    });
+
+    for await (const file of orderedFiles) {
       await processFile(file);
     }
-    //await removeEmptyFolders("./app_data/processing");*/
+    await removeEmptyFolders("./app_data/processing");
     isActive = false;
   } catch (error) {
     console.error(error);
@@ -190,22 +196,23 @@ function createThumbs(
   });
 }
 
-async function removeEmptyFolders(folder: string, isRoot = true) {
+async function removeEmptyFolders(folder: string) {
   try {
     const dir = await opendir(folder);
-    let hasFiles = false;
     for await (const dirent of dir) {
       if (dirent.isDirectory()) {
-        await removeEmptyFolders(
-          path.join(dirent.parentPath, dirent.name),
-          false
-        );
+        await removeEmptyFolders(path.join(dirent.parentPath, dirent.name));
       }
-      if (dirent.isFile()) hasFiles = true;
     }
-
-    if (isRoot === false && hasFiles === false) await rmdir(folder);
-  } catch (error) {}
+    const dir2 = await opendir(folder);
+    let isEmpty = true;
+    for await (const dirent of dir2) {
+      isEmpty = false;
+    }
+    if (isEmpty && folder !== "./app_data/processing") await rmdir(folder);
+  } catch (error) {
+    throw "Failed to removeEmptyFolders";
+  }
 }
 
 async function isDuplicate(info: FileInfo) {

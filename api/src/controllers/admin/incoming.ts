@@ -41,30 +41,29 @@ async function walkTree(folder: string) {
       } else if (dirent.isFile())
         await unlink(path.join(dirent.parentPath, dirent.name));
     }
-    //await removeEmptyFolders("./app_data/incoming");
     return files;
   } catch (error) {
+    console.error(error);
     throw "Failed to walkTree";
   }
 }
 
-async function removeEmptyFolders(folder: string, isRoot = true) {
+async function removeEmptyFolders(folder: string) {
   try {
-    
     const dir = await opendir(folder);
-    let hasFiles = false;
     for await (const dirent of dir) {
       if (dirent.isDirectory()) {
-        await removeEmptyFolders(
-          path.join(dirent.parentPath, dirent.name),
-          false
-        );
+        await removeEmptyFolders(path.join(dirent.parentPath, dirent.name));
       }
-      if (dirent.isFile()) hasFiles = true;
     }
-    if (isRoot === false && hasFiles === false) await rmdir(folder);
+    const dir2 = await opendir(folder);
+    let isEmpty = true;
+    for await (const dirent of dir2) {
+      isEmpty = false;
+    }
+    if (isEmpty && folder !== "./app_data/incoming") await rmdir(folder);
   } catch (error) {
-    console.error(error);
+    throw "Failed to removeEmptyFolders";
   }
 }
 
@@ -72,6 +71,7 @@ async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
     const files: string[] = await walkTree("./app_data/incoming");
+    await removeEmptyFolders("./app_data/incoming");
     files.sort();
     res.setHeader("Authorization", `${req.header("Authorization")}`);
 
@@ -94,10 +94,10 @@ async function POST(req: Request, res: Response) {
       await prisma.incomingFile.create({
         data: {
           filename: `./app_data/processing/${folderId}/${basename(path)}`,
-        }, 
+        },
       });
     }
-    //await removeEmptyFolders("./app_data/incoming");
+    await removeEmptyFolders("./app_data/incoming");
     res.json({ status: "success" });
   } catch (error) {
     console.error(error);
