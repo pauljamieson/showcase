@@ -11,6 +11,42 @@ import { create } from "domain";
 
 /* PLAYLIST */
 
+export async function getPlaylistsByUserId(id: number) {
+  return await prisma.playlist.findMany({
+    where: { userId: id },
+  });
+}
+
+export async function getPlaylistById(id: number) {
+  return await prisma.playlist.findFirst({
+    where: { id: id },
+    include: {
+      playlistItems: {
+        include: {
+          video: {
+            select: {
+              duration: true,
+              filename: true,
+              filepath: true,
+              id: true,
+              views: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function getPlaylistsByUserIdWithVideoId(
+  userId: number,
+  videoId: number
+) {
+  return await prisma.playlist.findMany({
+    where: { userId, playlistItems: { some: { videoId } } },
+  });
+}
+
 interface GetPlaylistPanel {
   playlist?: number;
   position: number;
@@ -99,7 +135,7 @@ export async function deletePlaylistItem(
   return {};
 }
 
-async function fixPlaylistPositions(id: number, position: number) {
+export async function fixPlaylistPositions(id: number, position: number) {
   // get items that come in playlist after deleted item
   const items = await prisma.playlistItem.findMany({
     where: { playlistId: id, position: { gte: position } },
@@ -114,6 +150,35 @@ async function fixPlaylistPositions(id: number, position: number) {
     });
 }
 
+export async function createPlaylist(name: string, user: number) {
+  return await prisma.playlist.create({
+    data: {
+      name: name,
+      user: { connect: { id: user } },
+    },
+  });
+}
+
+export async function createPlaylistItem(playlistId: number, videoId: number) {
+  //get last position in playlist
+  const {
+    _max: { position },
+  } = await prisma.playlistItem.aggregate({
+    where: { playlistId: playlistId },
+    _max: { position: true },
+  });
+
+  // create new playlist item if not already in list
+  return await prisma.playlistItem.upsert({
+    where: { videoId_playlistId: { videoId, playlistId } },
+    create: {
+      playlistId: playlistId,
+      videoId: videoId,
+      position: position! + 1,
+    },
+    update: {},
+  });
+}
 /* TAGS */
 
 export async function getTagByName(name: string) {
@@ -134,15 +199,15 @@ export async function getTagsByVideoId(id: number) {
   });
 }
 
-export async function createTag(name: string, videoId: number) {
+export async function createTag(name: string, videoId: number, userId: number) {
   return await prisma.tag.upsert({
     where: { name: name },
     create: {
       name: name,
-      creator: { connect: { id: 1 } },
-      videoFiles: { connect: { id: videoId } },
+      creator: { connect: { id: userId } },
+      videoFiles: { create: { videoId } },
     },
-    update: { videoFiles: { connect: { id: videoId } } },
+    update: { videoFiles: { create: { videoId } } },
   });
 }
 
@@ -158,6 +223,10 @@ export async function deleteTagWithoutVideo() {
   return await prisma.tag.deleteMany({
     where: { videoFiles: { none: {} } },
   });
+}
+
+export async function updateTagById(id: number, name: string) {
+  return await prisma.tag.update({ where: { id }, data: { name } });
 }
 
 export async function getVideoFilesByTagId(id: number) {
@@ -193,8 +262,14 @@ export async function getPersonById(id: number) {
   return await prisma.person.findFirst({ where: { id: id } });
 }
 
-export async function getPeople() {
-  return await prisma.person.findMany();
+export async function getPeople(query: {
+  select?: Prisma.PersonSelect;
+  where?: Prisma.PersonWhereInput;
+  take?: number;
+  skip?: number;
+  orderBy?: { name: Prisma.SortOrder };
+}) {
+  return await prisma.person.findMany(query);
 }
 
 export async function deletePeopleWithoutVideo() {
@@ -230,9 +305,34 @@ export async function deletePersonById(id: number) {
   return await prisma.person.delete({ where: { id: id } });
 }
 
-export async function updatePersonById(id: number, name: string) { 
-  return await prisma.person.update({ where: { id }, data: { name } });
- }
+export async function updatePersonById(query: {
+  where: Prisma.PersonWhereUniqueInput;
+  data: Prisma.PersonUpdateInput;
+  include?: Prisma.PersonInclude;
+  select?: Prisma.PersonSelect;
+}): Promise<Person> {
+  return await prisma.person.update(query);
+}
+
+export async function countPersonConnectionsById(id: number): Promise<number> {
+  return await prisma.videoPerson.count({ where: { personId: id } });
+}
+
+export async function createPerson(
+  name: string,
+  videoId: number,
+  userId: number
+) {
+  return await prisma.person.upsert({
+    where: { name: name },
+    create: {
+      name: name,
+      creator: { connect: { id: userId } },
+      videoFiles: { create: { videoId } },
+    },
+    update: { videoFiles: { create: { videoId } } },
+  });
+}
 
 /* Video File */
 
@@ -272,7 +372,32 @@ export async function createVideoFile({
 }
 
 export async function getVideoFileById(id: number) {
-  return await prisma.videoFile.findFirst({ where: { id: id } });
+  return await prisma.videoFile.findFirstOrThrow({
+    where: { id: id },
+    include: {
+      tags: { include: { tag: true }, orderBy: { tag: { name: "asc" } } },
+      people: {
+        include: { person: true },
+        orderBy: { person: { name: "asc" } },
+      },
+    },
+  });
+}
+
+export async function getVideoRatingsByVideoId(id: number) {
+  return await prisma.videoRatings.aggregate({
+    where: { videoId: +id },
+    _avg: { rating: true },
+  });
+}
+
+export async function getVideoRatingByVideoIdAndUserId(
+  videoId: number,
+  userId: number
+) {
+  return await prisma.videoRatings.findFirst({
+    where: { videoId: +videoId, userId: +userId },
+  });
 }
 
 export async function getVideoFile(data: Prisma.VideoFileWhereInput) {
@@ -314,12 +439,13 @@ export async function getVideoFilesCount(where: Prisma.VideoFileWhereInput) {
   return await prisma.videoFile.count({ where });
 }
 
-interface UpdateVideoFile {
+export async function updateVideoFile({
+  id,
+  data,
+}: {
   id: number;
   data: Prisma.VideoFileUpdateInput;
-}
-
-export async function updateVideoFile({ id, data }: UpdateVideoFile) {
+}) {
   return await prisma.videoFile.update({
     where: { id },
     data: data,
@@ -331,8 +457,98 @@ export async function deleteVideoFileById(id: number) {
   // delete video file
 }
 
+/* Video Ratings */
+
+export async function updateVideoRating({
+  videoId,
+  userId,
+  rating,
+}: {
+  videoId: number;
+  userId: number;
+  rating: number;
+}) {
+  return await prisma.videoRatings.upsert({
+    where: { videoId_userId: { videoId, userId } },
+    create: { videoId, userId, rating },
+    update: { rating },
+  });
+}
+
 /* Incoming File */
 
 export async function deleteIncomingFileById(id: number) {
   return await prisma.incomingFile.delete({ where: { id: id } });
+}
+
+export async function createIncomingFile({
+  folder,
+  filename,
+}: {
+  folder: string;
+  filename: string;
+}) {
+  await prisma.incomingFile.create({
+    data: {
+      filename: `./app_data/processing/${folder}/${filename}`,
+    },
+  });
+}
+
+export async function getIncomingFiles() {
+  return await prisma.incomingFile.findMany({
+    orderBy: { filename: "asc" },
+  });
+}
+
+/* User */
+
+export async function getUserByEmail(email: string) {
+  return await prisma.user.findFirst({ where: { email: email } });
+}
+
+export async function getUserById(id: number) {
+  return await prisma.user.findFirst({ where: { id: id } });
+}
+
+export async function createUser({
+  email,
+  password,
+  displayname,
+}: {
+  email: string;
+  password: string;
+  displayname: string;
+}) {
+  return await prisma.user.create({
+    data: {
+      email: email,
+      password: password,
+      displayname: displayname,
+    },
+  });
+}
+
+/* Coverting Video */
+
+export async function createConvertVideo(id: number) {
+  return await prisma.convertVideo.create({
+    data: {
+      videoFileId: id,
+    },
+  });
+}
+
+export async function getConvertVideos(query: {
+  select?: Prisma.ConvertVideoSelect;
+  where?: Prisma.ConvertVideoWhereInput;
+  take?: number;
+  skip?: number;
+  orderBy?: Prisma.ConvertVideoOrderByWithRelationInput;
+}) {
+  return await prisma.convertVideo.findMany();
+}
+
+export async function deleteConvertVideoById(id: number) {
+  return await prisma.convertVideo.delete({ where: { id: id } });
 }

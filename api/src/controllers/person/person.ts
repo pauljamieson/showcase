@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../../lib/prisma";
+import { createPerson } from "../../database/database";
 
 async function POST(req: Request, res: Response) {
   try {
@@ -9,15 +9,7 @@ async function POST(req: Request, res: Response) {
     if (name === null) return res.json({ status: "ok" });
     if (videoId === null) return res.json({ status: "ok" });
 
-    await prisma.person.upsert({
-      where: { name: name },
-      create: {
-        name: name,
-        creator: { connect: { id: +res.locals.user } },
-        videoFiles: { create: { videoId: +videoId } },
-      },
-      update: { videoFiles: { create: { videoId: +videoId } } },
-    });
+    await createPerson(name, +videoId, +res.locals.user);
 
     res.json({ status: "success" });
   } catch (error) {

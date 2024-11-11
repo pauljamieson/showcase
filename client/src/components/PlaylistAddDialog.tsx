@@ -10,17 +10,16 @@ export default function PlaylistAddDialog({ videoId }: p) {
   const fetcher = useFetcher();
   const ref = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
-    if (fetcher.state === "idle" && !fetcher.data) {
-      fetcher.load(`/video/${videoId}/playlist`);
-    }
-  }, [fetcher]);
 
+  // open and close model based on search params
   useEffect(() => {
-    if (searchParams.get("modal") === "playlist") ref.current?.showModal();
-    else ref.current?.close();
+    if (searchParams.get("modal") === "playlist") {
+      fetcher.load(`/video/${videoId}/playlist`);
+      ref.current?.showModal();
+    } else ref.current?.close();
   }, [searchParams]);
 
+  // delete modal search param on close
   function handleClick() {
     searchParams.delete("modal");
     setSearchParams(searchParams);

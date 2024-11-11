@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
-import prisma from "../../lib/prisma";
-import { migrateTagById } from "../../database/database";
+import {
+  deleteTagById,
+  migrateTagById,
+  updateTagById,
+} from "../../database/database";
 
 type RequestBody = {
   intent: string;
@@ -18,7 +21,7 @@ async function POST(req: Request, res: Response) {
       throw "Can not modify default tags.";
     switch (intent) {
       case "Delete":
-        await prisma.tag.delete({ where: { id: +id } });
+        await deleteTagById(+id);
         break;
       case "Migrate":
         if (!migrateId) throw "Migrate ID not provided.";
@@ -28,10 +31,7 @@ async function POST(req: Request, res: Response) {
       case "Edit":
         if (!newName) throw "New name not given.";
         const n = capitalize(newName);
-        const resp = await prisma.tag.update({
-          where: { id: +id },
-          data: { name: n },
-        });
+        await updateTagById(+id, n);
         break;
       default:
         break;

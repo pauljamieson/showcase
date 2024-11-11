@@ -1,20 +1,19 @@
 import { Request, Response } from "express";
-
-import prisma from "../../lib/prisma";
+import {
+  getTagByName,
+  getVideoFiles,
+  updateVideoFile,
+} from "../../database/database";
 
 async function GET(req: Request, res: Response) {
   try {
     if (req.query.action === "new") {
-      const res = await prisma.videoFile.findMany({
-        where: { tags: { none: {} } },
-      });
-      const newTag = await prisma.tag.findFirst({ where: { name: "New" } });
+      const files = await getVideoFiles({ where: { tags: { none: {} } } });
+      const newTag = await getTagByName("New");
       if (!newTag) throw "New tag not found.";
-      for await (const file of res) {
-        await prisma.videoFile.update({
-          where: { id: file.id },
-          data: { tags: { create: { tagId: newTag.id } } },
-        });
+      for await (const file of files) {
+        const update = { tags: { create: { tagId: newTag.id } } };
+        await updateVideoFile({ id: file.id, data: update });
       }
     }
     res.json({ status: "success", data: {} });

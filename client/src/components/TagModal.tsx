@@ -61,7 +61,7 @@ export default function TagModal() {
       <div className="centerpoint">
         <dialog className="modal" open={open}>
           <div className="modal-container">
-            <span>TAGS</span>
+            <span>Tags</span>
             <fetcher.Form
               className="modal-form"
               method="POST"

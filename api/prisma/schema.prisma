@@ -40,7 +40,7 @@ model IncomingFile {
   updatedAt DateTime @updatedAt
 }
 
-model CovertVideo {
+model ConvertVideo {
   id          Int      @id @default(autoincrement())
   videoFileId Int @unique
   videoFile   VideoFile @relation(fields: [videoFileId], references: [id])
@@ -64,7 +64,7 @@ model VideoFile {
   tags          VideoTag[] 
   people        VideoPerson[]
   convertId     Int? @unique
-  convertVideo  CovertVideo?
+  convertVideo  ConvertVideo?
   ratings       VideoRatings[]
   playlistItems PlaylistItem[]
   createdAt     DateTime @default(now())

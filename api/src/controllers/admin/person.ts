@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
-import prisma from "../../lib/prisma";
-import { migratePersonById, updatePersonById } from "../../database/database";
+import {
+  deletePersonById,
+  migratePersonById,
+  updatePersonById,
+} from "../../database/database";
 
 type RequestBody = {
   intent: string;
@@ -16,7 +19,7 @@ async function POST(req: Request, res: Response) {
     const { intent, id, migrateId, newName }: RequestBody = req.body;
     switch (intent) {
       case "Delete":
-        await prisma.person.delete({ where: { id: +id } });
+        await deletePersonById(+id);
         break;
       case "Migrate":
         if (!migrateId) throw "Migrate ID not provided.";
@@ -25,7 +28,8 @@ async function POST(req: Request, res: Response) {
       case "Edit":
         if (!newName) throw "New name not given.";
         const n = capitalize(newName);
-        await updatePersonById(+id, n); 
+        const query = { where: { id: +id }, data: { name: n } };
+        await updatePersonById(query);
         break;
       default:
         break;

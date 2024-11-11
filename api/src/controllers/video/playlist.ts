@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
 import { deletePlaylistItem } from "../../lib/database";
+import {
+  createPlaylist,
+  createPlaylistItem,
+  getPlaylistsByUserId,
+  getPlaylistsByUserIdWithVideoId,
+} from "../../database/database";
 
 async function POST(req: Request, res: Response) {
   try {
@@ -10,27 +16,16 @@ async function POST(req: Request, res: Response) {
 
     // create a new playlist and put video in 1 position
     if (intent === "create") {
-      const { id } = await prisma.playlist.create({
-        data: {
-          name: name,
-          user: { connect: { id: +res.locals.user } },
-        },
-      });
-
-      await prisma.playlistItem.create({
-        data: { videoId: +videoId, playlistId: id, position: 1 },
-      });
+      const { id } = await createPlaylist(name, userId);
+      await createPlaylistItem(id, +videoId);
     }
 
     if (intent === "add") {
       // get lists that are in but not anymore
-      const initPlaylists = await prisma.playlist.findMany({
-        where: {
-          userId: +userId,
-          playlistItems: { some: { videoId: +videoId } },
-        },
-        select: { id: true },
-      });
+      const initPlaylists = await getPlaylistsByUserIdWithVideoId(
+        userId,
+        +videoId
+      );
       // Delete playlist item if removed from playlist
       const initPlaylistNums = initPlaylists.map((v) => v.id);
       const curPlaylistNums: [number] = lists.map(Number);
@@ -44,29 +39,7 @@ async function POST(req: Request, res: Response) {
       // Add to playlists in last position if not in list already
       lists.map(async (id: string) => {
         try {
-          // get last position in playlist
-          const {
-            _max: { position },
-          } = await prisma.playlistItem.aggregate({
-            where: { playlistId: +id },
-            _max: { position: true },
-          });
-
-          // add item to playlist in last position
-          await prisma.playlistItem.upsert({
-            where: {
-              videoId_playlistId: {
-                videoId: +videoId,
-                playlistId: +id,
-              },
-            },
-            create: {
-              videoId: +videoId,
-              playlistId: +id,
-              position: position! + 1,
-            },
-            update: {}, // already in list, do nothing
-          });
+          await createPlaylistItem(+id, +videoId);
         } catch (error) {
           console.error(error);
         }
@@ -83,22 +56,16 @@ async function POST(req: Request, res: Response) {
 async function GET(req: Request, res: Response) {
   try {
     const userId = +res.locals.user;
+    // video id
     const { id } = req.params;
-
-    const playlists = await prisma.playlist.findMany({
-      where: { userId },
-      select: { id: true, name: true },
-    });
-
+    // get list of all playlists
+    const playlists = await getPlaylistsByUserId(userId);
     // get list of playlists the video is in
-    const inList = await prisma.playlistItem.findMany({
-      where: { videoId: +id },
-      select: { playlistId: true },
-    });
+    const inList = await getPlaylistsByUserIdWithVideoId(userId, +id);
 
     res.json({
       status: "success",
-      data: { playlists, inList: inList.map((v) => v.playlistId) },
+      data: { playlists, inList: inList.map((v) => v.id) },
     });
   } catch (error) {
     console.error(error);

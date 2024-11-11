@@ -1,36 +1,26 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
-import { rm } from "fs/promises";
 import Ffmpeg from "fluent-ffmpeg";
 import path from "path";
-import { deleteVideo } from "../../database/database";
+import {
+  createConvertVideo,
+  deleteVideo,
+  getVideoFileById,
+  getVideoRatingByVideoIdAndUserId,
+  getVideoRatingsByVideoId,
+  updateVideoFile,
+  updateVideoRating,
+} from "../../database/database";
 
 async function GET(req: Request, res: Response) {
   try {
-    if (!res.locals.isLogged) throw "Not logged in.";
-
     const { id } = req.params;
-
-    const t1 = prisma.videoFile.findFirst({
-      where: { id: +id },
-      include: {
-        tags: { include: { tag: true }, orderBy: { tag: { name: "asc" } } },
-        people: {
-          include: { person: true },
-          orderBy: { person: { name: "asc" } },
-        },
-      },
-    });
-
-    const t2 = prisma.videoRatings.aggregate({
-      where: { videoId: +id },
-      _avg: { rating: true },
-    });
-    const t3 = prisma.videoRatings.findFirst({
-      where: { videoId: +id, userId: +res.locals.user },
-    });
-
-    const [video, rating, myRating] = await prisma.$transaction([t1, t2, t3]);
+    const video = await getVideoFileById(+id);
+    const rating = await getVideoRatingsByVideoId(+id);
+    const myRating = await getVideoRatingByVideoIdAndUserId(
+      +id,
+      +res.locals.user
+    );
 
     res.json({
       status: "success",
@@ -58,10 +48,7 @@ async function PATCH(req: Request, res: Response) {
     let data = {};
     if (update === "views") data = { views: { increment: 1 } };
 
-    await prisma.videoFile.update({
-      where: { id: +id },
-      data: data,
-    });
+    await updateVideoFile({ id: +id, data: data });
 
     res.json({ status: "success" });
   } catch (error) {
@@ -126,23 +113,15 @@ async function POST(req: Request, res: Response) {
     }
 
     if (intent === "rating") {
-      await prisma.videoRatings.upsert({
-        where: {
-          videoId_userId: { videoId: +videoId, userId: +res.locals.user },
-        },
-        create: {
-          videoId: +videoId,
-          userId: +res.locals.user,
-          rating: +rating,
-        },
-        update: { rating: +rating },
+      await updateVideoRating({
+        videoId: +videoId,
+        userId: +res.locals.user,
+        rating: +rating,
       });
     }
 
     if (intent === "convert") {
-      await prisma.covertVideo.create({
-        data: { videoFileId: +videoId },
-      });
+      await createConvertVideo(+videoId);
     }
 
     if (!intent) throw "No intent made.";

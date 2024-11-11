@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import prisma from "../../lib/prisma";
+import {
+  countPersonConnectionsById,
+  deletePersonById,
+  updatePersonById,
+} from "../../database/database";
 
 async function POST(req: Request, res: Response) {
   try {
@@ -7,7 +11,7 @@ async function POST(req: Request, res: Response) {
     const { personId, videoId }: { personId: string; videoId: string } =
       req.body;
 
-    const result = await prisma.person.update({
+    const query = {
       where: { id: +personId },
       data: {
         videoFiles: {
@@ -16,11 +20,13 @@ async function POST(req: Request, res: Response) {
           },
         },
       },
-      include: { _count: true },
-    });
+    };
 
-    if (result._count.videoFiles === 0) {
-      const result = await prisma.person.delete({ where: { id: +personId } });
+    const r = await updatePersonById(query);
+    const count = await countPersonConnectionsById(+personId);
+
+    if (count === 0) {
+      await deletePersonById(+personId);
     }
     res.json({ status: "success" });
   } catch (error) {

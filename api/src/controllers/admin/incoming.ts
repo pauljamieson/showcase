@@ -12,7 +12,7 @@ import {
 import { nanoid } from "nanoid";
 
 import path from "path";
-import prisma from "../../lib/prisma";
+import { createIncomingFile } from "../../database/database";
 
 const VIDEOEXT = [
   ".mp4",
@@ -87,15 +87,11 @@ async function POST(req: Request, res: Response) {
     if (!res.locals.isLogged) throw "Not logged in.";
     for (const file of files) {
       const stats = await stat(file);
-      const path = await realpath(file);
-      const folderId = nanoid(6);
+      const path: string = await realpath(file);
+      const folderId: string = nanoid(6);
       await mkdir(`./app_data/processing/${folderId}`, { recursive: true });
       await rename(path, `./app_data/processing/${folderId}/${basename(path)}`);
-      await prisma.incomingFile.create({
-        data: {
-          filename: `./app_data/processing/${folderId}/${basename(path)}`,
-        },
-      });
+      await createIncomingFile({ folder: folderId, filename: basename(path) });
     }
     await removeEmptyFolders("./app_data/incoming");
     res.json({ status: "success" });

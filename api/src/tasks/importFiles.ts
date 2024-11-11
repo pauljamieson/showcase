@@ -1,5 +1,4 @@
 import cron from "node-cron";
-import prisma from "../lib/prisma";
 import Ffmpeg, { ffprobe } from "fluent-ffmpeg";
 import { IncomingFile } from "@prisma/client";
 import { mkdir, opendir, rename, rm, rmdir } from "fs/promises";
@@ -7,6 +6,7 @@ import path from "path";
 import {
   createVideoFile,
   deleteIncomingFileById,
+  getIncomingFiles,
   getVideoFile,
   updateVideoFile,
 } from "../database/database";
@@ -28,9 +28,7 @@ async function importFile() {
   try {
     if (isActive) return;
     isActive = true;
-    const files = await prisma.incomingFile.findMany({
-      orderBy: { filename: "asc" },
-    });
+    const files = await getIncomingFiles();
 
     const orderedFiles = files.sort((b, a) => {
       return a.filename
@@ -66,11 +64,8 @@ function processFile(file: IncomingFile) {
           recursive: true,
           force: true,
         });
-        await prisma.incomingFile.delete({
-          where: {
-            id: file.id,
-          },
-        });
+        await deleteIncomingFileById(file.id);
+
         throw {
           code: 10002,
           msg: `${fileInfo.filename} (${fileInfo.size}) already in database.  Deleting incoming file.`,

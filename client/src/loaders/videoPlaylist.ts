@@ -7,7 +7,7 @@ export default async ({ params }: { params: Params<"id"> }) => {
       method: "get",
       endpoint: `/video/${params.id}/playlist`,
     });
-
+    console.log(status, data);
     if (status === "success") return { status, data };
 
     throw "Failed request to api.";

@@ -1,17 +1,17 @@
 import cron from "node-cron";
-import prisma from "../lib/prisma";
 import Ffmpeg from "fluent-ffmpeg";
-import { VideoFile } from "@prisma/client";
-import { opendir, rmdir, mkdir, rename, rm } from "fs/promises";
+import { VideoFile, ConvertVideo } from "@prisma/client";
+import { mkdir, rename, rm } from "fs/promises";
 import path from "path";
 import { nanoid } from "nanoid";
+import {
+  deleteConvertVideoById,
+  deleteVideoFileById,
+  getConvertVideos,
+  getVideoFileById,
+} from "../database/database";
 
 cron.schedule("* * * * *", convertFile);
-
-type ConvertVideoInfo = {
-  id: number;
-  videoFileId: number;
-};
 
 var isActive = false;
 
@@ -21,9 +21,8 @@ async function convertFile() {
     if (isActive) return;
     isActive = true;
     // get current list of files to convert
-    const files: ConvertVideoInfo[] = await prisma.covertVideo.findMany({
-      select: { id: true, videoFileId: true },
-    });
+    const files = await getConvertVideos({});
+
     // convert list of files
     for await (const file of files) {
       await processFile(file);
@@ -36,16 +35,14 @@ async function convertFile() {
   }
 }
 
-async function processFile(file: ConvertVideoInfo) {
+async function processFile(file: ConvertVideo) {
   return new Promise<boolean>(async (resolve) => {
     const INCOMINGFOLDER = "./app_data/incoming";
     try {
       // get video file info
-      const video: VideoFile | null = await prisma.videoFile.findFirst({
-        where: { id: file.videoFileId },
-      });
-      if (!video) throw "Convert video source file not found!";
-
+      await getVideoFileById(file.videoFileId);
+      const video: VideoFile = await getVideoFileById(file.videoFileId);
+      
       // create source and destination (in processing) paths
       const src = path.join(
         "./app_data/videos",
@@ -75,8 +72,8 @@ async function processFile(file: ConvertVideoInfo) {
           await mkdir(incPath, { recursive: true });
           await rename(dst, path.join(incPath, path.basename(dst)));
           // Delete all work files\database entries
-          await prisma.covertVideo.delete({ where: { id: file.id } });
-          await prisma.videoFile.delete({ where: { id: file.videoFileId } });
+          await deleteConvertVideoById(file.id);
+          await deleteVideoFileById(file.videoFileId);
           await rm(path.dirname(src), { recursive: true });
 
           resolve(true);

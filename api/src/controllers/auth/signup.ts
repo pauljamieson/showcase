@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import prisma from "../../lib/prisma";
 import { hash } from "bcrypt";
 import { Request, Response } from "express";
+import { createUser } from "../../database/database";
 
 const SALT_ROUNDS = 10;
 
@@ -14,8 +14,10 @@ async function POST(req: Request, res: Response) {
   const { email, password, displayName } = req.body;
   try {
     const passwordHash = await hash(password, SALT_ROUNDS);
-    const result = await prisma.user.create({
-      data: { email: email, password: passwordHash, displayname: displayName },
+    await createUser({
+      email,
+      password: passwordHash,
+      displayname: displayName,
     });
     res.json({ status: "success" });
   } catch (error) {
