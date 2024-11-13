@@ -10,9 +10,15 @@ import React, { useEffect, useState } from "react";
 export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
   const { state } = useLocation();
+  const [link, setLink] = useState<string>("/videos");
   const [searchParams, setSearchParams] = useSearchParams();
-  const link = `/videos${state?.search ? state.search : ""}`;
   const [underlined, setUnderlined] = useState<string>("");
+
+  useEffect(() => {
+    if (state?.search) {
+      setLink(`/videos${state.search}`);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const name = "advanced-search";
