@@ -6,8 +6,6 @@ async function GET(req: Request, res: Response) {
     const videoId = req.params.videoId;
     const tagId = req.params.tagId;
 
-    console.log(videoId, tagId);
-
     await prisma.tag.update({
       where: { id: +tagId },
       data: { videoFiles: { create: { videoId: +videoId } } },

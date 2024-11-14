@@ -20,23 +20,24 @@ export default async ({ request }: { request: Request }) => {
 
     const size = 100;
     const rounds = Math.ceil(payload.length / size);
-
+    const promises = [];
     for (let i = 0; i < rounds; i++) {
       const start = i * size;
       const body = {
         files: payload.slice(start, start + size),
       };
 
-      const { status } = await apiRequest({
+      const req = apiRequest({
         method: "post",
         endpoint: "/admin/incoming/",
         body,
       });
-
-      return { status };
+      promises.push(req);
     }
+    await Promise.all(promises);
+    return { status: "success" };
   } catch (err) {
     console.error(err);
-    return {};
+    return null;
   }
 };

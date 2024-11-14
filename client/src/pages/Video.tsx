@@ -170,10 +170,9 @@ function VideoInfo({ video }: { video: VideoData }) {
       state: { search: state?.search },
     });
   }
-
+``
   return (
     <div className="video-info-container">
-      <span>{state?.search}</span>
       <span className="video-title txt-lg txt-bold">{video.filename}</span>
       <span className="txt-sm">
         {video.height}x{video.width} ({video.videoCodec}/{video.audioCodec})

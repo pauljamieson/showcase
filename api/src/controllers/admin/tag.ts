@@ -39,7 +39,7 @@ async function POST(req: Request, res: Response) {
 
     res.json({ status: "success" });
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
     if (error?.code === "P2002")
       return res.json({ status: "failure", error: "Tag name already in use." });
     res.json({ status: "failure", error });

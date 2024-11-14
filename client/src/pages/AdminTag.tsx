@@ -53,6 +53,8 @@ export default function AdminTag() {
           <p>No tags match.</p>
         </div>
       )}
+      <EditDialog />
+      <MigrationDialog />
     </>
   );
 }
@@ -72,15 +74,18 @@ function Row({
   userId: number;
   creator: { displayname: string };
 }) {
-  const [migrateOpen, setMigrateOpen] = useState<boolean>(false);
-  const [editOpen, setEditOpen] = useState<boolean>(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  function handleClickMigrate() {
-    setMigrateOpen((v) => !v);
+  function handleOpenEditDialog() {
+    searchParams.set("id", id.toString());
+    searchParams.set("modal", "edit");
+    setSearchParams(searchParams);
   }
 
-  function handleClickEdit() {
-    setEditOpen((v) => !v);
+  function handleOpenMigrateDialog() {
+    searchParams.set("id", id.toString());
+    searchParams.set("modal", "migrate");
+    setSearchParams(searchParams);
   }
 
   return (
@@ -97,60 +102,55 @@ function Row({
           <input type="hidden" name="name" value={name} />
           <input className="btn" type="submit" name="intent" value="Delete" />
         </Form>
-        <button className="btn" onClick={handleClickEdit}>
+        <button className="btn" onClick={handleOpenEditDialog}>
           Edit
         </button>
-        <button className="btn" onClick={handleClickMigrate}>
+        <button className="btn" onClick={handleOpenMigrateDialog}>
           Migrate
         </button>
       </div>
-      {/* Edit dialog box */}
-      <EditDialog
-        id={id}
-        name={name}
-        open={editOpen}
-        handleClose={handleClickEdit}
-      />
-      {/* Migrate dialog box */}
-      <MigrationDialog
-        id={id}
-        name={name}
-        open={migrateOpen}
-        handleClose={handleClickMigrate}
-      />
     </>
   );
 }
 
-function EditDialog({
-  id,
-  name,
-  open,
-  handleClose,
-}: {
-  id: number;
-  name: string;
-  open: boolean;
-  handleClose: () => void;
-}) {
-  const editRef = useRef<HTMLDialogElement>(null);
+function EditDialog() {
+  const [input, setInput] = useState<string>("");
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const id = searchParams.get("id") || "";
+
   useEffect(() => {
-    open ? editRef.current?.showModal() : editRef.current?.close();
-  }, [open]);
+    searchParams.has("modal", "edit")
+      ? dialogRef.current?.showModal()
+      : dialogRef.current?.close();
+  }, [searchParams]);
+
+  function handleClose(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    searchParams.delete("modal");
+    searchParams.delete("id");
+    setSearchParams(searchParams);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setInput(e.target.value);
+  }
 
   return (
-    <dialog className="edit-modal" ref={editRef}>
+    <dialog className="edit-modal" ref={dialogRef}>
       <div>
         Edit
         <Form method="post">
           <input type="hidden" name="id" value={id} />
-          <input type="hidden" name="name" value={name} />
 
           <input
             className="search-input"
             type="text"
             name="newName"
             placeholder="New Name"
+            value={input}
+            onChange={handleChange}
           />
           <div className="btn-bar ">
             <button className="btn" type="submit" name="intent" value="Edit">
@@ -166,97 +166,98 @@ function EditDialog({
   );
 }
 
-function MigrationDialog({
-  id,
-  name,
-  open,
-  handleClose,
-}: {
-  id: number;
-  name: string;
-  open: boolean;
-  handleClose: () => void;
-}) {
-  const [input, setInput] = useState<string>("");
-  const [options, setOptions] = useState<Tag[]>([]);
-  const migrateRef = useRef<HTMLDialogElement>(null);
-
+function MigrationDialog() {
   // Debounce timer
   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [input, setInput] = useState<string>("");
+  const [options, setOptions] = useState<Tag[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const id = searchParams.get("id") || "";
+
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    searchParams.has("modal", "migrate")
+      ? dialogRef.current?.showModal()
+      : dialogRef.current?.close();
+  }, [searchParams]);
 
   // Debounce update search terms
   useEffect(() => {
-    if (timer) {
-      clearTimeout(timer);
-      setTimer(undefined);
-    }
-    const TO = setTimeout(() => {
-      const searchParams = new URLSearchParams();
-      searchParams.set("terms", input);
-      apiRequest({ endpoint: "/tags/", method: "get", searchParams }).then(
-        ({ status, data }) => {
-          status === "success" && setOptions(data.tags);
+    if (searchParams.has("modal", "migrate")) {
+      if (timer) {
+        clearTimeout(timer);
+        setTimer(undefined);
+      }
+      const TO = setTimeout(() => {
+        const searchParams = new URLSearchParams();
+        searchParams.set("terms", input);
+        apiRequest({ endpoint: "/tags/", method: "get", searchParams }).then(
+          ({ status, data }) => {
+            status === "success" && setOptions(data.tags);
+          }
+        );
+      }, 750);
+      setTimer(TO);
+
+      return () => {
+        if (timer) {
+          clearTimeout(timer);
         }
-      );
-    }, 750);
-    setTimer(TO);
+      };
+    }
   }, [input]);
 
-  useEffect(() => {
-    open ? migrateRef.current?.showModal() : migrateRef.current?.close();
-  }, [open]);
+  function handleClose(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    searchParams.delete("modal");
+    searchParams.delete("id");
+    setInput("");
+    setOptions([]);
+    setSearchParams(searchParams);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setInput(e.target.value);
+  }
 
   return (
-    <>
-      {/* Migrate dialog box */}
-      <dialog className="edit-modal" ref={migrateRef} open={false}>
-        <div>
-          Migrate
-          <Form method="post">
-            <input type="hidden" name="id" value={id} />
-            <input
-              type="hidden"
-              name="migrateId"
-              value={options.find((val) => val.name === input)?.id}
-            />
-            <input type="hidden" name="name" value={name} />
-            <input
-              className="search-input"
-              type="text"
-              list="tags"
-              name="migrateName"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              autoComplete="off"
-            />
-            <datalist id="tags" key={UUID()}>
-              {options.map((val) => (
-                <option value={val.name} key={UUID()} />
-              ))}
-            </datalist>
+    <dialog className="dialog" ref={dialogRef}>
+      <div>
+        Migrate
+        <Form method="post">
+          <input
+            type="text"
+            name="name"
+            placeholder="Tag Name"
+            value={input}
+            onChange={handleChange}
+            autoComplete="off"
+            list="tags"
+          />
+          <datalist id="tags">
+            {options.map((val) => (
+              <option value={val.name} key={UUID()} />
+            ))}
+          </datalist>
+          <input type="hidden" name="id" value={id} />
+          <input
+            type="hidden"
+            name="migrateId"
+            value={options.find((val) => val.name === input)?.id}
+          />
 
-            <div className="btn-bar ">
-              <button
-                className="btn"
-                type="submit"
-                name="intent"
-                value="Migrate"
-              >
-                Migrate
-              </button>
-              <button
-                className="btn"
-                onClick={() => {
-                  migrateRef.current!.close();
-                  handleClose();
-                }}
-              >
-                Close
-              </button>
-            </div>
-          </Form>
-        </div>
-      </dialog>
-    </>
+          <div className="btn-bar">
+            <button type="submit" className="btn" name="intent" value="Migrate">
+              Migrate
+            </button>
+            <button type="button" className="btn" onClick={handleClose}>
+              Close
+            </button>
+          </div>
+        </Form>
+      </div>
+    </dialog>
   );
 }

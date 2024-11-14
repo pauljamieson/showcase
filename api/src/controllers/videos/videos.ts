@@ -84,8 +84,6 @@ async function GET(req: Request, res: Response) {
 
 async function POST(req: Request, res: Response) {
   try {
-    console.log(req.body);
-
     const { terms, people, tags } = req.body;
     const data = {
       where: {
