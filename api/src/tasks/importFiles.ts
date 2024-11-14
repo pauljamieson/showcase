@@ -20,6 +20,7 @@ type FileInfo = {
   videoCodec: string;
   audioCodec: string;
   size: number;
+  userId?: number;
 };
 
 var isActive = false;
@@ -114,6 +115,7 @@ function processFile(file: IncomingFile) {
       } else if (error.code === 10002) {
         console.error(error.msg);
       }
+      console.error(error);
     } finally {
       resolve(true);
     }

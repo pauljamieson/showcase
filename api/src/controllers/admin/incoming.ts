@@ -84,6 +84,7 @@ async function GET(req: Request, res: Response) {
 async function POST(req: Request, res: Response) {
   const { files } = req.body;
   try {
+    console.log(res.locals.user);
     if (!res.locals.isLogged) throw "Not logged in.";
     for (const file of files) {
       const stats = await stat(file);
@@ -91,7 +92,11 @@ async function POST(req: Request, res: Response) {
       const folderId: string = nanoid(6);
       await mkdir(`./app_data/processing/${folderId}`, { recursive: true });
       await rename(path, `./app_data/processing/${folderId}/${basename(path)}`);
-      await createIncomingFile({ folder: folderId, filename: basename(path) });
+      await createIncomingFile({
+        folder: folderId,
+        filename: basename(path),
+        userId: +res.locals.user,
+      });
     }
     await removeEmptyFolders("./app_data/incoming");
     res.json({ status: "success" });

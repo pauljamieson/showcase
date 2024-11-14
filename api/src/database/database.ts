@@ -345,6 +345,7 @@ interface CreateVideoFile {
   videoCodec: string;
   audioCodec: string;
   size: number;
+  userId?: number;
 }
 
 export async function createVideoFile({
@@ -356,7 +357,13 @@ export async function createVideoFile({
   videoCodec,
   audioCodec,
   size,
+  userId,
 }: CreateVideoFile): Promise<VideoFile> {
+  const { id } = await prisma.tag.upsert({
+    where: { name: "New" },
+    update: {},
+    create: { name: "New", userId: userId ? userId : 1 },
+  });
   return await prisma.videoFile.create({
     data: {
       filename: filename,
@@ -367,6 +374,12 @@ export async function createVideoFile({
       videoCodec: videoCodec,
       audioCodec: audioCodec,
       size: size,
+      tags: {
+        connectOrCreate: {
+          where: { videoId_tagId: { videoId: 0, tagId: id } },
+          create: { tagId: id },
+        },
+      },
     },
   });
 }
@@ -484,13 +497,16 @@ export async function deleteIncomingFileById(id: number) {
 export async function createIncomingFile({
   folder,
   filename,
+  userId,
 }: {
   folder: string;
   filename: string;
+  userId: number;
 }) {
   await prisma.incomingFile.create({
     data: {
       filename: `./app_data/processing/${folder}/${filename}`,
+      user: { connect: { id: userId } },
     },
   });
 }
