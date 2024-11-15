@@ -20,6 +20,7 @@ import TagModal from "../components/TagModal";
 import PersonModal from "../components/PersonModal";
 import useVideoQueue, { VideoQueue } from "../hooks/useVideoQueue";
 import apiRequest from "../lib/api";
+import { v4 as UUID } from "uuid";
 
 interface vData extends VideoData {
   exists: boolean;
@@ -34,14 +35,14 @@ function Video() {
   //auth
   const auth = useAuth();
   if (!auth.isLoggedIn) return <Navigate to="/" />;
-
+  window.scrollTo(0, 0);
   // Get search params
   const [searchParams, _] = useSearchParams();
   const playlistId = searchParams.get("playlist");
-  const position: number = +(searchParams.get("position") || 1);
+
 
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const { state, pathname } = useLocation();
 
   const actionData = useActionData() as { status: string; intent: string };
 
@@ -49,8 +50,7 @@ function Video() {
   const { video } = useLoaderData() as LoaderData;
 
   // Get sidebar\below queue items
-  const queue = useVideoQueue(playlistId ? +playlistId : undefined);
-
+  const queue = useVideoQueue(pathname);
   // go back to videos page on delete
   useEffect(() => {
     if (actionData?.status === "success" && actionData?.intent === "delete") {
@@ -75,7 +75,7 @@ function Video() {
       <div className="video-queue-items-container">
         {queue?.items.map((v: QueueItem) => (
           <VideoQueueCard
-            key={v.id * position}
+            key={UUID()}
             video={v}
             playlistId={playlistId ? +playlistId : undefined}
           />
@@ -170,7 +170,7 @@ function VideoInfo({ video }: { video: VideoData }) {
       state: { search: state?.search },
     });
   }
-``
+  ``;
   return (
     <div className="video-info-container">
       <span className="video-title txt-lg txt-bold">{video.filename}</span>
@@ -228,6 +228,8 @@ function VideoQueueCard({ video, playlistId = 0 }: VideoQueueCard) {
   const [searchParams, _] = useSearchParams();
   const [active, setActive] = useState<boolean>(false);
 
+  const { state } = useLocation();
+
   useEffect(() => {
     if (searchParams.get("position") === video.position.toString())
       setActive(true);
@@ -244,7 +246,7 @@ function VideoQueueCard({ video, playlistId = 0 }: VideoQueueCard) {
       : `/video/${video.id}?`;
 
   return (
-    <Link to={link} reloadDocument>
+    <Link to={link} state={state}>
       <div className={`video-queue-item-card ${active && "active-queue-item"}`}>
         <div className="video-queue-item-img-wrapper">
           <img

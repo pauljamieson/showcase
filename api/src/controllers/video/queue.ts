@@ -85,7 +85,6 @@ async function getRandomVideos(take: number = 10) {
     });
 
     resolve(results);
-  
   });
 }
 

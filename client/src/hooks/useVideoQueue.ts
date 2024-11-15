@@ -19,7 +19,7 @@ const initialState: VideoQueue = {
   items: [],
 };
 
-export default function useVideoQueue(playlistId?: number): VideoQueue {
+export default function useVideoQueue(pathname?: string): VideoQueue {
   const [queue, setQueue] = useState<VideoQueue>(initialState);
   const [searchParams, _] = useSearchParams();
 
@@ -41,7 +41,7 @@ export default function useVideoQueue(playlistId?: number): VideoQueue {
         }
       }
     );
-  }, [playlistId]);
+  }, [pathname]);
 
   return queue;
 }

@@ -44,39 +44,26 @@ export default function AppBar() {
 
         <div className="grow" />
         <nav>
-          <ol>
-            {isLoggedIn ? (
-              <>
-                <li>
-                  <div>
-                    <SearchBar />
-                    <span
-                      className={`txt-sm ${underlined}`}
-                      onClick={handleClick}
-                    >
-                      Advanced Search
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <UserIcon {...user} />
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <Link to={"/login"}>
-                    <p>Login</p>
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/signup"}>
-                    <p>Signup</p>
-                  </Link>
-                </li>
-              </>
-            )}
-          </ol>
+          {isLoggedIn ? (
+            <>
+              <div>
+                <SearchBar />
+                <span className={`txt-sm ${underlined}`} onClick={handleClick}>
+                  Advanced Search
+                </span>
+              </div>
+              <UserIcon {...user} />
+            </>
+          ) : (
+            <>
+              <Link to={"/login"}>
+                <p>Login</p>
+              </Link>
+              <Link to={"/signup"}>
+                <p>Signup</p>
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </div>
