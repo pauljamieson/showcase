@@ -3,7 +3,6 @@ import {
   useLoaderData,
   useSearchParams,
   useNavigate,
-  useLocation,
 } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
