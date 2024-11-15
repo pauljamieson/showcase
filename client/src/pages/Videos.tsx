@@ -3,6 +3,7 @@ import {
   useLoaderData,
   useSearchParams,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
 import Paginator from "../components/Paginator";
@@ -87,6 +88,7 @@ function AdvanceSearch() {
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [opened, setOpened] = useState<string>("");
+  const { state } = useLocation();
 
   const orders: any[] = [
     { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
@@ -115,7 +117,7 @@ function AdvanceSearch() {
     apiRequest(data).then(({ status, data, error }) => {
       if (error) return console.error(error);
       if (status === "success") {
-        navigate(`/video/${data.id}`);
+        navigate(`/video/${data.id}`, { state });
       }
     });
   }
