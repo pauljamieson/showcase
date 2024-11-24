@@ -7,7 +7,7 @@ services:
     expose:
       - "5000"
     volumes:
-      - ./app_data:/app/dist/app_data
+      - ${FILE_SRC}:/app/dist/app_data
     restart: unless-stopped
     environment:
       - POSTGRES_USER=${POSTGRES_USER}

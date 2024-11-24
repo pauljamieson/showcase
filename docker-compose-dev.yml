@@ -5,7 +5,7 @@ services:
       dockerfile: dockerfile.dev
     volumes:
       - ./api:/app
-      - ./app_data:/app/app_data
+      - ${FILE_SRC}:/app/app_data
     restart: unless-stopped
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
     ports:
       - 5173:5173
-    environment: 
+    environment:
       - NODE_ENV=${NODE_ENV}
       - VITE_API_URL=http://192.168.100.137:5000
     depends_on:
