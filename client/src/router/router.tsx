@@ -3,6 +3,7 @@ import Root from "../layouts/Root";
 import { createBrowserRouter } from "react-router-dom";
 import SignUp from "../pages/SignUp";
 import SignUpAction from "../actions/signup";
+import SignUpLoader from "../loaders/signup";
 import Login from "../pages/Login";
 import LoginAction from "../actions/login";
 import Home from "../pages/Home";
@@ -33,6 +34,8 @@ import Playlists from "../pages/Playlists";
 import PlaylistsLoader from "../loaders/playlists";
 import Playlist from "../pages/Playlist";
 import PlaylistLoader from "../loaders/playlist";
+import Configuration from "../pages/Configuration";
+import ConfigurationLoader from "../loaders/configuration";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +48,7 @@ export const router = createBrowserRouter([
         path: "/signup",
         element: <SignUp />,
         action: SignUpAction,
+        loader: SignUpLoader,
       },
       {
         path: "/login",
@@ -94,6 +98,11 @@ export const router = createBrowserRouter([
         element: <AdminPerson />,
         loader: AdminPersonLoader,
         action: AdminPersonAction,
+      },
+      {
+        path: "/admin/configuration",
+        element: <Configuration />,
+        loader: ConfigurationLoader,
       },
       { path: "/profile", element: <Profile />, loader: ProfileLoader },
 

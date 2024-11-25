@@ -16,6 +16,9 @@ export default function () {
         <Link className="btn" to={"people"}>
           Manage People
         </Link>
+        <Link className="btn" to={"configuration"}>
+          Manage Configuration
+        </Link>
       </div>
     </div>
   );

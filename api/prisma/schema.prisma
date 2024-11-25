@@ -167,5 +167,11 @@ model VideoPerson {
   @@unique([videoId, personId]) 
 }
 
+model Configuration {
+  id          Int @id @default(autoincrement())
+  key         String @unique
+  value       String
 
-
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}

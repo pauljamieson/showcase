@@ -568,3 +568,27 @@ export async function getConvertVideos(query: {
 export async function deleteConvertVideoById(id: number) {
   return await prisma.convertVideo.delete({ where: { id: id } });
 }
+
+/* Configuration */
+
+export async function getConfig() {
+  return await prisma.configuration.findMany();
+}
+
+
+export async function _getConfiguration(key: string) {
+  return await prisma.configuration.findFirst({ where: { key: key } });
+}
+
+export async function updateCongfiguration(key: string, value: string) {
+  return await prisma.configuration.upsert({
+    where: { key: key },
+    create: { key: key, value: value },
+    update: { value: value },
+  });
+}
+
+export async function getAllowSignup() {
+  return await _getConfiguration("allow_signup");
+}
+
