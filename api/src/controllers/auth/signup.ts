@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { hash } from "bcrypt";
 import { Request, Response } from "express";
-import { createUser } from "../../database/database";
+import { createUser, getAllowSignup } from "../../database/database";
 
 const SALT_ROUNDS = 10;
 
@@ -13,6 +13,9 @@ function GET(req: Request, res: Response) {
 async function POST(req: Request, res: Response) {
   const { email, password, displayName } = req.body;
   try {
+    const allowSignups = await getAllowSignup();
+    if (allowSignups?.value === "false")
+      return res.json({ status: "failure", error: "Signups are disabled." });
     const passwordHash = await hash(password, SALT_ROUNDS);
     await createUser({
       email,

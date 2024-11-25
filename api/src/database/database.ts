@@ -576,7 +576,7 @@ export async function getConfig() {
 }
 
 
-export async function _getConfiguration(key: string) {
+export async function _getConfigurationItem(key: string) {
   return await prisma.configuration.findFirst({ where: { key: key } });
 }
 
@@ -589,6 +589,6 @@ export async function updateCongfiguration(key: string, value: string) {
 }
 
 export async function getAllowSignup() {
-  return await _getConfiguration("allow_signup");
+  return await _getConfigurationItem("allow_signup");
 }
 
