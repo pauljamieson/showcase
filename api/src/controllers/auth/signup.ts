@@ -14,7 +14,7 @@ async function POST(req: Request, res: Response) {
   const { email, password, displayName } = req.body;
   try {
     const allowSignups = await getAllowSignup();
-    if (allowSignups?.value === "false")
+    if (allowSignups?.value !== "true")
       return res.json({ status: "failure", error: "Signups are disabled." });
     const passwordHash = await hash(password, SALT_ROUNDS);
     await createUser({
