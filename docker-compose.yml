@@ -62,9 +62,9 @@ services:
     image: nginx
     restart: unless-stopped
     ports:
-      - 80:80
-      - 443:443
-      - 5000:5000
+      - ${HOST_IP}:80:80
+      - ${HOST_IP}:443:443
+      - ${HOST_IP}:5000:5000
     volumes:
       - ./certs:/certs
     build:
