@@ -36,7 +36,7 @@ async function walkTree(folder: string) {
           ...(await walkTree(path.join(dirent.parentPath, dirent.name))),
         ];
       }
-      if (dirent.isFile() && VIDEOEXT.includes(path.extname(dirent.name))) {
+      if (dirent.isFile() && VIDEOEXT.includes(path.extname(dirent.name.toLowerCase()))) {
         files.push(path.join(dirent.parentPath, dirent.name));
       } else if (dirent.isFile())
         await unlink(path.join(dirent.parentPath, dirent.name));
