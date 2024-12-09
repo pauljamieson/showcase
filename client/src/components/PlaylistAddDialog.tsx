@@ -10,7 +10,6 @@ export default function PlaylistAddDialog({ videoId }: p) {
   const fetcher = useFetcher();
   const ref = useRef<HTMLDialogElement>(null);
 
-
   // open and close model based on search params
   useEffect(() => {
     if (searchParams.get("modal") === "playlist") {
@@ -30,7 +29,11 @@ export default function PlaylistAddDialog({ videoId }: p) {
       <fetcher.Form action={`/video/${videoId}/playlist/`} method="POST">
         <div>
           {fetcher.data?.data?.playlists?.map(
-            (playlist: { name: string; id: number }) => (
+            (playlist: {
+              name: string;
+              id: number;
+              _count: { playlistItems: number };
+            }) => (
               <Checkbox
                 key={playlist.id}
                 {...playlist}
@@ -71,14 +74,16 @@ export default function PlaylistAddDialog({ videoId }: p) {
 function Checkbox({
   id,
   name,
+  _count,
   checked,
 }: {
   id: number;
   name: string;
+  _count: { playlistItems: number };
   checked: boolean;
 }) {
   const [isChecked, setIsChecked] = useState<boolean>(checked);
-
+  console.log(_count);
   return (
     <div className="playlist-item">
       <input
@@ -89,7 +94,7 @@ function Checkbox({
         onChange={() => setIsChecked((old) => !old)}
       />
       <p>
-        {name} ({id})
+        {name} ({_count.playlistItems})
       </p>
     </div>
   );

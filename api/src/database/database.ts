@@ -14,6 +14,9 @@ import { create } from "domain";
 export async function getPlaylistsByUserId(id: number) {
   return await prisma.playlist.findMany({
     where: { userId: id },
+    include: {
+      _count: { select: { playlistItems: true } },
+    },
   });
 }
 
@@ -575,7 +578,6 @@ export async function getConfig() {
   return await prisma.configuration.findMany();
 }
 
-
 export async function _getConfigurationItem(key: string) {
   return await prisma.configuration.findFirst({ where: { key: key } });
 }
@@ -591,4 +593,3 @@ export async function updateCongfiguration(key: string, value: string) {
 export async function getAllowSignup() {
   return await _getConfigurationItem("allow_signup");
 }
-
