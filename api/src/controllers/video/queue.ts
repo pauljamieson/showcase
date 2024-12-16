@@ -18,6 +18,7 @@ async function GET(req: Request, res: Response) {
     });
   } catch (error) {
     console.error(error);
+    console.log("ERRRRROOOORRRRRRR");
     res.json({ status: "failure" });
   }
 }
@@ -60,9 +61,12 @@ async function getRandomVideos(take: number = 10) {
     const count = await prisma.videoFile.count();
 
     const numbers: number[] = [];
+    // get 10 random videos to put into suggestions\queue
+    // if less then 10 videos in db allow repeats
     while (numbers.length < 10) {
       const num = Math.floor(Math.random() * count);
-      if (!numbers.includes(num)) numbers.push(num);
+      if (count > 9 && !numbers.includes(num)) numbers.push(num);
+      else if (count < 10) numbers.push(num);
     }
 
     const promises = numbers.map(
