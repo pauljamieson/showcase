@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
 import Ffmpeg from "fluent-ffmpeg";
 import path from "path";
+import { rmdir } from "fs/promises";
 import {
   createConvertVideo,
   deleteVideo,
@@ -106,6 +107,7 @@ async function POST(req: Request, res: Response) {
     if (intent === "delete") {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";
       await deleteVideo(+videoId);
+      await rmdir(filePath, { recursive: true });
     }
     if (intent === "regen") {
       if (!res.locals.isAdmin) throw "Not authorized to take this action.";
