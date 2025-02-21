@@ -469,8 +469,7 @@ export async function updateVideoFile({
 }
 
 export async function deleteVideoFileById(id: number) {
-  // delete all playlist entries
-  // delete video file
+  return await deleteVideo(id);
 }
 
 /* Video Ratings */

@@ -17,10 +17,8 @@ import MigrateRouter from "./routes/migrate/migrate";
 import MainteanceRouter from "./routes/maintenance/maintenance";
 import PlaylistRouter from "./routes/playlist/playlist";
 import PlaylistsRouter from "./routes/playlists/playlists";
-
-
 import { middleWare } from "./middleware/middleware";
-const compression = require("compression");
+
 dotenv.config();
 
 const app: Express = express();
