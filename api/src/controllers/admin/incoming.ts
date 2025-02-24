@@ -36,7 +36,10 @@ async function walkTree(folder: string) {
           ...(await walkTree(path.join(dirent.parentPath, dirent.name))),
         ];
       }
-      if (dirent.isFile() && VIDEOEXT.includes(path.extname(dirent.name.toLowerCase()))) {
+      if (
+        dirent.isFile() &&
+        VIDEOEXT.includes(path.extname(dirent.name.toLowerCase()))
+      ) {
         files.push(path.join(dirent.parentPath, dirent.name));
       } else if (dirent.isFile())
         await unlink(path.join(dirent.parentPath, dirent.name));
@@ -84,7 +87,6 @@ async function GET(req: Request, res: Response) {
 async function POST(req: Request, res: Response) {
   const { files } = req.body;
   try {
-    console.log(res.locals.user);
     if (!res.locals.isLogged) throw "Not logged in.";
     for (const file of files) {
       const stats = await stat(file);

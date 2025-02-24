@@ -146,7 +146,6 @@ function MigrateDialog({}: {}) {
         apiRequest({ endpoint: "/people/", method: "get", searchParams }).then(
           ({ status, data }) => {
             if (status === "success") setOptions(data.people);
-            console.log(data);
           }
         );
       }, 750);

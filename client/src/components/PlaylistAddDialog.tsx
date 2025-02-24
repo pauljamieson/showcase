@@ -83,7 +83,7 @@ function Checkbox({
   checked: boolean;
 }) {
   const [isChecked, setIsChecked] = useState<boolean>(checked);
-  console.log(_count);
+
   return (
     <div className="playlist-item">
       <input

@@ -17,7 +17,7 @@ export default async ({ request }: { request: Request }) => {
     return { status, data: { auth: localStorage.getItem("showcase") } };
   } catch (error: any) {
     //console.error(error);
-    console.log("hger");
+
     return { status: "failure", error, auth: "" };
   }
 };

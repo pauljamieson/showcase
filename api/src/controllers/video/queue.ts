@@ -18,7 +18,6 @@ async function GET(req: Request, res: Response) {
     });
   } catch (error) {
     console.error(error);
-    console.log("ERRRRROOOORRRRRRR");
     res.json({ status: "failure" });
   }
 }

@@ -14,7 +14,7 @@ export default async () => {
       ).value === "true"
         ? true
         : false;
-    console.log(allowSignups);
+
     if (!allowSignups) {
       return redirect("/");
     }
