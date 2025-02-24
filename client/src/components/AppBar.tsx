@@ -17,7 +17,7 @@ export default function AppBar() {
   useEffect(() => {
     if (state?.search) {
       setLink(`/videos${state.search}`);
-    }
+    } else setLink(`/videos?${searchParams.toString()}`);
   }, [searchParams]);
 
   useEffect(() => {
@@ -41,7 +41,6 @@ export default function AppBar() {
         <Link to={link}>
           <p className="title">Showcase</p>
         </Link>
-
         <div className="grow" />
         <nav>
           {isLoggedIn ? (
