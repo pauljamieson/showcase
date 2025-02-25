@@ -7,10 +7,12 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import apiRequest from "../lib/api";
+import { useToast } from "../hooks/useToast";
 
 type Person = { id: number; name: string };
 
 export default function PersonModal() {
+  const { showToast } = useToast();
   const [searchParams, _] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -40,6 +42,22 @@ export default function PersonModal() {
   useEffect(() => {
     searchParams.has("modal", "people") ? setOpen(true) : setOpen(false);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (fetcher.data?.status === "success") {
+      showToast({
+        message: `${input} name added successfully.`,
+        type: "success",
+        duration: 1500,
+      });
+    } else if (fetcher.data?.status === "failure") {
+      showToast({
+        message: `${input} name failed to save.`,
+        type: "error",
+        duration: 1500,
+      });
+    }
+  }, [fetcher.data]);
 
   function handleClick(e: any) {
     e.preventDefault();

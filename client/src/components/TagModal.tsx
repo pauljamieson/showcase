@@ -7,10 +7,12 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import apiRequest from "../lib/api";
+import { useToast } from "../hooks/useToast";
 
 type Tag = { id: number; name: string };
 
 export default function TagModal() {
+  const { showToast } = useToast();
   const [searchParams, _] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -40,6 +42,22 @@ export default function TagModal() {
   useEffect(() => {
     searchParams.has("modal", "tags") ? setOpen(true) : setOpen(false);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (fetcher.data?.status === "success") {
+      showToast({
+        message: `${input} Tag added successfully.`,
+        type: "success",
+        duration: 1500,
+      });
+    } else if (fetcher.data?.status === "failure") {
+      showToast({
+        message: `${input} tag failed to save.`,
+        type: "error",
+        duration: 1500,
+      });
+    }
+  }, [fetcher.data]);
 
   function handleClick(e: any) {
     e.preventDefault();

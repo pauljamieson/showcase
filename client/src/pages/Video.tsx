@@ -21,6 +21,7 @@ import PersonModal from "../components/PersonModal";
 import useVideoQueue, { VideoQueue } from "../hooks/useVideoQueue";
 import apiRequest from "../lib/api";
 import { v4 as UUID } from "uuid";
+import { useToast } from "../hooks/useToast";
 
 interface vData extends VideoData {
   exists: boolean;
@@ -39,7 +40,6 @@ function Video() {
   // Get search params
   const [searchParams, _] = useSearchParams();
   const playlistId = searchParams.get("playlist");
-
 
   const navigate = useNavigate();
   const { state, pathname } = useLocation();
@@ -276,6 +276,17 @@ interface PersonChip {
 
 function PersonChip({ person, videoId }: PersonChip) {
   const fetcher = useFetcher();
+  const { showToast } = useToast();
+  useEffect(() => {
+    if (fetcher.data?.status === "success") {
+      showToast({
+        message: `${person.name} removed.`,
+        type: "success",
+        duration: 1500,
+      });
+    }
+  }, [fetcher.data]);
+
   return (
     <fetcher.Form
       className="inline tag-list info-chip"
@@ -296,6 +307,17 @@ interface TagChip {
 
 function TagChip({ tag, videoId }: TagChip) {
   const fetcher = useFetcher();
+  const { showToast } = useToast();
+  useEffect(() => {
+    if (fetcher.data?.status === "success") {
+      showToast({
+        message: `${tag.name} removed.`,
+        type: "success",
+        duration: 1500,
+      });
+    }
+  }, [fetcher.data]);
+
   return (
     <fetcher.Form
       className="inline person-list info-chip"

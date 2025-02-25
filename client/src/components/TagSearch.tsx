@@ -20,7 +20,7 @@ export default function TagSearch() {
           resp.status === "success" && setOptions(resp.data.tags);
         }
       );
-    }
+    } 
   }, [input]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
