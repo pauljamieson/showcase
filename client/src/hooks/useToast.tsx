@@ -10,12 +10,18 @@ const ToastContext = createContext<ToastContextValue>({
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState<Toast | null>(null);
-
+  const [timeout, setTO] = useState<NodeJS.Timeout | null>(null);
+  
   function showToast(toast: Toast) {
+    if (timeout) {
+      clearTimeout(timeout);
+      hideToast();
+    }
     setToast(toast);
-    setTimeout(() => {
+    const to = setTimeout(() => {
       hideToast();
     }, toast.duration);
+    setTO(to);  
   }
 
   function hideToast() {
