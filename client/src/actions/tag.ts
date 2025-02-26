@@ -11,13 +11,15 @@ export default async ({ request }: { request: Request }) => {
         .trim(),
       videoId: formData.get("video-id") as string,
     };
-
+    if (body.name.length < 1) {
+      throw "Name is required";
+    }
     const { status } = await apiRequest({
       method: "post",
       endpoint: "/tag/",
       body,
     });
-    
+
     return { status };
   } catch (error) {
     return { status: "failure" };
