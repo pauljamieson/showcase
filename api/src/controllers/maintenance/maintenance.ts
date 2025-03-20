@@ -4,6 +4,7 @@ import {
   getVideoFiles,
   updateVideoFile,
 } from "../../database/database";
+import prisma from "../../lib/prisma";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -16,6 +17,17 @@ async function GET(req: Request, res: Response) {
         await updateVideoFile({ id: file.id, data: update });
       }
     }
+
+    if (req.query.action === "remove") {
+      const files = await prisma.videoFile.findMany({
+        where: {
+          tags: { none: { tag: { name: { notIn: ["New"] } } } },
+          people: { none: {} },
+        },
+      });
+      console.log(files.length);
+    }
+
     res.json({ status: "success", data: {} });
   } catch (error) {
     console.error(error);
