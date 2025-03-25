@@ -5,6 +5,7 @@ import {
   updateVideoFile,
 } from "../../database/database";
 import prisma from "../../lib/prisma";
+import { VideoFile } from "@prisma/client";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -25,7 +26,8 @@ async function GET(req: Request, res: Response) {
           people: { none: {} },
         },
       });
-      console.log(files.length);
+      const totalSize = files.reduce((acc, file) => acc + Number(file.size), 0);
+      console.log(`files: ${files.length}, totalSize: ${sizeOfFiles(files)} `);
     }
 
     res.json({ status: "success", data: {} });
@@ -35,4 +37,14 @@ async function GET(req: Request, res: Response) {
   }
 }
 
+function sizeOfFiles(files: VideoFile[]) {
+  const total = files.reduce((acc, file) => acc + Number(file.size), 0);
+  if (total < 1024) return `${total} bytes`;
+  if (total < Math.pow(1024, 2)) return `${(total / 1024).toFixed(2)} KB`;
+  if (total < Math.pow(1024, 3))
+    return `${(total / Math.pow(1024, 2)).toFixed(2)} MB`;
+  if (total < Math.pow(1024, 4))
+    return `${(total / Math.pow(1024, 3)).toFixed(2)} GB`;
+  return `${(total / Math.pow(1024, 3)).toFixed(2)} TB`;
+}
 export default { GET };
