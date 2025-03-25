@@ -45,6 +45,6 @@ function sizeOfFiles(files: VideoFile[]) {
     return `${(total / Math.pow(1024, 2)).toFixed(2)} MB`;
   if (total < Math.pow(1024, 4))
     return `${(total / Math.pow(1024, 3)).toFixed(2)} GB`;
-  return `${(total / Math.pow(1024, 3)).toFixed(2)} TB`;
+  return `${(total / Math.pow(1024, 4)).toFixed(2)} TB`;
 }
 export default { GET };
