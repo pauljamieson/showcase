@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import {
+  deleteVideo,
   deleteVideoFileById,
   getTagByName,
   getVideoFiles,
@@ -7,6 +8,7 @@ import {
 } from "../../database/database";
 import prisma from "../../lib/prisma";
 import { VideoFile } from "@prisma/client";
+import { rmdir } from "fs/promises";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -28,7 +30,11 @@ async function GET(req: Request, res: Response) {
         },
       });
       for await (const file of files) {
-        await deleteVideoFileById(file.id);
+        const filePath = `./app_data/videos/${Math.floor(+file.id / 1000)}/${
+          +file.id % 1000
+        }`;
+        await deleteVideo(file.id);
+        await rmdir(filePath, { recursive: true });
         console.log(`Deleted file: ${file.id}`);
       }
       const totalSize = files.reduce((acc, file) => acc + Number(file.size), 0);
