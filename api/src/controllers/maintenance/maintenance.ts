@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import {
+  deleteVideoFileById,
   getTagByName,
   getVideoFiles,
   updateVideoFile,
@@ -26,6 +27,10 @@ async function GET(req: Request, res: Response) {
           people: { none: {} },
         },
       });
+      for await (const file of files) {
+        await deleteVideoFileById(file.id);
+        console.log(`Deleted file: ${file.id}`);
+      }
       const totalSize = files.reduce((acc, file) => acc + Number(file.size), 0);
       console.log(`files: ${files.length}, totalSize: ${sizeOfFiles(files)} `);
     }
