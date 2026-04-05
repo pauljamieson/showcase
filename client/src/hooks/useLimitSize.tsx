@@ -12,24 +12,29 @@ function getWindowDimensions(): Dimensions {
 
 function getSize(): number {
   const { width } = getWindowDimensions();
-  if (width < 779) return 10;
-  if (width < 959) return 9;
-  if (width < 1439) return 12;
-  return 15;
+  if (width >= 1440) return 15;
+  if (width >= 960) return 12;
+  if (width >= 780) return 9;
+  else return 10;
 }
 
 export default function useLimitSize(): number {
   const [size, setSize] = useState<number>(getSize());
 
   useEffect(() => {
-    function handleResize() {
-      setSize(getSize());
+    const s = getSize();
+    function handleResize(s: number) {
+      setSize(s);
     }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize.bind(1, s));
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    return () => window.removeEventListener("resize", handleResize.bind(1, s));
+  }, [size]);
+
+  useEffect(() => {
+    console.log(size);
+  }, [size]);
 
   return size;
 }

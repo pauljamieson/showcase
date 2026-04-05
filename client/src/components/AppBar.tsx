@@ -1,6 +1,5 @@
 import {
   Link,
-  useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
@@ -9,16 +8,8 @@ import React, { useEffect, useState } from "react";
 
 export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
-  const { state } = useLocation();
-  const [link, setLink] = useState<string>("/videos");
   const [searchParams, setSearchParams] = useSearchParams();
   const [underlined, setUnderlined] = useState<string>("");
-
-  useEffect(() => {
-    if (state?.search) {
-      setLink(`/videos${state.search}`);
-    } else setLink(`/videos?${searchParams.toString()}`);
-  }, [searchParams]);
 
   useEffect(() => {
     const name = "advanced-search";
@@ -38,7 +29,7 @@ export default function AppBar() {
   return (
     <div className="appbar-container">
       <div className="appbar-inner-container">
-        <Link to={link}>
+        <Link to={"/videos?page=" + sessionStorage.getItem("page") || "1"}>
           <p className="title">Showcase</p>
         </Link>
         <div className="grow" />
@@ -86,23 +77,21 @@ function SearchBar() {
   return (
     <div className="searchbar-container">
       <form onSubmit={handleSubmit}>
-
-        <div >
+        <div>
           <button className="searchbar-btn" type="submit">
             <span>?</span>
-          </button> 
-        <input
-          className="searchbar"
-          type="search"
-          name="search"
-          placeholder="Search"
-          value={input}
-          onChange={(e: React.FormEvent<HTMLInputElement>) =>
-            setInput(e.currentTarget.value)
-          }
-        /> 
+          </button>
+          <input
+            className="searchbar"
+            type="search"
+            name="search"
+            placeholder="Search"
+            value={input}
+            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+              setInput(e.currentTarget.value)
+            }
+          />
         </div>
-        
       </form>
     </div>
   );

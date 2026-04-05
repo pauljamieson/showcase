@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import useLimitSize from "../hooks/useLimitSize";
 
 function Paginator({ count }: { count: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const limit = searchParams.get("limit") || 8;
+  const limit = useLimitSize();
   const pageCount = Math.ceil(count / +limit);
+
+  useEffect(() => {
+    parseInt(searchParams.get("page") || "1") > pageCount &&
+      searchParams.set("page", pageCount.toString());
+    if (limit.toString() != searchParams.get("limit")) {
+      searchParams.set("limit", limit.toString());
+    }
+    setSearchParams(searchParams);
+  }, [limit]);
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -37,7 +47,7 @@ function Paginator({ count }: { count: number }) {
 
   return (
     <div className="pagination-container">
-      ({count})
+      ({limit})
       <button onClick={handleClick} name="previous">
         &lt;
       </button>
