@@ -86,6 +86,11 @@ function SearchBar() {
   return (
     <div className="searchbar-container">
       <form onSubmit={handleSubmit}>
+
+        <div >
+          <button className="searchbar-btn" type="submit">
+            <span>?</span>
+          </button> 
         <input
           className="searchbar"
           type="search"
@@ -95,7 +100,9 @@ function SearchBar() {
           onChange={(e: React.FormEvent<HTMLInputElement>) =>
             setInput(e.currentTarget.value)
           }
-        />
+        /> 
+        </div>
+        
       </form>
     </div>
   );

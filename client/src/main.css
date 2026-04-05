@@ -81,12 +81,24 @@ nav {
 
 .searchbar-container {
   align-content: center;
+  background-color: white;
+  border-radius: 25px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  padding: 0px 5px;
+}
+
+.searchbar-container button {
+  border: none;
+  background-color: white;
 }
 
 .searchbar {
   padding: 5px;
   outline: none;
   border: none;
+  border-radius: 25px;
 }
 
 .usericon-container {
@@ -1075,7 +1087,9 @@ video {
   overflow: hidden;
   visibility: hidden;
   interpolate-size: allow-keywords;
-  transition: height 1s ease, visibility 1s;
+  transition:
+    height 1s ease,
+    visibility 1s;
 }
 
 .callapsible.opened {
