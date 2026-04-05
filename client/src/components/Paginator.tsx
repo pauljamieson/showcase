@@ -8,6 +8,11 @@ function Paginator({ count }: { count: number }) {
   const pageCount = Math.ceil(count / +limit);
 
   useEffect(() => {
+    searchParams.set("limit", limit.toString());
+    setSearchParams(searchParams);
+  }, []);
+
+  useEffect(() => {
     parseInt(searchParams.get("page") || "1") > pageCount &&
       searchParams.set("page", pageCount.toString());
     if (limit.toString() != searchParams.get("limit")) {
@@ -47,7 +52,7 @@ function Paginator({ count }: { count: number }) {
 
   return (
     <div className="pagination-container">
-      ({limit})
+      ({count})
       <button onClick={handleClick} name="previous">
         &lt;
       </button>

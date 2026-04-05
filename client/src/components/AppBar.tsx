@@ -1,15 +1,13 @@
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import useAuth, { User } from "../hooks/useAuth";
 import React, { useEffect, useState } from "react";
+import useLimitSize from "../hooks/useLimitSize";
 
 export default function AppBar() {
   const { isLoggedIn, user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [underlined, setUnderlined] = useState<string>("");
+  const limit = useLimitSize();
 
   useEffect(() => {
     const name = "advanced-search";
@@ -29,7 +27,11 @@ export default function AppBar() {
   return (
     <div className="appbar-container">
       <div className="appbar-inner-container">
-        <Link to={"/videos?page=" + sessionStorage.getItem("page") || "1"}>
+        <Link
+          to={
+            `/videos?page=${sessionStorage.getItem("page")?.toString() || "1"}&limit=${limit}`
+          }
+        >
           <p className="title">Showcase</p>
         </Link>
         <div className="grow" />
