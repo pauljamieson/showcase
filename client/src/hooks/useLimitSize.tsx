@@ -22,14 +22,14 @@ export default function useLimitSize(): number {
   const [size, setSize] = useState<number>(getSize());
 
   useEffect(() => {
-    const s = getSize();
-    function handleResize(s: number) {
+    function handleResize() {
+      const s = getSize();
       setSize(s);
     }
 
-    window.addEventListener("resize", handleResize.bind(1, s));
+    window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener("resize", handleResize.bind(1, s));
+    return () => window.removeEventListener("resize", handleResize);
   }, [size]);
 
   useEffect(() => {
