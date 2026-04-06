@@ -14,7 +14,8 @@ function Paginator({ count }: { count: number }) {
 
   useEffect(() => {
     parseInt(searchParams.get("page") || "1") > pageCount &&
-      searchParams.set("page", pageCount.toString());
+      searchParams.set("page", pageCount > 0 ? pageCount.toString() : "1");
+
     if (limit.toString() != searchParams.get("limit")) {
       searchParams.set("limit", limit.toString());
     }

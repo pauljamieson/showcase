@@ -28,9 +28,8 @@ export default function AppBar() {
     <div className="appbar-container">
       <div className="appbar-inner-container">
         <Link
-          to={
-            `/videos?page=${sessionStorage.getItem("page")?.toString() || "1"}&limit=${limit}`
-          }
+          reloadDocument
+          to={`/videos?page=${sessionStorage.getItem("page")?.toString() || "1"}&limit=${limit}${sessionStorage.getItem("search") ? `&search=${sessionStorage.getItem("search")}` : ""}`}
         >
           <p className="title">Showcase</p>
         </Link>
@@ -65,14 +64,19 @@ export default function AppBar() {
 function SearchBar() {
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState<string>(searchParams.get("search") || "");
 
   function handleSubmit(e: any) {
     e.preventDefault();
-    input.length > 0
-      ? searchParams.set("search", input.trim())
-      : searchParams.delete("search");
+    if (input.length > 0) {
+      searchParams.set("search", input.trim());
+      sessionStorage.setItem("search", input.trim());
+    } else {
+      searchParams.delete("search");
+      sessionStorage.removeItem("search");
+    }
     searchParams.set("page", "1");
+    sessionStorage.setItem("page", "1");
     navigate(`/videos?${searchParams.toString()}`);
   }
 
