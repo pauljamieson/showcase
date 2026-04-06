@@ -509,6 +509,10 @@ input:checked + .toggler:before {
   background-color: inherit;
 }
 
+.span-chip:hover {
+  color: var(--text-highlight);
+}
+
 .chip:hover {
   background-color: var(--btn-prim-hover);
 }
