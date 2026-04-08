@@ -53,6 +53,7 @@ export default function TagSearch() {
         "tags",
         JSON.stringify(searchParams.getAll("tags")),
       );
+      sessionStorage.setItem("page", "1");
       setInput("");
     }
   }

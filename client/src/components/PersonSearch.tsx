@@ -53,6 +53,7 @@ export default function PersonSearch() {
         "people",
         JSON.stringify(searchParams.getAll("people")),
       );
+      sessionStorage.setItem("page", "1");
       setInput("");
     }
   }
