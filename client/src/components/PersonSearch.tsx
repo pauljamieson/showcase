@@ -8,17 +8,29 @@ export default function PersonSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<Person[]>([]);
-  const [active, setActive] = useState<string[]>(searchParams.getAll("people"));
+  const [active, setActive] = useState<string[]>((): string[] => {
+    const activePeople = searchParams.getAll("people") || [];
+    const people: string[] = JSON.parse(
+      sessionStorage.getItem("people") || "[]",
+    );
+    people.forEach(
+      (v) => !activePeople.includes(v) && searchParams.append("people", v),
+    );
+
+    return searchParams.getAll("people") || [];
+  });
 
   useEffect(() => {
     if (input.length > 0) {
       const sp = new URLSearchParams();
       sp.set("terms", input.trim());
-      apiRequest({ method: "get", endpoint: "/people/", searchParams: sp }).then(
-        (resp) => {
-          resp.status === "success" && setOptions(resp.data.people);
-        }
-      );
+      apiRequest({
+        method: "get",
+        endpoint: "/people/",
+        searchParams: sp,
+      }).then((resp) => {
+        resp.status === "success" && setOptions(resp.data.people);
+      });
     }
   }, [input]);
 
@@ -37,6 +49,10 @@ export default function PersonSearch() {
       searchParams.set("page", "1");
       setSearchParams(searchParams);
       setActive(searchParams.getAll("people"));
+      sessionStorage.setItem(
+        "people",
+        JSON.stringify(searchParams.getAll("people")),
+      );
       setInput("");
     }
   }
@@ -48,6 +64,10 @@ export default function PersonSearch() {
       .filter((v) => v !== e.target.id)
       .forEach((v) => searchParams.append("people", v));
     setActive(searchParams.getAll("people"));
+    sessionStorage.setItem(
+      "people",
+      JSON.stringify(searchParams.getAll("people")),
+    );
     setSearchParams(searchParams);
   }
 

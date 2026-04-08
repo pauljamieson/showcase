@@ -51,6 +51,24 @@ export default function Videos() {
   if (!auth.isLoggedIn) return <Navigate to="/login" />;
 
   const data: LoaderData = useLoaderData() as LoaderData;
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const activeTags = searchParams.getAll("tags") || [];
+    const activePeople = searchParams.getAll("people") || [];
+    const tags: string[] = JSON.parse(sessionStorage.getItem("tags") || "[]");
+    tags.forEach(
+      (v) => !activeTags.includes(v) && searchParams.append("tags", v),
+    );
+    const people: string[] = JSON.parse(
+      sessionStorage.getItem("people") || "[]",
+    );
+    people.forEach(
+      (v) => !activePeople.includes(v) && searchParams.append("people", v),
+    );
+    setSearchParams(searchParams);
+  }, []);
+
   return (
     <>
       <div className="videos-container">

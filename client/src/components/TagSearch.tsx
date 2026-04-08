@@ -8,8 +8,17 @@ export default function TagSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<Tag[]>([]);
-  const [active, setActive] = useState<string[]>(searchParams.getAll("tags"));
+  const [active, setActive] = useState<string[]>((): string[] => {
+    const activeTags = searchParams.getAll("tags") || [];
+    const tags: string[] = JSON.parse(sessionStorage.getItem("tags") || "[]");
+    tags.forEach(
+      (v) => !activeTags.includes(v) && searchParams.append("tags", v),
+    );
 
+    return searchParams.getAll("tags") || [];
+  });
+
+  // Fetch tag options when input changes
   useEffect(() => {
     if (input.length > 0) {
       const sp = new URLSearchParams();
@@ -18,11 +27,12 @@ export default function TagSearch() {
       apiRequest({ method: "get", endpoint: "/tags", searchParams: sp }).then(
         (resp) => {
           resp.status === "success" && setOptions(resp.data.tags);
-        }
+        },
       );
-    } 
+    }
   }, [input]);
 
+  // Handle input change
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     const { value } = e.target;
@@ -30,6 +40,7 @@ export default function TagSearch() {
     if (value.length === 0) setOptions([]);
   }
 
+  // Handle form submission, click add, to add a tag
   function handleSubmit(e: any) {
     e.preventDefault();
     const tags = searchParams.getAll("tags");
@@ -38,10 +49,15 @@ export default function TagSearch() {
       searchParams.set("page", "1");
       setSearchParams(searchParams);
       setActive(searchParams.getAll("tags"));
+      sessionStorage.setItem(
+        "tags",
+        JSON.stringify(searchParams.getAll("tags")),
+      );
       setInput("");
     }
   }
 
+  // Handle click on chip to remove a tag
   function handleClick(e: any) {
     const tags = searchParams.getAll("tags");
     searchParams.delete("tags");
@@ -49,6 +65,7 @@ export default function TagSearch() {
       .filter((v) => v !== e.target.id)
       .forEach((v) => searchParams.append("tags", v));
     setActive(searchParams.getAll("tags"));
+    sessionStorage.setItem("tags", JSON.stringify(searchParams.getAll("tags")));
     setSearchParams(searchParams);
   }
 

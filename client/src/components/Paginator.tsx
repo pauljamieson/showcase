@@ -9,6 +9,20 @@ function Paginator({ count }: { count: number }) {
 
   useEffect(() => {
     searchParams.set("limit", limit.toString());
+
+    const activeTags = searchParams.getAll("tags") || [];
+    const activePeople = searchParams.getAll("people") || [];
+    const tags: string[] = JSON.parse(sessionStorage.getItem("tags") || "[]");
+    tags.forEach(
+      (v) => !activeTags.includes(v) && searchParams.append("tags", v),
+    );
+    const people: string[] = JSON.parse(
+      sessionStorage.getItem("people") || "[]",
+    );
+    people.forEach(
+      (v) => !activePeople.includes(v) && searchParams.append("people", v),
+    );
+
     setSearchParams(searchParams);
   }, []);
 
