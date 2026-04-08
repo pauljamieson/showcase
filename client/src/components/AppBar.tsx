@@ -11,16 +11,20 @@ export default function AppBar() {
 
   useEffect(() => {
     const name = "advanced-search";
-    searchParams.has(name, "open")
+    searchParams.has(name, "open") || sessionStorage.getItem(name) === "open"
       ? setUnderlined("txt-underlined")
       : setUnderlined("");
   }, [searchParams]);
 
   function handleClick() {
     const name = "advanced-search";
-    searchParams.has(name, "open")
-      ? searchParams.delete(name)
-      : searchParams.set(name, "open");
+    if (searchParams.has(name, "open")) {
+      sessionStorage.removeItem(name);
+      searchParams.delete(name);
+    } else {
+      sessionStorage.setItem(name, "open");
+      searchParams.set(name, "open");
+    }
     setSearchParams(searchParams);
   }
 

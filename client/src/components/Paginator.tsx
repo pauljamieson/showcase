@@ -9,7 +9,8 @@ function Paginator({ count }: { count: number }) {
 
   useEffect(() => {
     searchParams.set("limit", limit.toString());
-
+    sessionStorage.getItem("advanced-search") === "open" &&
+      searchParams.set("advanced-search", "open");
     const activeTags = searchParams.getAll("tags") || [];
     const activePeople = searchParams.getAll("people") || [];
     const tags: string[] = JSON.parse(sessionStorage.getItem("tags") || "[]");

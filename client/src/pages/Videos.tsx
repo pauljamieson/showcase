@@ -98,6 +98,9 @@ function AdvanceSearch() {
 
   useEffect(() => {
     const name = "advanced-search";
+    if (sessionStorage.getItem(name) === "open") {
+      searchParams.set(name, "open");
+    }
     searchParams.has(name, "open") ? setOpened("opened") : setOpened("");
   }, [searchParams]);
 
