@@ -237,7 +237,7 @@ function VideoQueueCard({ video, playlistId = 0 }: VideoQueueCard) {
 
   const duration = useVideoDuration(video.duration);
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
-    video.id / 1000
+    video.id / 1000,
   )}/${video.id % 1000}`;
 
   const link =
@@ -253,7 +253,7 @@ function VideoQueueCard({ video, playlistId = 0 }: VideoQueueCard) {
             id="queue-item-thumb"
             alt="image"
             src={`${filePath}/thumbs/${encodeURIComponent(
-              video.filename.slice(0, video.filename.lastIndexOf("."))
+              video.filename.slice(0, video.filename.lastIndexOf(".")),
             )}-3.jpg`}
           />
           <div className="video-card-duration-container">
@@ -369,6 +369,11 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
           method: "PATCH",
           body: { update: "views", id: video.id },
         });
+        apiRequest({
+          endpoint: `/history/`,
+          method: "post",
+          body: { videoId: video.id },
+        });
       }
 
       if (seeked) setSeeked(false);
@@ -407,7 +412,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
       onEnded={handleOnEnded}
       preload="metadata"
       src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
-        `${video.filepath}/${video.filename}`
+        `${video.filepath}/${video.filename}`,
       )}`}
     ></video>
   );
