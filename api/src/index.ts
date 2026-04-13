@@ -17,6 +17,7 @@ import MigrateRouter from "./routes/migrate/migrate";
 import MainteanceRouter from "./routes/maintenance/maintenance";
 import PlaylistRouter from "./routes/playlist/playlist";
 import PlaylistsRouter from "./routes/playlists/playlists";
+import HistoryRouter from "./routes/history/history";
 import { middleWare } from "./middleware/middleware";
 
 dotenv.config();
@@ -49,6 +50,7 @@ app.use("/video", VideoRouter);
 app.use("/profile", ProfileRouter);
 app.use("/playlist", PlaylistRouter);
 app.use("/playlists", PlaylistsRouter);
+app.use("/history", HistoryRouter);
 
 
 app.get("/", (req: Request, res: Response) => {

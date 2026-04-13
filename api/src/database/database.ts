@@ -43,7 +43,7 @@ export async function getPlaylistById(id: number) {
 
 export async function getPlaylistsByUserIdWithVideoId(
   userId: number,
-  videoId: number
+  videoId: number,
 ) {
   return await prisma.playlist.findMany({
     where: { userId, playlistItems: { some: { videoId } } },
@@ -120,7 +120,7 @@ export async function getFilePlaylists(id: number): Promise<
 
 export async function deletePlaylistItem(
   videoId: number,
-  playlistId: number
+  playlistId: number,
 ): Promise<{}> {
   const result = await prisma.playlistItem.delete({
     where: {
@@ -249,7 +249,7 @@ export async function migrateTagById(id: number, migrateId: number) {
         create: { videoId: v.id, tagId: migrateId },
         update: { videoId: v.id, tagId: migrateId },
       });
-    })
+    }),
   );
   // delete old tag
   await deleteTagById(id);
@@ -292,7 +292,7 @@ export async function migratePersonById(id: number, migrateId: number) {
         create: { videoId: v.id, personId: migrateId },
         update: { videoId: v.id, personId: migrateId },
       });
-    })
+    }),
   );
   // delete old person
   await deletePersonById(id);
@@ -324,7 +324,7 @@ export async function countPersonConnectionsById(id: number): Promise<number> {
 export async function createPerson(
   name: string,
   videoId: number,
-  userId: number
+  userId: number,
 ) {
   return await prisma.person.upsert({
     where: { name: name },
@@ -409,7 +409,7 @@ export async function getVideoRatingsByVideoId(id: number) {
 
 export async function getVideoRatingByVideoIdAndUserId(
   videoId: number,
-  userId: number
+  userId: number,
 ) {
   return await prisma.videoRatings.findFirst({
     where: { videoId: +videoId, userId: +userId },
@@ -592,3 +592,29 @@ export async function updateCongfiguration(key: string, value: string) {
 export async function getAllowSignup() {
   return await _getConfigurationItem("allow_signup");
 }
+
+/*  Play history */
+
+export async function createUserHistory(userId: number, videoId: number) {
+  return await prisma.userHistory.create({
+    data: {
+      userId: userId,
+      videoFileId: videoId,
+    },
+  });
+}
+
+export async function getUserHistory(
+  userId: number,
+  limit: number = 10,
+  offset: number = 0,
+) {
+  return await prisma.userHistory.findMany({
+    where: { userId: userId },
+    take: limit,
+    skip: offset,
+    orderBy: { watchedAt: "desc" },
+  });
+}
+
+  
