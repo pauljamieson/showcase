@@ -29,6 +29,8 @@ model User {
   montages     VideoMontage[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  userHistories UserHistory[]
 }
 
 enum Role {
@@ -79,6 +81,7 @@ model VideoFile {
   updatedAt     DateTime @updatedAt
 
   @@unique([filename, size])
+  userHistories UserHistory[]
 }
 
 model Tag {
@@ -238,4 +241,13 @@ model VideoMontage {
   videoSegments VideoSegment[] 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+}
+
+model UserHistory {
+  id          Int @id @default(autoincrement())
+  userId      Int
+  user        User @relation(fields: [userId], references: [id])
+  videoFileId Int
+  videoFile   VideoFile @relation(fields: [videoFileId], references: [id])
+  watchedAt   DateTime @default(now())
 }
