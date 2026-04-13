@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-import MaintenanceController from "../../controllers/maintenance/maintenance";
+import HistoryController from "../../controllers/history/history";
 const router: Router = Router();
 
-router.route("/").get(MaintenanceController.GET);
+router.route("/").get(HistoryController.GET).post(HistoryController.POST);
 
 export default router;
