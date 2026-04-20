@@ -1,10 +1,10 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import useAuth, { User } from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import React, { useEffect, useState } from "react";
 import useLimitSize from "../hooks/useLimitSize";
 
 export default function AppBar() {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, _ } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [underlined, setUnderlined] = useState<string>("");
   const limit = useLimitSize();
@@ -108,13 +108,6 @@ function SearchBar() {
   );
 }
 
-function UserIcon({ name }: User) {
-  return (
-    <div className="usericon-container">
-      <Link to={"/profile"}>{name.at(0)}</Link>
-    </div>
-  );
-}
 
 function UserMenu() {
 
