@@ -1150,3 +1150,35 @@ li {
 .db-red {
   background-color: red;
 }
+
+
+/* AppBar Menu */
+
+.menu-container {
+  
+  display: flex;
+  align-items: center;
+  padding: var(--spacing);
+  height: 60px;
+
+}
+
+.menu-checkbox {
+  display: none;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menu-title label{
+  cursor: pointer;
+}
+
+.menu-dropdown-container {
+ background-color: white;
+  border: 1px solid black;
+ position: absolute;
+ width: fit-content;
+ right:0;
+ padding: var(--spacing);
+}

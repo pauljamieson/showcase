@@ -47,7 +47,8 @@ export default function AppBar() {
                   Advanced Search
                 </span>
               </div>
-              <UserIcon {...user} />
+              <UserMenu />
+
             </>
           ) : (
             <>
@@ -113,4 +114,45 @@ function UserIcon({ name }: User) {
       <Link to={"/profile"}>{name.at(0)}</Link>
     </div>
   );
+}
+
+function UserMenu() {
+
+  const { clearToken, user } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    console.log("toggling menu");
+    setIsOpen(!isOpen);
+  }
+
+  const logout = () => {
+    clearToken();
+    toggleMenu();
+  }
+
+
+  return <div><div className="menu-container">
+
+    <div className="menu-title">
+      <input className="dropdown menu-checkbox" type="checkbox" id="dropdown" name="dropdown" onClick={toggleMenu} checked={isOpen} />
+      <label className="for-dropdown" htmlFor="dropdown">User</label>
+    </div>
+
+  </div>
+    {isOpen && <div className="menu-dropdown-container">
+      <span>{user.name}</span>
+      <Link to={"/playlists"} onClick={toggleMenu}>
+        <p>Playlists</p>
+      </Link>
+      <Link to={"/admin"} onClick={toggleMenu}>
+        <p>Admin</p>
+      </Link>
+      <Link to="/" onClick={logout}>
+        <p>Logout</p>
+      </Link>
+    </div>}
+  </div>
+
+
 }

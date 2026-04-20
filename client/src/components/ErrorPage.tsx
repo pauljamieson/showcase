@@ -7,7 +7,7 @@ export default function ErrorPage() {
   return (
     <div className="error-container">
       <span>Opps! Something went wrong!!!</span>
-      <br/>
+      <br />
       <Link to="/" className="go-home txt-underlined">Go back to home</Link>
     </div>
   );
