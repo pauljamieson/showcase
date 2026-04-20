@@ -68,7 +68,7 @@ export default function AppBar() {
 
 function SearchBar() {
   const navigate = useNavigate();
-  const [searchParams, _] = useSearchParams();
+  const [searchParams ] = useSearchParams();
   const [input, setInput] = useState<string>(searchParams.get("search") || "");
 
   function handleSubmit(e: any) {
