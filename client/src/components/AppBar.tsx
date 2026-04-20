@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import useLimitSize from "../hooks/useLimitSize";
 
 export default function AppBar() {
-  const { isLoggedIn, _ } = useAuth();
+  const { isLoggedIn } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [underlined, setUnderlined] = useState<string>("");
   const limit = useLimitSize();
@@ -68,7 +68,7 @@ export default function AppBar() {
 
 function SearchBar() {
   const navigate = useNavigate();
-  const [searchParams ] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [input, setInput] = useState<string>(searchParams.get("search") || "");
 
   function handleSubmit(e: any) {
@@ -76,7 +76,7 @@ function SearchBar() {
     if (input.length > 0) {
       searchParams.set("search", input.trim());
       sessionStorage.setItem("search", input.trim());
-    } else {  
+    } else {
       searchParams.delete("search");
       sessionStorage.removeItem("search");
     }
