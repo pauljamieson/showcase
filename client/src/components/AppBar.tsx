@@ -76,7 +76,7 @@ function SearchBar() {
     if (input.length > 0) {
       searchParams.set("search", input.trim());
       sessionStorage.setItem("search", input.trim());
-    } else {
+    } else {  
       searchParams.delete("search");
       sessionStorage.removeItem("search");
     }
