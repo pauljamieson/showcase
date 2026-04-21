@@ -36,6 +36,8 @@ import Playlist from "../pages/Playlist";
 import PlaylistLoader from "../loaders/playlist";
 import Configuration from "../pages/Configuration";
 import ConfigurationLoader from "../loaders/configuration";
+import History from "../pages/History";
+import HistoryLoader from "../loaders/history";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +60,11 @@ export const router = createBrowserRouter([
       {
         path: "/admin",
         element: <Admin />,
+      },
+      {
+        path: "/history",
+        element: <History />,
+        loader: HistoryLoader,
       },
       {
         path: "/videos",

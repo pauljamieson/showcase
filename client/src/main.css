@@ -706,27 +706,27 @@ input:checked + .toggler:before {
 }
 
 @media only screen and (max-width: 500px) {
-  .playlist-card-container {
+  .playlist-card-container, .history-card-container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 @media only screen and (min-width: 500px) {
-  .playlist-card-container {
+  .playlist-card-container, .history-card-container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 @media only screen and (min-width: 1000px) {
-  .playlist-card-container {
+  .playlist-card-container, .history-card-container {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 @media only screen and (min-width: 1250px) {
-  .playlist-card-container {
+  .playlist-card-container, .history-card-container {
     grid-template-columns: repeat(5, 1fr);
   }
 }
 @media only screen and (min-width: 1500px) {
-  .playlist-card-container {
+  .playlist-card-container, .history-card-container {
     grid-template-columns: repeat(6, 1fr);
   }
 }
@@ -1181,4 +1181,23 @@ li {
  width: fit-content;
  right:0;
  padding: var(--spacing);
+}
+
+/* History Page */
+.history-container {
+  display: flex;
+
+  flex-direction: row;
+  gap: var(--spacing);
+  padding: var(--spacing);
+  height:100%;
+}
+
+.history-card-container {
+  width: 100vw;
+  display: grid;
+  gap: 10px;
+  row-gap: 20px;
+  grid-template-columns: 1fr;
+  padding: 5px 15px;
 }

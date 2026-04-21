@@ -138,6 +138,9 @@ function UserMenu() {
       <Link to={"/playlists"} onClick={toggleMenu}>
         <p>Playlists</p>
       </Link>
+      <Link to={"/history"} onClick={toggleMenu}>
+        <p>History</p>
+      </Link>
       <Link to={"/admin"} onClick={toggleMenu}>
         <p>Admin</p>
       </Link>

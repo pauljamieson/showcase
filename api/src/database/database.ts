@@ -617,4 +617,8 @@ export async function getUserHistory(
   });
 }
 
-  
+export async function getHistoryByVideoIds(videoIds: number[]) {
+  return await prisma.videoFile.findMany({
+    where: { id: { in: videoIds } },
+  });
+}

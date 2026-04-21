@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserHistory, getUserHistory } from "../../database/database";
+import { createUserHistory, getHistoryByVideoIds, getUserHistory, getVideoFiles } from "../../database/database";
 
 async function POST(req: Request, res: Response) {
   try {
@@ -27,8 +27,9 @@ async function GET(req: Request, res: Response) {
     if (!userId) return res.json({ status: "ok" });
 
     const history = await getUserHistory(userId);
+    const videos = await getHistoryByVideoIds(history.map((h) => h.videoFileId)); 
 
-    res.json({ status: "success", data: history });
+    res.json({ status: "success", data: {history , videos } });
   } catch (error) {
     console.error(error);
     res.json({ status: "failure" });
