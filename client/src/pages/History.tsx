@@ -70,7 +70,7 @@ export default function History() {
             const position = window.scrollY + window.innerHeight;
             if (maxHeight - position < 200) {
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
-                setOffset(offset + 10);
+                setOffset((prev) => prev + 10);
             }
         }
         window.addEventListener('scroll', handleWindowScroll);
