@@ -53,7 +53,7 @@ export default function History() {
 
     useEffect(() => {
         const newData = fetcher.data as LoaderData;
-        if (newData && videos && videos?.videos.length < offset) {
+        if (newData && videos && videos?.videos.length <= offset) {
             setVideos({
                 videos: [...videos.videos, ...newData.videos],
                 files: [...videos.files, ...newData.files]
