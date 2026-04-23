@@ -1,5 +1,6 @@
-import { useLoaderData } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
 import VideoCard from "../components/VideoCard";
+import { useEffect, useRef, useState } from "react";
 
 
 type LoaderData = {
@@ -39,24 +40,69 @@ export type Person = {
     name: string;
 };
 export default function History() {
+    const fetcher = useFetcher()
+    const [videos, setVideos] = useState(null as LoaderData | null);
+    const [offset, setOffset] = useState(0);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const videos: LoaderData = useLoaderData() as LoaderData;
+    const intialState: LoaderData = useLoaderData() as LoaderData;
 
-    console.log(videos && videos);
+    useEffect(() => {
+        setVideos(intialState)
+    }, [intialState])
+
+    useEffect(() => {
+        const newData = fetcher.data as LoaderData;
+        if (newData && videos && videos?.videos.length < offset) {
+            setVideos({
+                videos: [...videos.videos, ...newData.videos],
+                files: [...videos.files, ...newData.files]
+            });
+        }
+    }, [fetcher.data]);
+
+
+    useEffect(() => {
+
+        const handleWindowScroll = () => {
+
+            const maxHeight = document.documentElement.scrollHeight;
+            const position = window.scrollY + window.innerHeight;
+            if (maxHeight - position < 200) {
+                fetcher.load(`/history?limit=10&offset=${offset + 10}`);
+                setOffset(offset + 10);
+            }
+        }
+        window.addEventListener('scroll', handleWindowScroll);
+        return () => window.removeEventListener('scroll', handleWindowScroll);
+
+    }, []);
+
 
     return (
-        <div className="videos-container" >
-            <div className="video-card-container  ">
-                {videos && videos.files.map((file) => {
+        <div className="history-container" >
+
+            <div className="history-card-container" ref={containerRef}  >
+
+
+                {videos && videos.files.map((file, idx) => {
+                    //console.log(fetcher.data)
+
                     const videoFile = videos.videos.find((v) => v.id === file.videoFileId);
                     return videoFile ? (
-                        <div key={file.id}>
-                            <VideoCard key={file.id} videoFile={videoFile} />
-                            <span>Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
+
+                        <div className="history-card" key={file.id}>
+                            <div>
+                                <VideoCard key={idx} videoFile={videoFile} />
+                                <span>Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
+                            </div>
                         </div>
+
+
                     ) : null;
                 })}
             </div>
         </div>
+
     );
 }

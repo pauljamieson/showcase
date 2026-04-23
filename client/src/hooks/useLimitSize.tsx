@@ -32,9 +32,9 @@ export default function useLimitSize(): number {
     return () => window.removeEventListener("resize", handleResize);
   }, [size]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.log(size);
-  }, [size]);
+  }, [size]);*/
 
   return size;
 }

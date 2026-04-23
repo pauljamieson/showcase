@@ -25,8 +25,8 @@ async function GET(req: Request, res: Response) {
     const userId = +res.locals.user;
 
     if (!userId) return res.json({ status: "ok" });
-
-    const history = await getUserHistory(userId);
+      
+    const history = await getUserHistory(userId, +(req.query.limit || 10),  +(req.query.offset || 0) );
     const videos = await getHistoryByVideoIds(history.map((h) => h.videoFileId)); 
 
     res.json({ status: "success", data: {history , videos } });

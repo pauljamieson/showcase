@@ -115,7 +115,6 @@ function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
-    console.log("toggling menu");
     setIsOpen(!isOpen);
   }
 
