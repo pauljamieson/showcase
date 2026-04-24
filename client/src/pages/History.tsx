@@ -70,7 +70,7 @@ export default function History() {
         const handleWindowScroll = () => {
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
-            if (videos && videos?.files.length < offset + 1) return;
+            if (videos && videos?.files.length < offset - 1) return;
             if (maxHeight - position < 200) {
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
                 setOffset((prev) => prev + 10);
