@@ -51,8 +51,11 @@ export default function History() {
         setVideos(intialState)
     }, [intialState])
 
+    /* Update videos when fetcher data changes */
     useEffect(() => {
         const newData = fetcher.data as LoaderData;
+
+        console.log(videos?.files.length, offset)
         if (newData && videos && videos?.videos.length <= offset) {
             setVideos({
                 videos: [...videos.videos, ...newData.videos],
@@ -62,47 +65,38 @@ export default function History() {
     }, [fetcher.data]);
 
 
+    /* Endless scroll */
     useEffect(() => {
-
         const handleWindowScroll = () => {
-
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
+            if (videos && videos?.files.length < offset) return;
             if (maxHeight - position < 200) {
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
                 setOffset((prev) => prev + 10);
             }
         }
+
         window.addEventListener('scroll', handleWindowScroll);
         return () => window.removeEventListener('scroll', handleWindowScroll);
-
-    }, []);
+    }, [offset]);
 
 
     return (
         <div className="history-container" >
-
             <div className="history-card-container" ref={containerRef}  >
-
-
                 {videos && videos.files.map((file, idx) => {
-                    //console.log(fetcher.data)
-
                     const videoFile = videos.videos.find((v) => v.id === file.videoFileId);
                     return videoFile ? (
-
                         <div className="history-card" key={file.id}>
                             <div>
                                 <VideoCard key={idx} videoFile={videoFile} />
                                 <span>Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
                             </div>
                         </div>
-
-
                     ) : null;
                 })}
             </div>
         </div>
-
     );
 }
