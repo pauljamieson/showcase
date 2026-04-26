@@ -40,7 +40,6 @@ export type Person = {
     name: string;
 };
 
-
 export default function History() {
     const fetcher = useFetcher()
     const [videos, setVideos] = useState(null as LoaderData | null);
@@ -52,8 +51,6 @@ export default function History() {
     useEffect(() => {
         setVideos(intialState)
     }, [intialState])
-
-
 
     /* Update videos when fetcher data changes */
     useEffect(() => {
@@ -75,6 +72,8 @@ export default function History() {
         const handleWindowScroll = () => {
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
+            console.log(maxHeight, position, offset)
+            console.log(videos && videos?.files.length, offset)
             if (videos && videos?.files.length < offset) return;
             if (maxHeight - position < 200) {
                 setOffset((prev) => prev + 10);
