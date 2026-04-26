@@ -39,6 +39,8 @@ export type Person = {
     id: number;
     name: string;
 };
+
+
 export default function History() {
     const fetcher = useFetcher()
     const [videos, setVideos] = useState(null as LoaderData | null);
@@ -50,6 +52,8 @@ export default function History() {
     useEffect(() => {
         setVideos(intialState)
     }, [intialState])
+
+
 
     /* Update videos when fetcher data changes */
     useEffect(() => {
@@ -67,13 +71,15 @@ export default function History() {
 
     /* Endless scroll */
     useEffect(() => {
+
         const handleWindowScroll = () => {
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
-            //if (videos && videos?.files.length < offset - 1) return;
+            if (videos && videos?.files.length < offset) return;
             if (maxHeight - position < 200) {
-                fetcher.load(`/history?limit=10&offset=${offset + 10}`);
                 setOffset((prev) => prev + 10);
+                fetcher.load(`/history?limit=10&offset=${offset + 10}`);
+
             }
         }
 
@@ -88,10 +94,10 @@ export default function History() {
                 {videos && videos.files.map((file, idx) => {
                     const videoFile = videos.videos.find((v) => v.id === file.videoFileId);
                     return videoFile ? (
-                        <div className="history-card" key={file.id}>
+                        <div className="history-card" key={idx}>
                             <div>
-                                <VideoCard key={idx} videoFile={videoFile} />
-                                <span>Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
+                                <VideoCard videoFile={videoFile} />
+                                <span>{idx} -  Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
                             </div>
                         </div>
                     ) : null;
