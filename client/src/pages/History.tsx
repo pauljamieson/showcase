@@ -76,7 +76,7 @@ export default function History() {
             console.log(videos && videos?.files.length, offset, " <> ", (videos?.files.length || 0) < offset)
             console.log("Videos length: ", videos?.files.length)
             console.log(videos)
-            if (videos && videos?.files.length <= offset) return;
+            if (videos && videos?.files.length + 10 < offset) return;
             if (maxHeight - position < 200) {
 
                 setOffset((prev) => prev + 10);
