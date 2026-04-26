@@ -83,7 +83,10 @@ export default function History() {
         }
 
         window.addEventListener('scroll', handleWindowScroll);
-        return () => window.removeEventListener('scroll', handleWindowScroll);
+        return () => {
+            console.log("Removing scroll listener")
+            window.removeEventListener('scroll', handleWindowScroll);
+        }
     }, [offset]);
 
 
