@@ -66,6 +66,20 @@ export default function History() {
     }, [fetcher.data]);
 
 
+    const throttle = (func: Function, delay: number) => {
+        let lastCall = 0;
+        return function (...args: any[]) {
+            const now = new Date().getTime();
+            if (now - lastCall < delay) {
+                return;
+            }
+            lastCall = now;
+            return func(...args);
+        }
+
+    }
+
+
     /* Endless scroll */
     useEffect(() => {
         console.log("Calling useEffect for scroll", offset)
@@ -81,14 +95,16 @@ export default function History() {
                 setOffset((prev) => prev + 10);
                 console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
-             
+
             }
         }
 
-        window.addEventListener('scroll', handleWindowScroll);
+        const throttledScrollHandler = throttle(handleWindowScroll, 200);
+
+        window.addEventListener('scroll', throttledScrollHandler);
         return () => {
             console.log("Removing scroll listener")
-            window.removeEventListener('scroll', handleWindowScroll);
+            window.removeEventListener('scroll', throttledScrollHandler);
         }
     }, [offset]);
 
