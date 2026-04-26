@@ -103,7 +103,7 @@ export default function History() {
                         <div className="history-card" key={idx}>
                             <div>
                                 <VideoCard videoFile={videoFile} />
-                                <span>{idx} -  Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
+                                <span>{idx} id:{videoFile.id} -  Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
                             </div>
                         </div>
                     ) : null;
