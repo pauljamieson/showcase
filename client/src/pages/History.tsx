@@ -73,7 +73,7 @@ export default function History() {
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
             console.log(maxHeight, position, offset)
-            console.log(videos && videos?.files.length, offset)
+            console.log(videos && videos?.files.length, offset, " <> ", (videos?.files.length || 0) < offset)
             if (videos && videos?.files.length < offset) return;
             if (maxHeight - position < 200) {
                 setOffset((prev) => prev + 10);
