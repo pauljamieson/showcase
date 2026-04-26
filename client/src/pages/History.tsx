@@ -68,7 +68,7 @@ export default function History() {
 
     /* Endless scroll */
     useEffect(() => {
-
+        console.log("Calling useEffect for scroll", offset)
         const handleWindowScroll = () => {
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
