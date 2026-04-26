@@ -72,10 +72,10 @@ export default function History() {
         const handleWindowScroll = () => {
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
-            console.log(maxHeight, position, offset)
+            /*console.log(maxHeight, position, offset)
             console.log(videos && videos?.files.length, offset, " <> ", (videos?.files.length || 0) < offset)
             console.log("Videos length: ", videos?.files.length)
-            console.log(videos)
+            console.log(videos)*/
             if (videos && videos?.files.length + 10 < offset) return;
             if (maxHeight - position < 200) {
 
