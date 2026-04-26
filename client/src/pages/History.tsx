@@ -78,7 +78,9 @@ export default function History() {
             console.log(videos)
             if (videos && videos?.files.length <= offset) return;
             if (maxHeight - position < 200) {
+
                 setOffset((prev) => prev + 10);
+                console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
 
             }
