@@ -77,8 +77,8 @@ export default function History() {
 
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
-            console.log(maxHeight, position)
-            if (!wait && maxHeight - position < 600) {
+
+            if (!wait && maxHeight - position < 800) {
                 wait = true;
                 setTimeout(() => {
                     console.log("updating offset")
