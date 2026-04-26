@@ -57,7 +57,8 @@ export default function History() {
         const newData = fetcher.data as LoaderData;
 
         console.log(videos?.files.length, offset)
-        if (newData && videos && videos?.videos.length < offset) {
+        if (newData && videos && videos?.videos.length <= offset) {
+
             setVideos({
                 videos: [...videos.videos, ...newData.videos],
                 files: [...videos.files, ...newData.files]
@@ -82,8 +83,11 @@ export default function History() {
 
     /* Endless scroll */
     useEffect(() => {
+        let started = false
         console.log("Calling useEffect for scroll", offset)
         const handleWindowScroll = () => {
+            if (started) return
+
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
             /*console.log(maxHeight, position, offset)
@@ -92,10 +96,11 @@ export default function History() {
             console.log(videos)*/
             if (videos && videos?.files.length < offset) return;
             if (maxHeight - position < 200) {
-                setOffset((prev) => prev + 10);
+                started = true
                 console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
-
+                setOffset((prev) => prev + 10);
+                started = false;
             }
         }
 
