@@ -57,7 +57,7 @@ export default function History() {
         const newData = fetcher.data as LoaderData;
 
         console.log(videos?.files.length, offset)
-        if (newData && videos && videos?.videos.length <= offset) {
+        if (newData && videos && videos?.videos.length < offset) {
             setVideos({
                 videos: [...videos.videos, ...newData.videos],
                 files: [...videos.files, ...newData.files]
@@ -76,13 +76,12 @@ export default function History() {
             console.log(videos && videos?.files.length, offset, " <> ", (videos?.files.length || 0) < offset)
             console.log("Videos length: ", videos?.files.length)
             console.log(videos)*/
-            if (videos && videos?.files.length + 10 < offset) return;
+            if (videos && videos?.files.length < offset) return;
             if (maxHeight - position < 200) {
-
                 setOffset((prev) => prev + 10);
                 console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
-
+             
             }
         }
 
