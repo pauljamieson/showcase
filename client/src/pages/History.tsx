@@ -71,10 +71,14 @@ export default function History() {
 
     /* Endless scroll */
     useEffect(() => {
+        
+
         let wait = false;
         console.log("Adding scroll listener")
-        const handleWindowScroll = () => {
 
+        console.log("Files length:", videos?.files.length, "Offset:", offset)
+        const handleWindowScroll = () => {
+            
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
 
