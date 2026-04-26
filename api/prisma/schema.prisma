@@ -109,7 +109,7 @@ model Person {
 model VideoRatings {
   video    VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId  Int
-  user     User @relation(fields: [userId], references: [id])
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   Int
 
   rating   Int 
@@ -123,7 +123,7 @@ model VideoRatings {
 model Playlist {
   id            Int @id @default(autoincrement())
   name          String
-  user          User @relation(fields: [userId], references: [id])
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
   playlistItems PlaylistItem[] 
 
@@ -246,8 +246,8 @@ model VideoMontage {
 model UserHistory {
   id          Int @id @default(autoincrement())
   userId      Int
-  user        User @relation(fields: [userId], references: [id])
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
   videoFileId Int
-  videoFile   VideoFile @relation(fields: [videoFileId], references: [id])
+  videoFile   VideoFile @relation(fields: [videoFileId], references: [id], onDelete: Cascade)
   watchedAt   DateTime @default(now())
 }

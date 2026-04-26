@@ -1206,6 +1206,13 @@ li {
 .history-card {
   border-bottom: 1px solid black;
   padding: 5px;
-
+  display: flex;
+  flex-direction: column; 
+  gap: var(--spacing);
 }
 
+.end-message {
+  text-align: center;
+  font-style: italic;
+  color: var(--text-highlight);
+}

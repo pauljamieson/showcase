@@ -45,6 +45,7 @@ export default function History() {
     const [videos, setVideos] = useState(null as LoaderData | null);
     const [offset, setOffset] = useState(0);
     const [update, setUpdate] = useState(true);
+    const [end, setEnd] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const intialState: LoaderData = useLoaderData() as LoaderData;
@@ -63,7 +64,7 @@ export default function History() {
                 files: [...videos.files, ...newData.files]
             });
             setUpdate(true);
-        }
+        } else setEnd(true);
     }, [fetcher.data]);
 
 
@@ -94,13 +95,12 @@ export default function History() {
                     const videoFile = videos.videos.find((v) => v.id === file.videoFileId);
                     return videoFile ? (
                         <div className="history-card" key={idx}>
-                            <div>
-                                <VideoCard videoFile={videoFile} />
-                                <span>{idx} id:{videoFile.id} -  Watched At: {new Date(file.watchedAt).toLocaleString()}</span>
-                            </div>
+                            <span>Watched : {new Date(file.watchedAt).toLocaleString()}</span>
+                            <VideoCard videoFile={videoFile} />
                         </div>
                     ) : null;
                 })}
+                {end && <div className="end-message">No more video history.</div>}
             </div>
         </div>
     );
