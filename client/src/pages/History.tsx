@@ -56,8 +56,6 @@ export default function History() {
     /* Update videos when fetcher data changes */
     useEffect(() => {
         const newData = fetcher.data as LoaderData;
-
-        //console.log(videos?.files.length, offset)
         if (newData && videos && newData.files.length > 0) {
             setOffset((prev) => prev + 10);
             setVideos({
@@ -69,16 +67,8 @@ export default function History() {
     }, [fetcher.data]);
 
 
-
-
     /* Endless scroll */
     useEffect(() => {
-
-
-
-        console.log("Adding scroll listener")
-
-        console.log("Files length:", videos?.files.length, "Offset:", offset)
         const handleWindowScroll = () => {
 
             const maxHeight = document.documentElement.scrollHeight;
@@ -86,17 +76,12 @@ export default function History() {
 
             if (update && maxHeight - position < 800) {
                 setUpdate(false);
-
-                console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
             }
         }
 
-        //const throttledScrollHandler = throttle(handleWindowScroll, 500);
-
         window.addEventListener('scroll', handleWindowScroll);
         return () => {
-            console.log("Removing scroll listener")
             window.removeEventListener('scroll', handleWindowScroll);
         }
     }, [update]);
