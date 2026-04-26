@@ -83,7 +83,7 @@ export default function History() {
                 setTimeout(() => {
                     console.log("updating offset")
                     setOffset((prev) => prev + 10);
-                }, 1000);
+                }, 3000);
 
                 console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
