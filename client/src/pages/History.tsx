@@ -56,7 +56,7 @@ export default function History() {
     useEffect(() => {
         const newData = fetcher.data as LoaderData;
 
-        console.log(videos?.files.length, offset)
+        //console.log(videos?.files.length, offset)
         if (newData && videos && videos?.videos.length <= offset) {
 
             setVideos({
@@ -81,35 +81,34 @@ export default function History() {
     }
 
 
+
     /* Endless scroll */
     useEffect(() => {
-        let started = false
-        console.log("Calling useEffect for scroll", offset)
+        let wait = false;
+        console.log("Adding scroll listener")
         const handleWindowScroll = () => {
-            if (started) return
 
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
-            /*console.log(maxHeight, position, offset)
-            console.log(videos && videos?.files.length, offset, " <> ", (videos?.files.length || 0) < offset)
-            console.log("Videos length: ", videos?.files.length)
-            console.log(videos)*/
-            if (videos && videos?.files.length < offset) return;
-            if (maxHeight - position < 200) {
-                started = true
+            console.log(maxHeight, position)
+            if (!wait && maxHeight - position < 600) {
+                wait = true;
+                setTimeout(() => {
+                    console.log("updating offset")
+                    setOffset((prev) => prev + 10);
+                }, 1000);
+
                 console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
-                setOffset((prev) => prev + 10);
-                started = false;
             }
         }
 
-        const throttledScrollHandler = throttle(handleWindowScroll, 200);
+        //const throttledScrollHandler = throttle(handleWindowScroll, 500);
 
-        window.addEventListener('scroll', throttledScrollHandler);
+        window.addEventListener('scroll', handleWindowScroll);
         return () => {
             console.log("Removing scroll listener")
-            window.removeEventListener('scroll', throttledScrollHandler);
+            window.removeEventListener('scroll', handleWindowScroll);
         }
     }, [offset]);
 
