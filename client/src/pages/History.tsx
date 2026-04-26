@@ -44,6 +44,7 @@ export default function History() {
     const fetcher = useFetcher()
     const [videos, setVideos] = useState(null as LoaderData | null);
     const [offset, setOffset] = useState(0);
+    const [update, setUpdate] = useState(true);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const intialState: LoaderData = useLoaderData() as LoaderData;
@@ -57,12 +58,13 @@ export default function History() {
         const newData = fetcher.data as LoaderData;
 
         //console.log(videos?.files.length, offset)
-        if (newData && videos && videos?.videos.length <= offset) {
-
+        if (newData && videos && newData.files.length > 0) {
+            setOffset((prev) => prev + 10);
             setVideos({
                 videos: [...videos.videos, ...newData.videos],
                 files: [...videos.files, ...newData.files]
             });
+            setUpdate(true);
         }
     }, [fetcher.data]);
 
@@ -71,23 +73,19 @@ export default function History() {
 
     /* Endless scroll */
     useEffect(() => {
-        
 
-        let wait = false;
+
+
         console.log("Adding scroll listener")
 
         console.log("Files length:", videos?.files.length, "Offset:", offset)
         const handleWindowScroll = () => {
-            
+
             const maxHeight = document.documentElement.scrollHeight;
             const position = window.scrollY + window.innerHeight;
 
-            if (!wait && maxHeight - position < 800) {
-                wait = true;
-                setTimeout(() => {
-                    console.log("updating offset")
-                    setOffset((prev) => prev + 10);
-                }, 3000);
+            if (update && maxHeight - position < 800) {
+                setUpdate(false);
 
                 console.log(`/history?limit=10&offset=${offset + 10}`);
                 fetcher.load(`/history?limit=10&offset=${offset + 10}`);
@@ -101,7 +99,7 @@ export default function History() {
             console.log("Removing scroll listener")
             window.removeEventListener('scroll', handleWindowScroll);
         }
-    }, [offset]);
+    }, [update]);
 
 
     return (
