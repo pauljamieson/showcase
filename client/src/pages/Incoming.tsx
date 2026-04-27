@@ -296,7 +296,7 @@ function PersonModal() {
       });
       return;
     }
-    if (activePeople.some((p) => p.id === person.id)) {
+    if (activePeople.some((p: { id: number, name: string }) => p.id === person.id)) {
       showToast({
         message: "Person already added.",
         type: "error",
