@@ -63,10 +63,10 @@ export default function Incoming() {
             Add Tag to All
           </button>
           <button type="button" onClick={() =>
-              (
-                document.getElementById("modal-person") as HTMLDialogElement
-              )?.showModal()
-            }>Add Person to All</button>
+            (
+              document.getElementById("modal-person") as HTMLDialogElement
+            )?.showModal()
+          }>Add Person to All</button>
         </div>
         <input
           type="hidden"
@@ -165,7 +165,7 @@ function TagModal() {
       });
       return;
     }
-    if (activeTags.some((t) => t.id === tag.id)) {
+    if (activeTags.some((t: { id: number, name: string }) => t.id === tag.id)) {
       showToast({
         message: "Tag already added.",
         type: "error",
@@ -179,7 +179,7 @@ function TagModal() {
 
   const handleRemoveTag = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    const newArr = activeTags.filter((t) => t.id !== parseInt(e.currentTarget.id));
+    const newArr = activeTags.filter((t: { id: number, name: string }) => t.id !== parseInt(e.currentTarget.id));
     setActiveTags(newArr);
   }
 
@@ -310,7 +310,7 @@ function PersonModal() {
 
   const handleRemovePerson = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    const newArr = activePeople.filter((p : Person) => p.id !== parseInt(e.currentTarget.id));
+    const newArr = activePeople.filter((p: Person) => p.id !== parseInt(e.currentTarget.id));
     setActivePeople(newArr);
   }
 
