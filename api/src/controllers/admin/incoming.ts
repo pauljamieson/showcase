@@ -85,10 +85,11 @@ async function GET(req: Request, res: Response) {
 }
 
 async function POST(req: Request, res: Response) {
-  const { files } = req.body;
+  const { files, tags, people } = req.body;
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
     for (const file of files) {
+
       const stats = await stat(file);
       const path: string = await realpath(file);
       const folderId: string = nanoid(6);
@@ -98,6 +99,8 @@ async function POST(req: Request, res: Response) {
         folder: folderId,
         filename: basename(path),
         userId: +res.locals.user,
+        tags: JSON.stringify(tags),
+        people: JSON.stringify(people),
       });
     }
     await removeEmptyFolders("./app_data/incoming");

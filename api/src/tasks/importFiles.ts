@@ -21,6 +21,8 @@ type FileInfo = {
   audioCodec: string;
   size: number;
   userId?: number;
+  tags: string;
+  people: string;
 };
 
 var isActive = false;
@@ -134,6 +136,8 @@ async function getFileInfo(file: IncomingFile) {
       size: 0,
       videoCodec: "",
       audioCodec: "",
+      tags: file.tags,
+      people: file.people,  
     };
 
     ffprobe(file.filename, (err, data) => {

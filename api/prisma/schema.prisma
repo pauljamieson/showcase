@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,51 +8,45 @@ datasource db {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  displayname  String   @unique
-  password     String
-  role         Role     @default(USER)
-  tags         Tag[]
-  people       Person[]
-  ratings      VideoRatings[]  // user ratings on videos
-  playlists    Playlist[]
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  displayname   String         @unique
+  password      String
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   incomingFiles IncomingFile[]
-  videoSegments VideoSegment[]
-  songs        Songs[]
-  montages     VideoMontage[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
+  people        Person[]
+  playlists     Playlist[]
+  songs         Songs[]
+  tags          Tag[]
   userHistories UserHistory[]
-}
-
-enum Role {
-  ADMIN
-  USER
+  montages      VideoMontage[]
+  ratings       VideoRatings[]
+  videoSegments VideoSegment[]
 }
 
 model IncomingFile {
   id        Int      @id @default(autoincrement())
   filename  String
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  people    String
+  tags      String
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model ConvertVideo {
-  id          Int      @id @default(autoincrement())
-  videoFileId Int @unique
+  id          Int       @id @default(autoincrement())
+  videoFileId Int       @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   videoFile   VideoFile @relation(fields: [videoFileId], references: [id])
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model VideoFile {
-  id            Int      @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   filename      String
   filepath      String
   size          BigInt
@@ -67,187 +55,166 @@ model VideoFile {
   width         Int
   videoCodec    String
   audioCodec    String
-  views         Int      @default(0)
-
-  videoSegments VideoSegment[]
-  
-  tags          VideoTag[] 
-  people        VideoPerson[]
-  convertId     Int? @unique
+  views         Int            @default(0)
+  convertId     Int?           @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   convertVideo  ConvertVideo?
-  ratings       VideoRatings[]
   playlistItems PlaylistItem[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  userHistories UserHistory[]
+  people        VideoPerson[]
+  ratings       VideoRatings[]
+  videoSegments VideoSegment[]
+  tags          VideoTag[]
 
   @@unique([filename, size])
-  userHistories UserHistory[]
 }
 
 model Tag {
-  id         Int         @id @default(autoincrement())
-  name       String      @unique
-  videoFiles VideoTag[]
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
   userId     Int
-  creator    User        @relation(fields: [userId], references: [id])
-
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  creator    User       @relation(fields: [userId], references: [id])
+  videoFiles VideoTag[]
 }
 
 model Person {
-  id         Int         @id @default(autoincrement())
-  name       String      @unique
-  videoFiles VideoPerson[]
+  id         Int           @id @default(autoincrement())
+  name       String        @unique
   userId     Int
-  creator    User        @relation(fields: [userId], references: [id])
-
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  creator    User          @relation(fields: [userId], references: [id])
+  videoFiles VideoPerson[]
 }
 
 model VideoRatings {
-  video    VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  videoId  Int
-  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   Int
-
-  rating   Int 
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  videoId   Int
+  userId    Int
+  rating    Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video     VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
   @@id([videoId, userId])
 }
 
 model Playlist {
-  id            Int @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   name          String
-  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
-  playlistItems PlaylistItem[] 
-
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playlistItems PlaylistItem[]
 }
 
 model PlaylistItem {
-  id          Int @id @default(autoincrement())
-  position    Int 
+  id         Int       @id @default(autoincrement())
+  position   Int
+  videoId    Int
+  playlistId Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  playlist   Playlist  @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  video      VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
-  video       VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  videoId     Int
-  playlist    Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
-  playlistId  Int
-
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  @@unique([videoId, playlistId]) 
+  @@unique([videoId, playlistId])
   @@unique([playlistId, position])
 }
 
 model VideoTag {
-  id          Int @id @default(autoincrement())
-  
-  video       VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  videoId     Int
-  tag         Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  tagId       Int
+  id        Int       @id @default(autoincrement())
+  videoId   Int
+  tagId     Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  tag       Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  video     VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  @@unique([videoId, tagId]) 
+  @@unique([videoId, tagId])
 }
 
 model VideoPerson {
-  id          Int @id @default(autoincrement())
-  
-  video       VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  videoId     Int
-  person      Person @relation(fields: [personId], references: [id], onDelete: Cascade)
-  personId    Int
+  id        Int       @id @default(autoincrement())
+  videoId   Int
+  personId  Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  person    Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  video     VideoFile @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  @@unique([videoId, personId]) 
+  @@unique([videoId, personId])
 }
 
 model Configuration {
-  id          Int @id @default(autoincrement())
-  key         String @unique
-  value       String
-
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VideoSegment {
-  id          Int @id @default(autoincrement())
-
-  user        User @relation(fields: [userId], references: [id])
-  userId      Int
-  
-  videoFileId Int
-  videoFile   VideoFile @relation(fields: [videoFileId], references: [id])
-
-  start       Int
-  end         Int
-
-  category    VideoSegmentCategory @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-
-  VideoMontage VideoMontage[]
-  
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           Int                  @id @default(autoincrement())
+  userId       Int
+  videoFileId  Int
+  start        Int
+  end          Int
+  categoryId   Int
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  category     VideoSegmentCategory @relation(fields: [categoryId], references: [id])
+  user         User                 @relation(fields: [userId], references: [id])
+  videoFile    VideoFile            @relation(fields: [videoFileId], references: [id])
+  VideoMontage VideoMontage[]       @relation("VideoMontageToVideoSegment")
 }
 
-model VideoSegmentCategory{ 
-  id          Int @id @default(autoincrement())
-  name        String @unique
-
+model VideoSegmentCategory {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   videoSegments VideoSegment[]
-
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
 }
 
 model Songs {
-  id          Int @id @default(autoincrement())
-  title       String
-  artist      String?
-  duration    Int
-  filepath    String
-
-  user        User @relation(fields: [userId], references: [id])
-  userId      Int
-  
-  VideoMontage VideoMontage[]
-
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           Int            @id @default(autoincrement())
+  title        String
+  artist       String?
+  duration     Int
+  filepath     String
+  userId       Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  user         User           @relation(fields: [userId], references: [id])
+  VideoMontage VideoMontage[] @relation("SongsToVideoMontage")
 }
 
 model VideoMontage {
-  id          Int @id @default(autoincrement())
-  name        String
-
-  userId      Int
-  user        User @relation(fields: [userId], references: [id])
-  songs      Songs[]
-  videoSegments VideoSegment[] 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id            Int            @id @default(autoincrement())
+  name          String
+  userId        Int
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation(fields: [userId], references: [id])
+  songs         Songs[]        @relation("SongsToVideoMontage")
+  videoSegments VideoSegment[] @relation("VideoMontageToVideoSegment")
 }
 
 model UserHistory {
-  id          Int @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   userId      Int
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
   videoFileId Int
+  watchedAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   videoFile   VideoFile @relation(fields: [videoFileId], references: [id], onDelete: Cascade)
-  watchedAt   DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
 }

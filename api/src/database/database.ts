@@ -8,6 +8,7 @@ import {
 } from "@prisma/client";
 import prisma from "../lib/prisma";
 import { create } from "domain";
+import tag from "../controllers/admin/tag";
 
 /* PLAYLIST */
 
@@ -349,6 +350,8 @@ interface CreateVideoFile {
   audioCodec: string;
   size: number;
   userId?: number;
+  tags: string;
+  people: string;
 }
 
 export async function createVideoFile({
@@ -361,12 +364,17 @@ export async function createVideoFile({
   audioCodec,
   size,
   userId,
+  tags,
+  people,
 }: CreateVideoFile): Promise<VideoFile> {
   const { id } = await prisma.tag.upsert({
     where: { name: "New" },
     update: {},
     create: { name: "New", userId: userId ? userId : 1 },
   });
+  const tagArray  = JSON.parse(JSON.parse(tags))
+  const peopleArray  = JSON.parse(JSON.parse(people))
+
   return await prisma.videoFile.create({
     data: {
       filename: filename,
@@ -378,13 +386,33 @@ export async function createVideoFile({
       audioCodec: audioCodec,
       size: size,
       tags: {
-        connectOrCreate: {
+        connectOrCreate: tagArray.map((tag: {id: number, name: string}) => {
+          return {
+            where: { videoId_tagId: { videoId: 0, tagId: tag.id } },
+            create: { tagId: tag.id },
+          }
+        }).concat({
           where: { videoId_tagId: { videoId: 0, tagId: id } },
           create: { tagId: id },
-        },
+        }),
       },
+      people: {
+        connectOrCreate: peopleArray.map((person: {id: number, name: string}) => {
+          return {
+            where: { videoId_personId: { videoId: 0, personId: person.id } },
+            create: { personId: person.id },
+          }
+        }),
+      }
     },
   });
+      
+    
+  };
+
+
+export async function getVideoFileByFilename(filename: string) {
+  return await prisma.videoFile.findFirst({ where: { filename: filename } });
 }
 
 export async function getVideoFileById(id: number) {
@@ -500,14 +528,20 @@ export async function createIncomingFile({
   folder,
   filename,
   userId,
+  tags,
+  people,
 }: {
   folder: string;
   filename: string;
   userId: number;
+  tags: string;
+  people: string;
 }) {
   await prisma.incomingFile.create({
     data: {
       filename: `./app_data/processing/${folder}/${filename}`,
+      people: people,
+      tags: tags,
       user: { connect: { id: userId } },
     },
   });

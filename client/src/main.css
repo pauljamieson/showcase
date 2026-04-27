@@ -1216,3 +1216,17 @@ li {
   font-style: italic;
   color: var(--text-highlight);
 }
+
+.active-tag {
+  
+  
+  
+  font-weight: bold;    
+  color: var(--text-prim);
+  text-decoration: underline;
+}
+
+.active-tags {
+  display: flex;
+  gap: var(--spacing);
+}
