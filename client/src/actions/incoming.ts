@@ -25,8 +25,8 @@ export default async ({ request }: { request: Request }) => {
       const start = i * size;
       const body = {
         files: payload.slice(start, start + size),
-        tags : localStorage.getItem("activeTags") || "[]",
-        people : localStorage.getItem("activePeople") || "[]",
+        tags : sessionStorage.getItem("activeTags") || "[]",
+        people : sessionStorage.getItem("activePeople") || "[]",
       };
 
       const req = apiRequest({

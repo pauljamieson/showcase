@@ -18,6 +18,13 @@ export default function Incoming() {
 
   const data: LoaderData = useLoaderData() as LoaderData;
 
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("activeTags");
+      sessionStorage.removeItem("activePeople");
+    }
+  }, []);
+
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     const msg =
       e.currentTarget.value === "importall"
@@ -54,6 +61,7 @@ export default function Incoming() {
           </button>
           <button
             type="button"
+            className="btn"
             onClick={() =>
               (
                 document.getElementById("modal-tag") as HTMLDialogElement
@@ -62,7 +70,7 @@ export default function Incoming() {
           >
             Add Tag to All
           </button>
-          <button type="button" onClick={() =>
+          <button type="button" className="btn" onClick={() =>
             (
               document.getElementById("modal-person") as HTMLDialogElement
             )?.showModal()
@@ -104,7 +112,7 @@ function TagModal() {
   const [input, setInput] = useState("");
   const [options, setOptions] = useState([] as { id: number; name: string }[]);
   const [activeTags, setActiveTags] = useState(() => {
-    const storedTags = localStorage.getItem("activeTags");
+    const storedTags = sessionStorage.getItem("activeTags");
     return storedTags ? JSON.parse(storedTags) : [] as Tag[];
   });
 
@@ -139,7 +147,7 @@ function TagModal() {
     e.preventDefault();
     setOptions([]);
     setInput("");
-    localStorage.setItem("activeTags", JSON.stringify(activeTags));
+    sessionStorage.setItem("activeTags", JSON.stringify(activeTags));
     (document.getElementById("modal-tag") as HTMLDialogElement)?.close();
 
   }
@@ -235,7 +243,7 @@ function PersonModal() {
   const [input, setInput] = useState("");
   const [options, setOptions] = useState([] as { id: number; name: string }[]);
   const [activePeople, setActivePeople] = useState(() => {
-    const storedPeople = localStorage.getItem("activePeople");
+    const storedPeople = sessionStorage.getItem("activePeople");
     return storedPeople ? JSON.parse(storedPeople) : [] as Tag[];
   });
 
@@ -270,7 +278,7 @@ function PersonModal() {
     e.preventDefault();
     setOptions([]);
     setInput("");
-    localStorage.setItem("activePeople", JSON.stringify(activePeople));
+    sessionStorage.setItem("activePeople", JSON.stringify(activePeople));
     (document.getElementById("modal-person") as HTMLDialogElement)?.close();
 
   }
