@@ -1,6 +1,17 @@
 import { useLoaderData, useSearchParams, Link } from "react-router-dom";
 import { formatDuration } from "../lib/formats";
 import apiRequest from "../lib/api";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import all the icons in Free Solid, Free Regular, and Brands styles */
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+
+library.add(fas, far, fab)
+
+
 
 interface Playlist {
   id: number;
@@ -169,7 +180,7 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
   }
 
   return (
-    <div id={playlistItem.position.toString()}>
+    <div id={playlistItem.position.toString()} className="playlist-entry-wrapper">
       <div
         draggable="true"
         id={`item-${playlistItem.id.toString()}`}
@@ -181,6 +192,7 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
         data-position={playlistItem.position}
       >
         <div draggable={false} onDragStart={handleDragStartInvalid}>
+
           <div
             className="burger-handle"
             draggable={false}
@@ -194,7 +206,7 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
           to={`/video/${videoFile.id}?playlist=${playlist.id}&position=${playlistItem.position}`}
         >
           <div
-            className="flex"
+            className="flex playlist-entry-info-container"
             draggable={false}
             onDragStart={handleDragStartInvalid}
           >
@@ -238,7 +250,13 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
             </div>
           </div>
         </Link>
+        <div className="grow"></div>
+        <div className="playlist-entry-options">
+          <FontAwesomeIcon icon={fas.faEllipsisV} size="lg" />
+        </div>
+
       </div>
+
     </div>
   );
 }
