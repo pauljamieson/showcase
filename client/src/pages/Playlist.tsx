@@ -1,17 +1,21 @@
-import { useLoaderData, useSearchParams, Link } from "react-router-dom";
+import {
+  useLoaderData,
+  useSearchParams,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { formatDuration } from "../lib/formats";
 import apiRequest from "../lib/api";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
 
 /* import all the icons in Free Solid, Free Regular, and Brands styles */
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import { useState } from "react";
 
-library.add(fas, far, fab)
-
-
+library.add(fas, far, fab);
 
 interface Playlist {
   id: number;
@@ -77,10 +81,10 @@ export default function Playlist() {
 function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
   const videoFile = playlist.playlistItems[0]?.video;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
-    videoFile.id / 1000
+    videoFile.id / 1000,
   )}/${videoFile.id % 1000}`;
   const filename = videoFile.filename.slice(
-    videoFile.filename.lastIndexOf("/") + 1
+    videoFile.filename.lastIndexOf("/") + 1,
   );
   return (
     <Link
@@ -92,7 +96,7 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
             id="playlist-thumb"
             alt="image"
             src={`${filePath}/thumbs/${encodeURIComponent(
-              filename.slice(0, filename.lastIndexOf("."))
+              filename.slice(0, filename.lastIndexOf(".")),
             )}-3.jpg`}
           />
         </div>
@@ -102,7 +106,10 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
             <span className="txt-sm">
               {playlist.playlistItems.length} Videos (
               {formatDuration(
-                playlist.playlistItems.reduce((a, v) => a + v.video.duration, 0)
+                playlist.playlistItems.reduce(
+                  (a, v) => a + v.video.duration,
+                  0,
+                ),
               )}
               )
             </span>
@@ -125,11 +132,13 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
   const [searchParams, setSearchParams] = useSearchParams();
   const playlistItem = playlist.playlistItems[position];
   const videoFile = playlist.playlistItems[position].video;
+  const [hideOptions, setHideOptions] = useState(true);
+
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
-    videoFile.id / 1000
+    videoFile.id / 1000,
   )}/${videoFile.id % 1000}`;
   const filename = videoFile.filename.slice(
-    videoFile.filename.lastIndexOf("/") + 1
+    videoFile.filename.lastIndexOf("/") + 1,
   );
 
   function handleDragStartInvalid() {
@@ -179,8 +188,15 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
     e.preventDefault();
   }
 
+  function toggleOptions() {
+    setHideOptions(!hideOptions);
+  }
+
   return (
-    <div id={playlistItem.position.toString()} className="playlist-entry-wrapper">
+    <div
+      id={playlistItem.position.toString()}
+      className="playlist-entry-wrapper"
+    >
       <div
         draggable="true"
         id={`item-${playlistItem.id.toString()}`}
@@ -192,7 +208,6 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
         data-position={playlistItem.position}
       >
         <div draggable={false} onDragStart={handleDragStartInvalid}>
-
           <div
             className="burger-handle"
             draggable={false}
@@ -219,7 +234,7 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
                 id="playlist-thumb"
                 alt="image"
                 src={`${filePath}/thumbs/${encodeURIComponent(
-                  filename.slice(0, filename.lastIndexOf("."))
+                  filename.slice(0, filename.lastIndexOf(".")),
                 )}-3.jpg`}
                 draggable={false}
                 onDragStart={handleDragStartInvalid}
@@ -252,11 +267,53 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
         </Link>
         <div className="grow"></div>
         <div className="playlist-entry-options">
-          <FontAwesomeIcon icon={fas.faEllipsisV} size="lg" />
+          <FontAwesomeIcon
+            icon={fas.faEllipsisV}
+            size="lg"
+            onClick={toggleOptions}
+          />
+          <MenuOptions
+            isHidden={hideOptions}
+            handleClose={toggleOptions}
+            playlistItemId={playlist.playlistItems[position].id}
+          />
         </div>
-
       </div>
+    </div>
+  );
+}
 
+function MenuOptions({
+  isHidden,
+  handleClose,
+  playlistItemId,
+}: {
+  isHidden: boolean;
+  handleClose: () => void;
+  playlistItemId: number;
+}) {
+  const navigate = useNavigate();
+
+  function handleDelete(e: any) {
+    e.preventDefault();
+    apiRequest({
+      endpoint: `/playlist/`,
+      method: "delete",
+      body: { id: playlistItemId },
+    }).then(() => {
+      handleClose();
+      navigate(0);
+    });
+  }
+
+  return (
+    <div hidden={isHidden} className="playlist-menu-options">
+      <div onClick={handleDelete} className="menu-item">
+        Delete
+      </div>
+      <div onClick={handleClose} className="menu-item">
+        Close
+      </div>
     </div>
   );
 }

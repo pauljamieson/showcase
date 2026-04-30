@@ -1,11 +1,29 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
-import { getPlaylistById } from "../../database/database";
+import {
+  deletePlaylistItemById,
+  getPlaylistById,
+} from "../../database/database";
 
 async function GET(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const result = await getPlaylistById(+id);
+    res.json({
+      status: "success",
+      data: { playlist: result },
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({ status: "failure" });
+  }
+}
+
+async function DELETE(req: Request, res: Response) {
+  try {
+    const { id } = req.body;
+    console.log("deleting playlist item with id: ", id);
+    const result = await deletePlaylistItemById(+id);
     res.json({
       status: "success",
       data: { playlist: result },
@@ -75,7 +93,7 @@ async function PUT(req: Request, res: Response) {
                 },
               },
               data: { position: toPosition },
-            })
+            }),
           );
       });
     }
@@ -130,7 +148,7 @@ async function PUT(req: Request, res: Response) {
                 },
               },
               data: { position: toPosition },
-            })
+            }),
           );
       });
     }
@@ -145,4 +163,4 @@ async function PUT(req: Request, res: Response) {
   }
 }
 
-export default { GET, PUT };
+export default { GET, PUT, DELETE };

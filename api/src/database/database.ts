@@ -7,8 +7,7 @@ import {
   Person,
 } from "@prisma/client";
 import prisma from "../lib/prisma";
-import { create } from "domain";
-import tag from "../controllers/admin/tag";
+
 
 /* PLAYLIST */
 
@@ -130,6 +129,18 @@ export async function deletePlaylistItem(
         playlistId,
       },
     },
+    select: {
+      playlistId: true,
+      position: true,
+    },
+  });
+  await fixPlaylistPositions(result.playlistId, result.position);
+  return {};
+}
+
+export async function deletePlaylistItemById(id: number) {
+  const result = await prisma.playlistItem.delete({
+    where: { id },
     select: {
       playlistId: true,
       position: true,
