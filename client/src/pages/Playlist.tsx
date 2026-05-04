@@ -13,7 +13,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 library.add(fas, far, fab);
 
@@ -188,8 +188,15 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
     e.preventDefault();
   }
 
-  function toggleOptions() {
-    setHideOptions(!hideOptions);
+  function toggleOptions(mode: "show" | "hide" | "toggle") {
+    console.log(mode);
+    if (mode === "show") {
+      setHideOptions(false);
+    } else if (mode === "hide") {
+      setHideOptions(true);
+    } else if (mode === "toggle") {
+      setHideOptions(!hideOptions);
+    }
   }
 
   return (
@@ -270,12 +277,13 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
           <FontAwesomeIcon
             icon={fas.faEllipsisV}
             size="lg"
-            onClick={toggleOptions}
+            onClick={() => toggleOptions("show")}
           />
           <MenuOptions
             isHidden={hideOptions}
-            handleClose={toggleOptions}
+            handleClose={() => toggleOptions("hide")}
             playlistItemId={playlist.playlistItems[position].id}
+            playlist={playlist}
           />
         </div>
       </div>
@@ -287,12 +295,33 @@ function MenuOptions({
   isHidden,
   handleClose,
   playlistItemId,
+  playlist,
 }: {
   isHidden: boolean;
   handleClose: () => void;
   playlistItemId: number;
+  playlist: Playlist;
 }) {
   const navigate = useNavigate();
+  const optionRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (
+        !isHidden &&
+        optionRef.current &&
+        !optionRef.current.contains(target)
+      ) {
+        handleClose();
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   function handleDelete(e: any) {
     e.preventDefault();
@@ -303,11 +332,43 @@ function MenuOptions({
     }).then(() => {
       handleClose();
       navigate(0);
+      // TODO: instead of refreshing the page, update the playlist state to remove the deleted item
+    });
+  }
+
+  function handleMoveToItem(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault();
+    const modifer =
+      e.currentTarget.id === "option-bottom"
+        ? playlist.playlistItems.length
+        : 1;
+    const body = {
+      fromPosition:
+        playlist.playlistItems.findIndex((item) => item.id === playlistItemId) +
+        1,
+      toPosition: modifer,
+      playlistId: playlist.id,
+    };
+    console.log(body);
+    apiRequest({
+      endpoint: `/playlist/${playlist.id}`,
+      method: "put",
+      body,
+    }).then(() => {
+      handleClose();
+      navigate(0);
+      // TODO: instead of refreshing the page, update the playlist state to move the item to the top
     });
   }
 
   return (
-    <div hidden={isHidden} className="playlist-menu-options">
+    <div hidden={isHidden} className="playlist-menu-options" ref={optionRef}>
+      <div onClick={handleMoveToItem} id="option-top" className="menu-item">
+        Move to top
+      </div>
+      <div onClick={handleMoveToItem} id="option-bottom" className="menu-item">
+        Move to bottom
+      </div>
       <div onClick={handleDelete} className="menu-item">
         Delete
       </div>

@@ -968,7 +968,6 @@ img:has(~ #playall-text:hover) {
 
 .playlist-menu-options {
   border: 1px solid black;
-  
   position: absolute;
   background-color: white;
   top: 2rem;
@@ -976,12 +975,16 @@ img:has(~ #playall-text:hover) {
   display:-ms-inline-grid;
   display: inline-grid;
   gap: var(--spacing);
+  z-index: 100;
 }
 
 .menu-item {
   padding: var(--spacing);
   cursor: pointer;
-
+  width: 150px;
+  text-align: center;
+  z-index: 10;
+  
 }
 
 [hidden] { display: none !important; }
