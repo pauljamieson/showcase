@@ -2,6 +2,15 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import React, { useEffect, useState } from "react";
 import useLimitSize from "../hooks/useLimitSize";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+/* import all the icons in Free Solid, Free Regular, and Brands styles */
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+
+library.add(fas, far, fab);
 
 export default function AppBar() {
   const { isLoggedIn } = useAuth();
@@ -48,7 +57,6 @@ export default function AppBar() {
                 </span>
               </div>
               <UserMenu />
-
             </>
           ) : (
             <>
@@ -108,46 +116,63 @@ function SearchBar() {
   );
 }
 
-
 function UserMenu() {
-
   const { clearToken, user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const toggleMenu = () => {
+    setTimeout(() => {
+      setShowMenu((prev) => !prev);
+    }, 150);
+
     setIsOpen(!isOpen);
-  }
+  };
 
   const logout = () => {
     clearToken();
     toggleMenu();
-  }
+  };
 
-
-  return <div><div className="menu-container">
-
-    <div className="menu-title">
-      <input className="dropdown menu-checkbox" type="checkbox" id="dropdown" readOnly name="dropdown" onClick={toggleMenu} checked={isOpen} />
-      <label className="for-dropdown" htmlFor="dropdown">User</label>
+  return (
+    <div>
+      <div className="menu-container">
+        <div className="menu-title">
+          <input
+            className="dropdown menu-checkbox"
+            type="checkbox"
+            id="dropdown"
+            readOnly
+            name="dropdown"
+            onClick={toggleMenu}
+            checked={isOpen}
+          />
+          <label className="for-dropdown" htmlFor="dropdown">
+            <FontAwesomeIcon
+              className={`rotate-icon ${isOpen ? "rotated" : ""}`}
+              icon={fas.faBars}
+              size="lg"
+            />
+          </label>
+        </div>
+      </div>
+      {showMenu && (
+        <div className="menu-dropdown-container">
+          <span>{user.name}</span>
+          <Link to={"/playlists"} onClick={toggleMenu}>
+            <p>Playlists</p>
+          </Link>
+          <Link to={"/history"} onClick={toggleMenu}>
+            <p>History</p>
+          </Link>
+          <Link to={"/admin"} onClick={toggleMenu}>
+            <p>Admin</p>
+          </Link>
+          <Link to="/" onClick={logout}>
+            <p>Logout</p>
+          </Link>
+        </div>
+      )}
     </div>
-
-  </div>
-    {isOpen && <div className="menu-dropdown-container">
-      <span>{user.name}</span>
-      <Link to={"/playlists"} onClick={toggleMenu}>
-        <p>Playlists</p>
-      </Link>
-      <Link to={"/history"} onClick={toggleMenu}>
-        <p>History</p>
-      </Link>
-      <Link to={"/admin"} onClick={toggleMenu}>
-        <p>Admin</p>
-      </Link>
-      <Link to="/" onClick={logout}>
-        <p>Logout</p>
-      </Link>
-    </div>}
-  </div>
-
-
+  );
 }

@@ -1293,3 +1293,12 @@ li {
   display: flex;
   gap: var(--spacing);
 }
+
+.rotate-icon {
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.rotate-icon.rotated {
+  transform: rotate(90deg);
+}
