@@ -1,9 +1,4 @@
-import {
-  useLoaderData,
-  useSearchParams,
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { useLoaderData, useSearchParams, Link } from "react-router-dom";
 import { formatDuration } from "../lib/formats";
 import apiRequest from "../lib/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
