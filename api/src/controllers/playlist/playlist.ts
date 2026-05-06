@@ -24,9 +24,10 @@ async function DELETE(req: Request, res: Response) {
     const { id } = req.body;
     console.log("deleting playlist item with id: ", id);
     const result = await deletePlaylistItemById(+id);
+    const playlist = await getPlaylistById(result.playlistId);
     res.json({
       status: "success",
-      data: { playlist: result },
+      data: playlist,
     });
   } catch (error) {
     console.error(error);
@@ -153,9 +154,11 @@ async function PUT(req: Request, res: Response) {
       });
     }
 
+    const result = await getPlaylistById(playlistId);
+
     res.json({
       status: "success",
-      data: {},
+      data: result,
     });
   } catch (error: any) {
     console.error(error);

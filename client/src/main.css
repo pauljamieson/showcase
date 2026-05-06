@@ -1005,6 +1005,7 @@ img:has(~ #playall-text:hover) {
   display: flex;
   flex-direction: column;
   gap: var(--spacing);
+  padding-bottom: 80px;
 }
 
 .playlist-entry-container {
@@ -1283,9 +1284,6 @@ li {
 }
 
 .active-tag {
-  
-  
-  
   font-weight: bold;    
   color: var(--text-prim);
   text-decoration: underline;

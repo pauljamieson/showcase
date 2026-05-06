@@ -147,7 +147,8 @@ export async function deletePlaylistItemById(id: number) {
     },
   });
   await fixPlaylistPositions(result.playlistId, result.position);
-  return {};
+  
+  return result;
 }
 
 export async function fixPlaylistPositions(id: number, position: number) {

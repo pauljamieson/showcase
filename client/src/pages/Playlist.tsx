@@ -51,12 +51,22 @@ interface LoaderData {
 }
 
 export default function Playlist() {
+  const [activePlaylist, setActivePlaylist] = useState(null as Playlist | null);
+
   const {
     data: { playlist },
   } = useLoaderData() as LoaderData;
+
+  useEffect(() => {
+    setActivePlaylist((prev) => {
+      if (playlist == prev) return prev;
+      else return playlist;
+    });
+  }, [playlist]);
+
   return (
     <div className="playlist-container">
-      <PlaylistTitleCard playlist={playlist} />
+      {activePlaylist && <PlaylistTitleCard playlist={activePlaylist} />}
       <div
         className="playlist-items-container"
         draggable={false}
@@ -64,13 +74,14 @@ export default function Playlist() {
           return false;
         }}
       >
-        {playlist.playlistItems
+        {activePlaylist?.playlistItems
           .sort((a, b) => a.position - b.position)
           .map((v) => (
             <PlaylistEntry
               key={v.videoId}
-              playlist={playlist}
+              playlist={activePlaylist}
               position={v.position - 1}
+              setPlaylist={setActivePlaylist}
             />
           ))}
       </div>
@@ -126,9 +137,14 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
 interface PlaylistEntryInterface {
   playlist: Playlist;
   position: number;
+  setPlaylist: React.Dispatch<React.SetStateAction<Playlist | null>>;
 }
 
-function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
+function PlaylistEntry({
+  playlist,
+  position,
+  setPlaylist,
+}: PlaylistEntryInterface) {
   const [searchParams, setSearchParams] = useSearchParams();
   const playlistItem = playlist.playlistItems[position];
   const videoFile = playlist.playlistItems[position].video;
@@ -189,7 +205,6 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
   }
 
   function toggleOptions(mode: "show" | "hide" | "toggle") {
-    console.log(mode);
     if (mode === "show") {
       setHideOptions(false);
     } else if (mode === "hide") {
@@ -284,6 +299,7 @@ function PlaylistEntry({ playlist, position }: PlaylistEntryInterface) {
             handleClose={() => toggleOptions("hide")}
             playlistItemId={playlist.playlistItems[position].id}
             playlist={playlist}
+            setPlaylist={setPlaylist}
           />
         </div>
       </div>
@@ -296,43 +312,29 @@ function MenuOptions({
   handleClose,
   playlistItemId,
   playlist,
+  setPlaylist,
 }: {
   isHidden: boolean;
   handleClose: () => void;
   playlistItemId: number;
   playlist: Playlist;
+  setPlaylist: React.Dispatch<React.SetStateAction<Playlist | null>>;
 }) {
-  const navigate = useNavigate();
   const optionRef = React.useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      const target = e.target as HTMLElement;
-      if (
-        !isHidden &&
-        optionRef.current &&
-        !optionRef.current.contains(target)
-      ) {
-        handleClose();
-      }
-    }
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
 
   function handleDelete(e: any) {
     e.preventDefault();
+
     apiRequest({
       endpoint: `/playlist/`,
       method: "delete",
       body: { id: playlistItemId },
-    }).then(() => {
+    }).then((resp) => {
+      setPlaylist((prev) => {
+        if (!prev) return prev;
+        return resp.data as Playlist;
+      });
       handleClose();
-      navigate(0);
-      // TODO: instead of refreshing the page, update the playlist state to remove the deleted item
     });
   }
 
@@ -349,15 +351,17 @@ function MenuOptions({
       toPosition: modifer,
       playlistId: playlist.id,
     };
-    console.log(body);
+
     apiRequest({
       endpoint: `/playlist/${playlist.id}`,
       method: "put",
       body,
-    }).then(() => {
+    }).then((resp) => {
+      setPlaylist((prev) => {
+        if (!prev) return prev;
+        return resp.data as Playlist;
+      });
       handleClose();
-      navigate(0);
-      // TODO: instead of refreshing the page, update the playlist state to move the item to the top
     });
   }
 

@@ -127,7 +127,7 @@ function UserMenu() {
   return <div><div className="menu-container">
 
     <div className="menu-title">
-      <input className="dropdown menu-checkbox" type="checkbox" id="dropdown" name="dropdown" onClick={toggleMenu} checked={isOpen} />
+      <input className="dropdown menu-checkbox" type="checkbox" id="dropdown" readOnly name="dropdown" onClick={toggleMenu} checked={isOpen} />
       <label className="for-dropdown" htmlFor="dropdown">User</label>
     </div>
 
