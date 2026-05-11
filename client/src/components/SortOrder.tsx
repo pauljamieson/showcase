@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
@@ -9,30 +9,51 @@ interface Props {
 
 export default function SortOrder({ name, options, alwaysOn = false }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [active, setActive] = useState<boolean>(
-    alwaysOn ? true : searchParams.has(name)
-  );
-  const [checked, setChecked] = useState<boolean>(
-    searchParams.get(name) === "asc" ? true : false
-  );
+  const [active, setActive] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(false);
+
+  function update(direction: string) {
+    const current = searchParams.get(name);
+    if (direction === current) return;
+    searchParams.set(name, direction);
+    setSearchParams(searchParams);
+    sessionStorage.setItem(name, JSON.stringify(searchParams.get(name)));
+  }
+
+  function clear() {
+    searchParams.delete(name);
+    setSearchParams(searchParams);
+    sessionStorage.removeItem(name);
+  }
+
+  useEffect(() => {
+    if (searchParams.has(name) || sessionStorage.getItem(name)) {
+      const direction =
+        searchParams.get(name) ||
+        JSON.parse(sessionStorage.getItem(name) || "[]");
+      setActive(true);
+      setChecked(direction === "asc" ? true : false);
+      update(direction);
+    } else {
+      setActive(false);
+      clear();
+    }
+  }, []);
 
   function handleChange(e: any) {
     setChecked(!checked);
     if (active) {
       const direction = e.target.checked ? "asc" : "desc";
-      searchParams.set(name, direction);
-      setSearchParams(searchParams);
+      update(direction);
     }
   }
 
   function handleClick() {
     if (alwaysOn) return;
     if (!active) {
-      searchParams.set(name, checked ? "asc" : "desc");
-      setSearchParams(searchParams);
+      update(checked ? "asc" : "desc");
     } else {
-      searchParams.delete(name);
-      setSearchParams(searchParams);
+      clear();
     }
     setActive(!active);
   }

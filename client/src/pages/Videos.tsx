@@ -53,6 +53,17 @@ export default function Videos() {
   const data: LoaderData = useLoaderData() as LoaderData;
   const [searchParams, setSearchParams] = useSearchParams();
 
+  function getSortOrders(sp: URLSearchParams): void {
+    const items = ["order", "views", "duration", "size", "alpha"];
+    items.forEach((item) => {
+      const value = sessionStorage.getItem(item);
+      if (value) {
+        console.log(`Setting ${item} to ${value}`);
+        sp.set(item, value.replace(/"/g, ""));
+      }
+    });
+  }
+
   useEffect(() => {
     const activeTags = searchParams.getAll("tags") || [];
     const activePeople = searchParams.getAll("people") || [];
@@ -66,6 +77,8 @@ export default function Videos() {
     people.forEach(
       (v) => !activePeople.includes(v) && searchParams.append("people", v),
     );
+
+    getSortOrders(searchParams);
     setSearchParams(searchParams);
   }, []);
 
