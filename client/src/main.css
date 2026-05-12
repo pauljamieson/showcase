@@ -1,8 +1,9 @@
-* {
+:root {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-style: normal;
   box-sizing: border-box;
+  background-color: #fff;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   --bg-prim: #15c757;
@@ -17,11 +18,43 @@
   --spacing: 5px;
   --toggle-off: #d8d3d3;
   --toggle-on: #15c7b0;
+  --sort-color : #15c757;
   --input-radius: 15px;
   --border-color1: black;
   --card-highlight: #d4d3d3;
   --info-panel: #b0e7c4;
   --border-radius: 10px;
+  --input-bg: white;
+
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    background-color: #000;
+    --bg-prim: #333333;
+    --bg-highlight: #998877;
+    --text-prim: white;
+    --text-highlight: #bbbbaa;
+    --highlight: #70698a;
+    --btn-prim: #283847;
+    --btn-prim-hover: #3f6483;
+    --scroll-bg: #000;
+    --scroll-thumb: #a3a0a0;
+    --spacing: 5px;
+    --toggle-off: #d8d3d3;
+    --toggle-on: #a0a1ce;
+    --input-radius: 15px;
+    --border-color1: rgb(41, 38, 170);
+    --card-highlight: #d4d3d3;
+    --info-panel: #151515;
+    --border-radius: 10px;
+    --sort-color : #1050c0;
+    --input-bg: var(--bg-prim);
+  }
+}
+
+input {
+  background-color: var(--input-bg);
 }
 
 body {
@@ -81,17 +114,19 @@ nav {
 
 .searchbar-container {
   align-content: center;
-  background-color: white;
+  background-color: var(--input-bg);
   border-radius: 25px;
   display: flex;
   flex-wrap: nowrap;
   gap: 5px;
   padding: 0px 5px;
+  border: 0.5px solid black;
+  
 }
 
 .searchbar-container button {
   border: none;
-  background-color: white;
+  background-color: var(--input-bg);
 }
 
 .searchbar {
@@ -429,7 +464,7 @@ input:checked + .slider:before {
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 34px;
-  background-color: #15c757;
+  background-color: var(--sort-color);
 }
 
 input:focus + .slider {
