@@ -6,3 +6,4 @@ dist/
 CONTAINER_ALREADY_STARTED_PLACEHOLDER
 certs/
 *.tar
+.VSCodeCounter

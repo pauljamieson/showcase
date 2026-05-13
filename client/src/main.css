@@ -33,7 +33,7 @@
     background-color: #000;
     --bg-prim: #333333;
     --bg-highlight: #998877;
-    --text-prim: white;
+    --text-prim: rgb(163, 154, 154);
     --text-highlight: #bbbbaa;
     --highlight: #70698a;
     --btn-prim: #283847;
@@ -45,7 +45,7 @@
     --toggle-on: #a0a1ce;
     --input-radius: 15px;
     --border-color1: rgb(41, 38, 170);
-    --card-highlight: #d4d3d3;
+    --card-highlight: #4b4b4b;
     --info-panel: #151515;
     --border-radius: 10px;
     --sort-color : #1050c0;
@@ -53,9 +53,6 @@
   }
 }
 
-input {
-  background-color: var(--input-bg);
-}
 
 body {
   margin: 0;
@@ -134,6 +131,7 @@ nav {
   outline: none;
   border: none;
   border-radius: 25px;
+  color: var(--text-prim);
 }
 
 .usericon-container {
@@ -343,6 +341,7 @@ nav {
   padding: 5px 10px;
   margin: 5px;
   border-radius: 25px;
+  color: var(--text-prim)
 }
 
 .pagination-container {
@@ -515,6 +514,8 @@ input:checked + .toggler:before {
   height: 130px;
   margin-top: -120px;
   z-index: 20;
+  background-color: var(--bg-prim);
+
 }
 
 .modal-container,
@@ -540,6 +541,7 @@ input:checked + .toggler:before {
 }
 
 .span-chip {
+  color: var(--text-prim);
   border: none;
   background-color: inherit;
 }
@@ -1051,7 +1053,7 @@ img:has(~ #playall-text:hover) {
 }
 
 .playlist-entry-container:hover {
-  background-color: lightgray;
+  background-color: var(--card-highlight);
 }
 
 .burger-handle {
@@ -1061,12 +1063,13 @@ img:has(~ #playall-text:hover) {
   height: 100%;
   padding: 5px;
   cursor: grab;
+  color: var(--text-prim);
 }
 
 .burger-handle span {
   height: 5px;
   width: 20px;
-  border-top: 2px solid black;
+  border-top: 2px solid var(--text-prim);
 }
 
 .playlist-entry-info {
@@ -1336,4 +1339,19 @@ li {
 
 .rotate-icon.rotated {
   transform: rotate(90deg);
+}
+
+
+input {
+  background-color: var(--input-bg);
+
+}
+
+/* Autofill override background color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+    -webkit-transition-delay: 9999s;
 }
