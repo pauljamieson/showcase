@@ -6,7 +6,7 @@ async function GET(req: Request, res: Response) {
     if (!res.locals.isLogged) throw "Not logged in.";
 
     const terms = (req.query.terms as string) || "";
-
+    const skip = 0;
     const result = await prisma.tag.findMany({
       select: {
         id: true,
@@ -20,6 +20,7 @@ async function GET(req: Request, res: Response) {
         }),
       },
       take: 10,
+      skip: skip,
       orderBy: {
         name: "asc",
       },

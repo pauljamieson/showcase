@@ -26,19 +26,15 @@ export default function AdminPerson() {
 
   // Debounce update search terms
   useEffect(() => {
-    if (searchParams.has("modal", "migrate")) {
-      if (timer) {
-        clearTimeout(timer);
-        setTimer(undefined);
-      }
-      const TO = setTimeout(() => {
-        input.length > 0
-          ? searchParams.set("terms", input)
-          : searchParams.delete("terms");
-        setSearchParams(searchParams);
-      }, 750);
-      setTimer(TO);
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(undefined);
     }
+    const TO = setTimeout(() => {
+      searchParams.set("terms", input);
+      setSearchParams(searchParams);
+    }, 750);
+    setTimer(TO);
   }, [input]);
 
   return (

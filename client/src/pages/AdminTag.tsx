@@ -141,7 +141,7 @@ function EditDialog() {
   }
 
   return (
-    <dialog className="edit-modal" ref={dialogRef}>
+    <dialog className="dialog" ref={dialogRef}>
       <div>
         Edit
         <Form method="post">

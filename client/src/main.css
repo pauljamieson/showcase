@@ -684,6 +684,7 @@ input:checked + .toggler:before {
   max-width: 600px;
   margin: auto;
   width: 100%;
+  
 }
 
 .btn-bar {
@@ -700,24 +701,6 @@ input:checked + .toggler:before {
 .admin-search {
   width: 100%;
   padding: 5px;
-}
-
-.edit-modal > div {
-  height: fit-content;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  gap: var(--spacing);
-}
-
-.edit-modal::backdrop {
-  opacity: 50%;
-  background-color: black;
-}
-
-.edit-modal {
-  margin-top: 80px;
-  border-radius: var(--input-radius);
 }
 
 /* Playlist modal */
@@ -1234,6 +1217,9 @@ li {
   border-radius: 15px;
   margin-top: 100px;
   text-align: center;
+  background-color: var(--bg-prim);
+  color: var(--text-prim);
+  border: 1px solid var(--text-prim);
 }
 
 .dialog::backdrop {
@@ -1245,6 +1231,8 @@ li {
   outline: none;
   padding: 5px;
   border-radius: var(--input-radius);
+  color: var(--text-prim);
+  border: 1px solid var(--text-prim);
 }
 
 .dialog form {
