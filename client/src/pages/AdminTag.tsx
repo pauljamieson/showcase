@@ -11,7 +11,7 @@ type LoaderData = {
       name: string;
       userId: number;
       creator: { displayname: string };
-    }
+    },
   ];
 };
 
@@ -19,7 +19,7 @@ export default function AdminTag() {
   const [input, setInput] = useState<string>("");
   const { tags } = useLoaderData() as LoaderData;
   // Debounce timer
-  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Debounce update search terms
@@ -36,7 +36,7 @@ export default function AdminTag() {
   }, [input]);
 
   return (
-    <>
+    <div className="admin-tag-page">
       <div className="admin-search">
         <input
           onChange={(e) => setInput(e.target.value)}
@@ -55,7 +55,7 @@ export default function AdminTag() {
       )}
       <EditDialog />
       <MigrationDialog />
-    </>
+    </div>
   );
 }
 
@@ -91,7 +91,7 @@ function Row({
   return (
     <>
       <div className="edit-container">
-        <div>
+        <div className="edit-text">
           <div>{name}</div>
           <div className="half-text">Creator: {displayname}</div>
         </div>
@@ -168,7 +168,7 @@ function EditDialog() {
 
 function MigrationDialog() {
   // Debounce timer
-  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<Tag[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -195,7 +195,7 @@ function MigrationDialog() {
         apiRequest({ endpoint: "/tags/", method: "get", searchParams }).then(
           ({ status, data }) => {
             status === "success" && setOptions(data.tags);
-          }
+          },
         );
       }, 750);
       setTimer(TO);

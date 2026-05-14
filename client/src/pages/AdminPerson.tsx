@@ -11,7 +11,7 @@ type LoaderData = {
       name: string;
       userId: number;
       creator: { displayname: string };
-    }
+    },
   ];
 };
 
@@ -19,7 +19,9 @@ export default function AdminPerson() {
   const { people } = useLoaderData() as LoaderData;
   const [input, setInput] = useState<string>("");
   // Debounce timer
-  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Debounce update search terms
@@ -40,7 +42,7 @@ export default function AdminPerson() {
   }, [input]);
 
   return (
-    <>
+    <div className="admin-person-page">
       <div className="admin-search">
         <input
           onChange={(e) => setInput(e.target.value)}
@@ -59,7 +61,7 @@ export default function AdminPerson() {
       )}
       <MigrateDialog />
       <EditDialog />
-    </>
+    </div>
   );
 }
 
@@ -90,7 +92,7 @@ function Row({
   return (
     <>
       <div className="edit-container" key={UUID()}>
-        <div>
+        <div className="edit-text">
           <div>{name}</div>
           <div className="half-text">Creator: {displayname}</div>
         </div>
@@ -119,7 +121,9 @@ interface Person {
 
 function MigrateDialog({}: {}) {
   // Debounce timer
-  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<Person[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -146,7 +150,7 @@ function MigrateDialog({}: {}) {
         apiRequest({ endpoint: "/people/", method: "get", searchParams }).then(
           ({ status, data }) => {
             if (status === "success") setOptions(data.people);
-          }
+          },
         );
       }, 750);
       setTimer(TO);

@@ -13,6 +13,7 @@
   --highlight: #15c7b0;
   --btn-prim: #40eb57;
   --btn-prim-hover: #51fc68;
+  --btn-text: #000
   --scroll-bg: #000;
   --scrool-thumb: #a3a0a0;
   --spacing: 5px;
@@ -36,19 +37,20 @@
     --text-prim: rgb(163, 154, 154);
     --text-highlight: #bbbbaa;
     --highlight: #70698a;
-    --btn-prim: #283847;
+    --btn-prim: #6b8cac;
     --btn-prim-hover: #3f6483;
+    --btn-text: #000;   
     --scroll-bg: #000;
     --scroll-thumb: #a3a0a0;
     --spacing: 5px;
-    --toggle-off: #d8d3d3;
+    --toggle-off: var(--bg-prim);
     --toggle-on: #a0a1ce;
     --input-radius: 15px;
     --border-color1: rgb(41, 38, 170);
     --card-highlight: #4b4b4b;
     --info-panel: #151515;
     --border-radius: 10px;
-    --sort-color : #1050c0;
+    --sort-color : #3f6483;
     --input-bg: var(--bg-prim);
   }
 }
@@ -184,6 +186,7 @@ nav {
   background-color: var(--btn-prim);
   text-align: center;
   font-weight: bold;
+  color : var(--btn-text);
 }
 
 .btn-sm {
@@ -206,6 +209,7 @@ nav {
   display: flex;
   flex-direction: column;
   gap: var(--spacing);
+  
 }
 
 .files-container {
@@ -661,6 +665,25 @@ input:checked + .toggler:before {
   border: 1px solid black;
   margin: 5px;
   gap: 5px;
+  background-color: var(--bg-prim);
+
+}
+
+.edit-text {
+  display: flex;
+  flex-direction: column;
+  height: 2.5rem;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-tag-page, .admin-person-page {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: auto;
+  width: 100%;
 }
 
 .btn-bar {
