@@ -189,6 +189,7 @@ nav {
   color : var(--btn-text);
 }
 
+
 .btn-sm {
   font-size: smaller;
   padding: 2px 3px;
@@ -567,6 +568,7 @@ input:checked + .toggler:before {
   font-weight: bold;
   font-size: 0.75rem;
   cursor: pointer;
+  color: #000;
 }
 
 .chip-sm.hover:hover {
@@ -656,6 +658,8 @@ input:checked + .toggler:before {
 .search-bar {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing);
 }
 
 .edit-container {
@@ -666,7 +670,6 @@ input:checked + .toggler:before {
   margin: 5px;
   gap: 5px;
   background-color: var(--bg-prim);
-
 }
 
 .edit-text {

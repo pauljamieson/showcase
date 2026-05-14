@@ -141,9 +141,11 @@ function AdvanceSearch() {
     <div className={`advanced-search-container callapsible ${opened}`}>
       <div className="search-bar">
         <PersonSearch /> <TagSearch />{" "}
-        <button className="btn" onClick={handleClick}>
-          I'm Feeling Lucky
-        </button>
+        <div>
+          <button className="btn lucky-btn" onClick={handleClick}>
+            I'm Feeling Lucky
+          </button>
+        </div>
       </div>
       <div className="toggle-bar">
         <SortOrder {...orders[0]} />
