@@ -18,8 +18,11 @@ type LoaderData = {
 export default function AdminTag() {
   const [input, setInput] = useState<string>("");
   const { tags } = useLoaderData() as LoaderData;
+
   // Debounce timer
-  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Debounce update search terms
@@ -168,7 +171,9 @@ function EditDialog() {
 
 function MigrationDialog() {
   // Debounce timer
-  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const [input, setInput] = useState<string>("");
   const [options, setOptions] = useState<Tag[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
