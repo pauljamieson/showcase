@@ -5,15 +5,15 @@ import { Link, useLocation } from "react-router-dom";
 export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
   const location = useLocation();
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
-    videoFile.id / 1000
+    videoFile.id / 1000,
   )}/${videoFile.id % 1000}`;
   const filename = videoFile.filename.slice(
-    videoFile.filename.lastIndexOf("/") + 1
+    videoFile.filename.lastIndexOf("/") + 1,
   );
 
   const [imgNum, setImgNum] = useState<number>(3);
-  const [loop, setLoop] = useState<NodeJS.Timeout | number | undefined>(
-    undefined
+  const [loop, setLoop] = useState<ReturnType<typeof setInterval> | undefined>(
+    undefined,
   );
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
     if (loop) clearInterval(loop);
     const i = setInterval(
       () => setImgNum((old) => (old >= 10 ? 1 : old + 1)),
-      750
+      750,
     );
     setLoop(i);
   }
@@ -55,7 +55,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           src={`${filePath}/thumbs/${encodeURIComponent(
-            filename.slice(0, filename.lastIndexOf("."))
+            filename.slice(0, filename.lastIndexOf(".")),
           )}-${imgNum}.jpg`}
         />
         <div className="video-card-duration-container">
