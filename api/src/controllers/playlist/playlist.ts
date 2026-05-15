@@ -24,7 +24,13 @@ async function DELETE(req: Request, res: Response) {
     const { id } = req.body;
     console.log("deleting playlist item with id: ", id);
     const result = await deletePlaylistItemById(+id);
+
+    await prisma.playlist.update({
+      where: { id: result.playlistId },
+      data: { updatedAt: new Date() },
+    });
     const playlist = await getPlaylistById(result.playlistId);
+
     res.json({
       status: "success",
       data: playlist,
@@ -95,6 +101,12 @@ async function PUT(req: Request, res: Response) {
               },
               data: { position: toPosition },
             }),
+          )
+          .then(() =>
+            tx.playlist.update({
+              where: { id: playlistId },
+              data: { updatedAt: new Date() },
+            }),
           );
       });
     }
@@ -149,6 +161,12 @@ async function PUT(req: Request, res: Response) {
                 },
               },
               data: { position: toPosition },
+            }),
+          )
+          .then(() =>
+            tx.playlist.update({
+              where: { id: playlistId },
+              data: { updatedAt: new Date() },
             }),
           );
       });

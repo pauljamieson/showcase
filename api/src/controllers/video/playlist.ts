@@ -24,7 +24,7 @@ async function POST(req: Request, res: Response) {
       // get lists that are in but not anymore
       const initPlaylists = await getPlaylistsByUserIdWithVideoId(
         userId,
-        +videoId
+        +videoId,
       );
       // Delete playlist item if removed from playlist
       const initPlaylistNums = initPlaylists.map((v) => v.id);
@@ -33,6 +33,10 @@ async function POST(req: Request, res: Response) {
       initPlaylistNums.map(async (init) => {
         if (!curPlaylistNums.includes(init)) {
           await deletePlaylistItem({ playlistId: init, videoId: +videoId });
+          await prisma.playlist.update({
+            where: { id: init },
+            data: { updatedAt: new Date() },
+          });
         }
       });
 
@@ -40,6 +44,10 @@ async function POST(req: Request, res: Response) {
       lists.map(async (id: string) => {
         try {
           await createPlaylistItem(+id, +videoId);
+          await prisma.playlist.update({
+            where: { id: +id },
+            data: { updatedAt: new Date() },
+          });
         } catch (error) {
           console.error(error);
         }
