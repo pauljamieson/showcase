@@ -25,7 +25,7 @@ export default function PlaylistAddDialog({ videoId }: p) {
   }
 
   return (
-    <dialog ref={ref} className="playlist-modal">
+    <dialog ref={ref} className="playlist-modal dialog">
       <fetcher.Form action={`/video/${videoId}/playlist/`} method="POST">
         <div>
           {fetcher.data?.data?.playlists?.map(
@@ -39,7 +39,7 @@ export default function PlaylistAddDialog({ videoId }: p) {
                 {...playlist}
                 checked={fetcher.data?.data?.inList.includes(playlist.id)}
               />
-            )
+            ),
           )}
         </div>
         <div className="create-input">
