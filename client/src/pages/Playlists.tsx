@@ -50,11 +50,12 @@ function PlaylistCard({ ...playlist }: Playlist) {
   const videoFile = playlist.playlistItems[0]?.video;
   if (!videoFile) return <div>Nope</div>;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
-    videoFile.id / 1000
+    videoFile.id / 1000,
   )}/${videoFile.id % 1000}`;
   const filename = videoFile.filename.slice(
-    videoFile.filename.lastIndexOf("/") + 1
+    videoFile.filename.lastIndexOf("/") + 1,
   );
+
   return (
     <div className="playlist-card cursor-def">
       <div className="relative">
@@ -66,12 +67,12 @@ function PlaylistCard({ ...playlist }: Playlist) {
               id="playlist-thumb"
               alt="image"
               src={`${filePath}/thumbs/${encodeURIComponent(
-                filename.slice(0, filename.lastIndexOf("."))
+                filename.slice(0, filename.lastIndexOf(".")),
               )}-3.jpg`}
             />
 
-            <div className="absolute bot-10 r-10 bg1 border1 p2 cursor-pass">
-              <span className="txt-sm">
+            <div className="length-text">
+              <span className="txt-sm ">
                 Length: {playlist._count.playlistItems}
               </span>
             </div>
@@ -93,7 +94,7 @@ function PlaylistCard({ ...playlist }: Playlist) {
         <div>
           <Link
             to={`/playlist/${playlist.id}?playlist=${btoa(
-              playlist.playlistItems.toString()
+              playlist.playlistItems.toString(),
             )}`}
           >
             <span className="txt-sm txt-hover">View Full List</span>

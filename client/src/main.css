@@ -777,6 +777,21 @@ input:checked + .toggler:before {
   }
 }
 
+.length-text {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 2px;
+  background-color:var(--bg-prim);
+  pointer-events: none;
+  border: 1px solid var(--border-color1);  
+}
+
+.length-text span {
+  background-color: var(--bg-prim);
+  color: var(--text-prim);
+}
+
 .playlist-card {
   border-radius: 10px;
   overflow: hidden;
@@ -1015,7 +1030,7 @@ img:has(~ #playall-text:hover) {
 .playlist-menu-options {
   border: 1px solid black;
   position: absolute;
-  background-color: white;
+  background-color: var(--bg-prim);
   top: 2rem;
   right: 10px;
   display:-ms-inline-grid;
