@@ -520,6 +520,14 @@ input:checked + .toggler:before {
   margin-top: -120px;
   z-index: 20;
   background-color: var(--bg-prim);
+  color: var(--text-prim);
+  border: #000;
+}
+
+.incoming-modal {
+  background-color: var(--bg-prim);
+  color : var(--text-prim);
+  border-color: #000;
 
 }
 
@@ -530,7 +538,10 @@ input:checked + .toggler:before {
   gap: 5px;
   align-items: center;
   width: 100%;
+  
 }
+
+
 
 .modal-form input {
   width: 100%;

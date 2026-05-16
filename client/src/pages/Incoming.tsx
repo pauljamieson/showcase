@@ -22,7 +22,7 @@ export default function Incoming() {
     return () => {
       sessionStorage.removeItem("activeTags");
       sessionStorage.removeItem("activePeople");
-    }
+    };
   }, []);
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -70,11 +70,17 @@ export default function Incoming() {
           >
             Add Tag to All
           </button>
-          <button type="button" className="btn" onClick={() =>
-            (
-              document.getElementById("modal-person") as HTMLDialogElement
-            )?.showModal()
-          }>Add Person to All</button>
+          <button
+            type="button"
+            className="btn"
+            onClick={() =>
+              (
+                document.getElementById("modal-person") as HTMLDialogElement
+              )?.showModal()
+            }
+          >
+            Add Person to All
+          </button>
         </div>
         <input
           type="hidden"
@@ -96,7 +102,6 @@ export default function Incoming() {
             <div>No Files Found.</div>
           )}
         </div>
-
       </Form>
       <TagModal />
       <PersonModal />
@@ -105,7 +110,6 @@ export default function Incoming() {
 }
 
 function TagModal() {
-
   const { showToast } = useToast();
   const [update, setUpdate] = useState(false);
 
@@ -113,7 +117,7 @@ function TagModal() {
   const [options, setOptions] = useState([] as { id: number; name: string }[]);
   const [activeTags, setActiveTags] = useState(() => {
     const storedTags = sessionStorage.getItem("activeTags");
-    return storedTags ? JSON.parse(storedTags) : [] as Tag[];
+    return storedTags ? JSON.parse(storedTags) : ([] as Tag[]);
   });
 
   useEffect(() => {
@@ -129,12 +133,10 @@ function TagModal() {
         (resp) => {
           setUpdate(false);
           resp.status === "success" && setOptions(resp.data.tags);
-        }
+        },
       );
     }
-
   }, [input]);
-
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -149,7 +151,6 @@ function TagModal() {
     setInput("");
     sessionStorage.setItem("activeTags", JSON.stringify(activeTags));
     (document.getElementById("modal-tag") as HTMLDialogElement)?.close();
-
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -173,7 +174,7 @@ function TagModal() {
       });
       return;
     }
-    if (activeTags.some((t: { id: number, name: string }) => t.id === tag.id)) {
+    if (activeTags.some((t: { id: number; name: string }) => t.id === tag.id)) {
       showToast({
         message: "Tag already added.",
         type: "error",
@@ -182,23 +183,31 @@ function TagModal() {
       return;
     }
     setActiveTags((prev: Tag[]) => [...prev, { id: tag.id, name: tag.name }]);
-
   }
 
   const handleRemoveTag = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    const newArr = activeTags.filter((t: { id: number, name: string }) => t.id !== parseInt(e.currentTarget.id));
+    const newArr = activeTags.filter(
+      (t: { id: number; name: string }) =>
+        t.id !== parseInt(e.currentTarget.id),
+    );
     setActiveTags(newArr);
-  }
+  };
 
   return (
-    <dialog id="modal-tag">
+    <dialog id="modal-tag" className="incoming-modal">
       <div className="modal-container">
         <span>Tags</span>
         <div className="active-tags">
           {activeTags.map((t: Tag, idx: number, arr: Tag[]) => (
-            <span onClick={handleRemoveTag} key={t.id} id={t.id.toString()} className="active-tag">
-              {t.name}{idx < arr.length - 1 && ","}
+            <span
+              onClick={handleRemoveTag}
+              key={t.id}
+              id={t.id.toString()}
+              className="active-tag"
+            >
+              {t.name}
+              {idx < arr.length - 1 && ","}
             </span>
           ))}
         </div>
@@ -218,7 +227,9 @@ function TagModal() {
             ))}
           </datalist>
           <div className="btn-bar">
-            <button className="btn" type="submit" value="Add" >Add</button>
+            <button className="btn" type="submit" value="Add">
+              Add
+            </button>
             <button
               className="btn"
               name="intent"
@@ -234,9 +245,7 @@ function TagModal() {
   );
 }
 
-
 function PersonModal() {
-
   const { showToast } = useToast();
   const [update, setUpdate] = useState(false);
 
@@ -244,7 +253,7 @@ function PersonModal() {
   const [options, setOptions] = useState([] as { id: number; name: string }[]);
   const [activePeople, setActivePeople] = useState(() => {
     const storedPeople = sessionStorage.getItem("activePeople");
-    return storedPeople ? JSON.parse(storedPeople) : [] as Tag[];
+    return storedPeople ? JSON.parse(storedPeople) : ([] as Tag[]);
   });
 
   useEffect(() => {
@@ -260,12 +269,10 @@ function PersonModal() {
         (resp) => {
           setUpdate(false);
           resp.status === "success" && setOptions(resp.data.people);
-        }
+        },
       );
     }
-
   }, [input]);
-
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -280,7 +287,6 @@ function PersonModal() {
     setInput("");
     sessionStorage.setItem("activePeople", JSON.stringify(activePeople));
     (document.getElementById("modal-person") as HTMLDialogElement)?.close();
-
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -304,7 +310,9 @@ function PersonModal() {
       });
       return;
     }
-    if (activePeople.some((p: { id: number, name: string }) => p.id === person.id)) {
+    if (
+      activePeople.some((p: { id: number; name: string }) => p.id === person.id)
+    ) {
       showToast({
         message: "Person already added.",
         type: "error",
@@ -312,24 +320,34 @@ function PersonModal() {
       });
       return;
     }
-    setActivePeople((prev: Person[]) => [...prev, { id: person.id, name: person.name }]);
-
+    setActivePeople((prev: Person[]) => [
+      ...prev,
+      { id: person.id, name: person.name },
+    ]);
   }
 
   const handleRemovePerson = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    const newArr = activePeople.filter((p: Person) => p.id !== parseInt(e.currentTarget.id));
+    const newArr = activePeople.filter(
+      (p: Person) => p.id !== parseInt(e.currentTarget.id),
+    );
     setActivePeople(newArr);
-  }
+  };
 
   return (
-    <dialog id="modal-person">
+    <dialog id="modal-person" className="incoming-modal">
       <div className="modal-container">
         <span>People</span>
         <div className="active-people">
           {activePeople.map((p: Person, idx: number, arr: Person[]) => (
-            <span onClick={handleRemovePerson} key={p.id} id={p.id.toString()} className="active-person">
-              {p.name}{idx < arr.length - 1 && ","}
+            <span
+              onClick={handleRemovePerson}
+              key={p.id}
+              id={p.id.toString()}
+              className="active-person"
+            >
+              {p.name}
+              {idx < arr.length - 1 && ","}
             </span>
           ))}
         </div>
@@ -349,7 +367,9 @@ function PersonModal() {
             ))}
           </datalist>
           <div className="btn-bar">
-            <button className="btn" type="submit" value="Add" >Add</button>
+            <button className="btn" type="submit" value="Add">
+              Add
+            </button>
             <button
               className="btn"
               name="intent"
