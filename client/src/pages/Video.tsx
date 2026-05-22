@@ -349,12 +349,65 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
   // Load volume from localstorage
   useEffect(() => {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
+    window.addEventListener(
+      "wheel",
+      function (e) {
+        e.preventDefault();
+      },
+      { passive: false },
+    );
+    return () => {
+      window.removeEventListener("wheel", function (e) {
+        e.preventDefault();
+      });
+    };
   }, []);
 
   useEffect(() => {
     // if autoplay add slight delay
     if (autoPlay) setTimeout(() => ref.current?.play(), 750);
   }, [autoPlay]);
+
+  useEffect(() => {
+    window.addEventListener(
+      "wheel",
+      function (e) {
+        e.preventDefault();
+      },
+      { passive: false },
+    );
+    return () => {
+      window.removeEventListener("wheel", function (e) {
+        e.preventDefault();
+      });
+    };
+  }, []);
+
+  const handleWheel = (e: React.WheelEvent<HTMLVideoElement>) => {
+    // Get the distance from the top of the video element to the top of the page
+    let offsetTop = 0;
+    let currElement = e.currentTarget as HTMLElement | null;
+    while (currElement) {
+      offsetTop += currElement.offsetTop;
+      currElement = currElement.offsetParent as HTMLElement | null;
+    }
+
+    // Check if the mouse is in the bottom 10% of the video element
+    const isBottomTenPercent =
+      e.clientY - offsetTop > e.currentTarget.clientHeight * 0.9;
+
+    // If scrolling up and in bottom 10% seek forward, else increase volume
+    if (e.deltaY < 0) {
+      isBottomTenPercent
+        ? (ref.current!.currentTime = Math.max(ref.current!.currentTime + 5, 0))
+        : (e.currentTarget.volume = Math.min(e.currentTarget.volume + 0.1, 1));
+    } else if (e.deltaY > 0) {
+      7;
+      isBottomTenPercent
+        ? (ref.current!.currentTime = Math.max(ref.current!.currentTime - 5, 0))
+        : (e.currentTarget.volume = Math.max(e.currentTarget.volume - 0.1, 0));
+    }
+  };
 
   async function handleProgress(e: any) {
     if (isViewed) return;
@@ -404,6 +457,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
 
   return (
     <video
+      onWheel={handleWheel}
       ref={ref}
       controls
       onSeeking={handleSeeking}
