@@ -340,15 +340,23 @@ interface VideoPlayer {
 function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
   // get reference to video element
   const ref = useRef<HTMLVideoElement | null>(null);
+  const ref2 = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
   const [isViewed, setIsViewed] = useState<boolean>(false);
+  const [vol, setVol] = useState<number>(1);
+  const [fade, setFade] = useState<boolean>(false);
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const [count, setCount] = useState<number>(0);
 
   // Load volume from localstorage
   useEffect(() => {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
+    setVol(parseFloat(localStorage.getItem("volume") || "1"));
     window.addEventListener(
       "wheel",
       function (e) {
@@ -385,6 +393,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
 
   const handleWheel = (e: React.WheelEvent<HTMLVideoElement>) => {
     // Get the distance from the top of the video element to the top of the page
+
     let offsetTop = 0;
     let currElement = e.currentTarget as HTMLElement | null;
     while (currElement) {
@@ -398,15 +407,28 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
 
     // If scrolling up and in bottom 10% seek forward, else increase volume
     if (e.deltaY < 0) {
-      isBottomTenPercent
-        ? (ref.current!.currentTime = Math.max(ref.current!.currentTime + 5, 0))
-        : (e.currentTarget.volume = Math.min(e.currentTarget.volume + 0.1, 1));
+      if (isBottomTenPercent) {
+        ref.current!.currentTime = Math.max(ref.current!.currentTime + 5, 0);
+      } else {
+        e.currentTarget.volume = Math.min(e.currentTarget.volume + 0.05, 1);
+      }
     } else if (e.deltaY > 0) {
-      7;
-      isBottomTenPercent
-        ? (ref.current!.currentTime = Math.max(ref.current!.currentTime - 5, 0))
-        : (e.currentTarget.volume = Math.max(e.currentTarget.volume - 0.1, 0));
+      if (isBottomTenPercent) {
+        ref.current!.currentTime = Math.max(ref.current!.currentTime - 5, 0);
+      } else {
+        e.currentTarget.volume = Math.max(e.currentTarget.volume - 0.05, 0);
+      }
     }
+    setVol(e.currentTarget.volume);
+    setFade(true);
+
+    if (timer) clearTimeout(timer);
+
+    setTimer(
+      setTimeout(() => {
+        setFade(false);
+      }, 750),
+    );
   };
 
   async function handleProgress(e: any) {
@@ -455,19 +477,59 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
     }
   }
 
+  function formatVolume(vol: number) {
+    if (vol === 0) return "Muted";
+    return Math.round(vol * 100);
+  }
+
+  useEffect(() => {
+    // reset the timer so most recent click is registered
+    clearTimeout(timer!);
+    // if count is 2 toggle fullscreen, if 1 toggle play pause
+    setTimer(
+      setTimeout(() => {
+        if (count >= 2) {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else {
+            ref2.current?.requestFullscreen();
+          }
+        } else if (count === 1) {
+          if (ref.current!.paused) {
+            ref.current!.play();
+          } else {
+            ref.current!.pause();
+          }
+        }
+        setCount(0);
+      }, 250),
+    );
+  }, [count]);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    setCount((prev) => prev + 1);
+  };
+
   return (
-    <video
-      onWheel={handleWheel}
-      ref={ref}
-      controls
-      onSeeking={handleSeeking}
-      onProgress={handleProgress}
-      onVolumeChange={handleVolumeChange}
-      onEnded={handleOnEnded}
-      preload="metadata"
-      src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
-        `${video.filepath}/${video.filename}`,
-      )}`}
-    ></video>
+    <div ref={ref2} className="video-player-wrapper" onClick={handleClick}>
+      <div className={`video-volume-overlay ${fade && "fade-in"} `}>
+        {formatVolume(vol)}
+      </div>
+      <video
+        disablePictureInPicture
+        controlsList="nofullscreen"
+        onWheel={handleWheel}
+        ref={ref}
+        controls
+        onSeeking={handleSeeking}
+        onProgress={handleProgress}
+        onVolumeChange={handleVolumeChange}
+        onEnded={handleOnEnded}
+        preload="metadata"
+        src={`${import.meta.env.VITE_API_URL}/${encodeURIComponent(
+          `${video.filepath}/${video.filename}`,
+        )}`}
+      ></video>
+    </div>
   );
 }
