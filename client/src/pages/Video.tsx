@@ -376,21 +376,6 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
     if (autoPlay) setTimeout(() => ref.current?.play(), 750);
   }, [autoPlay]);
 
-  useEffect(() => {
-    window.addEventListener(
-      "wheel",
-      function (e) {
-        e.preventDefault();
-      },
-      { passive: false },
-    );
-    return () => {
-      window.removeEventListener("wheel", function (e) {
-        e.preventDefault();
-      });
-    };
-  }, []);
-
   const handleWheel = (e: React.WheelEvent<HTMLVideoElement>) => {
     // Get the distance from the top of the video element to the top of the page
 
@@ -419,16 +404,17 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
         e.currentTarget.volume = Math.max(e.currentTarget.volume - 0.05, 0);
       }
     }
-    setVol(e.currentTarget.volume);
-    setFade(true);
+    if (!isBottomTenPercent) {
+      setVol(e.currentTarget.volume);
+      setFade(true);
+      if (timer) clearTimeout(timer);
 
-    if (timer) clearTimeout(timer);
-
-    setTimer(
-      setTimeout(() => {
-        setFade(false);
-      }, 750),
-    );
+      setTimer(
+        setTimeout(() => {
+          setFade(false);
+        }, 750),
+      );
+    }
   };
 
   async function handleProgress(e: any) {
@@ -479,6 +465,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
 
   function formatVolume(vol: number) {
     if (vol === 0) return "Muted";
+    if (vol === 1) return "Max";
     return Math.round(vol * 100);
   }
 
