@@ -1174,7 +1174,7 @@ video::-webkit-media-controls-fullscreen-button {
   background-color: black;
   max-width: 100%;
   width: 100%;
-
+  overscroll-behavior: contain;
 }
 
 

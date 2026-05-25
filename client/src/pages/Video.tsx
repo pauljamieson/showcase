@@ -357,18 +357,6 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
   useEffect(() => {
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
     setVol(parseFloat(localStorage.getItem("volume") || "1"));
-    window.addEventListener(
-      "wheel",
-      function (e) {
-        e.preventDefault();
-      },
-      { passive: false },
-    );
-    return () => {
-      window.removeEventListener("wheel", function (e) {
-        e.preventDefault();
-      });
-    };
   }, []);
 
   useEffect(() => {
