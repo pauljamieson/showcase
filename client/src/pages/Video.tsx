@@ -506,7 +506,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
     );
   }, [count]);
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = () => {
     setCount((prev) => prev + 1);
   };
 
