@@ -26,7 +26,6 @@
   --info-panel: #b0e7c4;
   --border-radius: 10px;
   --input-bg: white;
-
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,6 +51,7 @@
     --border-radius: 10px;
     --sort-color : #3f6483;
     --input-bg: var(--bg-prim);
+    
   }
 }
 
@@ -126,6 +126,7 @@ nav {
 .searchbar-container button {
   border: none;
   background-color: var(--input-bg);
+  color: var(--text-prim);
 }
 
 .searchbar {
@@ -1392,7 +1393,7 @@ li {
 }
 
 .history-card {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--border-color1);
   padding: 5px;
   display: flex;
   flex-direction: column; 
