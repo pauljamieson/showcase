@@ -2,7 +2,11 @@ import apiRequest from "../lib/api";
 
 export default async ({ request }: { request: Request }) => {
   try {
+    const width = innerWidth;
+    let limit = width >= 1440 ? 15 : width >= 960 ? 12 : width >= 780 ? 9 : 10;
     const url = new URL(request.url);
+    url.searchParams.set("limit", limit.toString());
+    
     const { status, data } = await apiRequest({
       method: "get",
       endpoint: "/videos",

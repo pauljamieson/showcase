@@ -58,7 +58,6 @@ export default function Videos() {
     items.forEach((item) => {
       const value = sessionStorage.getItem(item);
       if (value) {
-        console.log(`Setting ${item} to ${value}`);
         sp.set(item, value.replace(/"/g, ""));
       }
     });
@@ -77,6 +76,11 @@ export default function Videos() {
     people.forEach(
       (v) => !activePeople.includes(v) && searchParams.append("people", v),
     );
+
+    const width = innerWidth;
+    let limit = width >= 1440 ? 15 : width >= 960 ? 12 : width >= 780 ? 9 : 10;
+
+    searchParams.set("limit", limit.toString());
 
     getSortOrders(searchParams);
     setSearchParams(searchParams);

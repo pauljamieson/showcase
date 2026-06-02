@@ -54,7 +54,7 @@ async function GET(req: Request, res: Response) {
         ...v,
         rating: Math.floor(
           (v.ratings ?? []).map((v) => v.rating).reduce((a, c) => a + c, 0) /
-            (v.ratings ?? []).length || 0
+            (v.ratings ?? []).length || 0,
         ),
       };
     });
