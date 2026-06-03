@@ -78,7 +78,7 @@ export default function Videos() {
     );
 
     const width = innerWidth;
-    let limit = width >= 1440 ? 15 : width >= 960 ? 12 : width >= 780 ? 9 : 10;
+    const limit = width >= 1440 ? 15 : width >= 960 ? 12 : width >= 780 ? 9 : 10;
 
     searchParams.set("limit", limit.toString());
 

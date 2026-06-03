@@ -10,9 +10,7 @@ export default function Home() {
 
   if (isAuthed.auth)
     return (
-      <Navigate
-        to={`videos?page=${sessionStorage.getItem("page") || 1}&limit=8`}
-      />
+      <Navigate to={`videos?page=${sessionStorage.getItem("page") || 1}`} />
     );
   else return <div>Sign up now!</div>;
 }
