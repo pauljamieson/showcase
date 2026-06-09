@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import useLimitSize from "../hooks/useLimitSize";
 
@@ -6,6 +6,7 @@ function Paginator({ count }: { count: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const limit = useLimitSize();
   const pageCount = Math.ceil(count / +limit);
+  const [oldLimit, setOldLimit] = useState(limit);
 
   useEffect(() => {
     searchParams.set("limit", limit.toString());
@@ -28,6 +29,15 @@ function Paginator({ count }: { count: number }) {
   }, []);
 
   useEffect(() => {
+    if (limit !== oldLimit) {
+      const page = parseInt(searchParams.get("page") || "1");
+      const start = oldLimit * parseInt(searchParams.get("page") || "1");
+      console.log(start, page);
+      console.log()
+
+      setOldLimit(limit);
+    }
+
     parseInt(searchParams.get("page") || "1") > pageCount &&
       searchParams.set("page", pageCount > 0 ? pageCount.toString() : "1");
 

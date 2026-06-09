@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import {
   deleteVideo,
-  deleteVideoFileById,
   getTagByName,
   getVideoFiles,
   updateVideoFile,
@@ -37,8 +36,7 @@ async function GET(req: Request, res: Response) {
         await rmdir(filePath, { recursive: true });
         console.log(`Deleted file: ${file.id}`);
       }
-      const totalSize = files.reduce((acc, file) => acc + Number(file.size), 0);
-      console.log(`files: ${files.length}, totalSize: ${sizeOfFiles(files)} `);
+         console.log(`files: ${files.length}, totalSize: ${sizeOfFiles(files)} `);
     }
 
     res.json({ status: "success", data: {} });

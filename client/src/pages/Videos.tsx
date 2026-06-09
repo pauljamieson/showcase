@@ -12,6 +12,7 @@ import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
 import SortOrder from "../components/SortOrder";
 import apiRequest, { RequestConfig } from "../lib/api";
+import useLimitSize from "../hooks/useLimitSize";
 
 type LoaderData = {
   files: VideoFile[];
@@ -51,6 +52,12 @@ export default function Videos() {
   if (!auth.isLoggedIn) return <Navigate to="/login" />;
 
   const data: LoaderData = useLoaderData() as LoaderData;
+
+  const size = useLimitSize();
+  const [firstId, setFirstId] = useState<number | null>(
+    data.files[0] ? data.files[0].id : null,
+  );
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   function getSortOrders(sp: URLSearchParams): void {
@@ -64,6 +71,7 @@ export default function Videos() {
   }
 
   useEffect(() => {
+    // get the tags and people from the search params and local storage.
     const activeTags = searchParams.getAll("tags") || [];
     const activePeople = searchParams.getAll("people") || [];
     const tags: string[] = JSON.parse(sessionStorage.getItem("tags") || "[]");
@@ -77,14 +85,19 @@ export default function Videos() {
       (v) => !activePeople.includes(v) && searchParams.append("people", v),
     );
 
+    // Set the limit based on the screen width
     const width = innerWidth;
-    const limit = width >= 1440 ? 15 : width >= 960 ? 12 : width >= 780 ? 9 : 10;
-
+    const limit =
+      width >= 1440 ? 15 : width >= 960 ? 12 : width >= 780 ? 9 : 10;
     searchParams.set("limit", limit.toString());
 
+    // get the sort orders from the local storage and set them in the search params.
     getSortOrders(searchParams);
+
+    // Update the search params in the URL
     setSearchParams(searchParams);
   }, []);
+
 
   return (
     <>
@@ -93,7 +106,9 @@ export default function Videos() {
         <Paginator count={data.count} />
         <div className="video-card-container">
           {data &&
-            data.files.map((val) => <VideoCard key={val.id} videoFile={val} />)}
+            data.files.map((val) => {
+              return <VideoCard key={val.id} videoFile={val} />;
+            })}
         </div>
       </div>
     </>
