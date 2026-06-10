@@ -54,10 +54,10 @@ export default function Videos() {
   const data: LoaderData = useLoaderData() as LoaderData;
 
   const size = useLimitSize();
-  const [firstId, setFirstId] = useState<number | null>(
+  const [firstId, _] = useState<number | null>(
     data.files[0] ? data.files[0].id : null,
   );
-
+  console.log(size, firstId);
   const [searchParams, setSearchParams] = useSearchParams();
 
   function getSortOrders(sp: URLSearchParams): void {
@@ -97,7 +97,6 @@ export default function Videos() {
     // Update the search params in the URL
     setSearchParams(searchParams);
   }, []);
-
 
   return (
     <>
