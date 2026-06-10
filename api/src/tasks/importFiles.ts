@@ -60,14 +60,14 @@ function processFile(file: IncomingFile) {
     try {
       // read file in processing folders
       fileInfo = await getFileInfo(file);
-      console.log(fileInfo.filename, fileInfo.duration, fileInfo.size);
+
       // Check if file is to short to import
       const minLength = await getMinLength();
       if (minLength && fileInfo.duration < parseInt(minLength.value)) {
         await deleteIncoming(file.id, file.filename);
         throw {
           code: 10003,
-          msg: `${fileInfo.filename} (${fileInfo.size}) is too short to import. Deleting incoming file.`,
+          msg: `${fileInfo.filename} (${fileInfo.duration}sec) is too short to import. Deleting incoming file.`,
         };
       } else if (!minLength) {
         console.error("Failed to get min_length configuration.");
@@ -123,7 +123,7 @@ function processFile(file: IncomingFile) {
       if (error.code === 10001) {
         console.error(`FFProbe failed for ${file.filename}`);
         console.error(error.msg);
-      } else if (error.code === 10002) {
+      } else if (error.code === 10002 || error.code === 10003) {
         console.error(error.msg);
       }
       console.error(error);
