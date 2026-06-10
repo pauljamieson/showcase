@@ -123,7 +123,7 @@ function processFile(file: IncomingFile) {
       if (error.code === 10001) {
         console.error(`FFProbe failed for ${file.filename}`);
         console.error(error.msg);
-      } else if (error.code === 10002 || error.code === 10003) {
+      } else if (error.code === 10002) {
         console.error(error.msg);
       }
       console.error(error);
