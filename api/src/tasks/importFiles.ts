@@ -7,6 +7,7 @@ import {
   createVideoFile,
   deleteIncomingFileById,
   getIncomingFiles,
+  getMinLength,
   getVideoFile,
   updateVideoFile,
 } from "../database/database";
@@ -59,16 +60,24 @@ function processFile(file: IncomingFile) {
     try {
       // read file in processing folders
       fileInfo = await getFileInfo(file);
+      console.log(fileInfo.filename, fileInfo.duration, fileInfo.size);
+      // Check if file is to short to import
+      const minLength = await getMinLength();
+      if (minLength && fileInfo.duration < parseInt(minLength.value)) {
+        await deleteIncoming(file.id, file.filename);
+        throw {
+          code: 10003,
+          msg: `${fileInfo.filename} (${fileInfo.size}) is too short to import. Deleting incoming file.`,
+        };
+      } else if (!minLength) {
+        console.error("Failed to get min_length configuration.");
+        return resolve(true);
+      }
 
       // If dupe delete file and incoming table entry
       const isDupe = await isDuplicate(fileInfo);
       if (isDupe) {
-        await rm(path.dirname(file.filename), {
-          recursive: true,
-          force: true,
-        });
-        await deleteIncomingFileById(file.id);
-
+        await deleteIncoming(file.id, file.filename);
         throw {
           code: 10002,
           msg: `${fileInfo.filename} (${fileInfo.size}) already in database.  Deleting incoming file.`,
@@ -124,6 +133,17 @@ function processFile(file: IncomingFile) {
   });
 }
 
+async function deleteIncoming(id: number, filename: string) {
+  return new Promise<boolean>(async (resolve, reject) => {
+    await rm(path.dirname(filename), {
+      recursive: true,
+      force: true,
+    });
+    await deleteIncomingFileById(id);
+    resolve(true);
+  });
+}
+
 // Get file data used to create new file entry
 async function getFileInfo(file: IncomingFile) {
   return new Promise<FileInfo>((resolve, reject) => {
@@ -137,7 +157,7 @@ async function getFileInfo(file: IncomingFile) {
       videoCodec: "",
       audioCodec: "",
       tags: file.tags,
-      people: file.people,  
+      people: file.people,
     };
 
     ffprobe(file.filename, (err, data) => {
@@ -166,7 +186,7 @@ async function getFileInfo(file: IncomingFile) {
 function createThumbs(
   duration: number,
   soruceFile: string,
-  outputPath: string
+  outputPath: string,
 ) {
   return new Promise(async (resolve, reject) => {
     const promises = [];
@@ -181,15 +201,15 @@ function createThumbs(
               timemarks: [time],
               filename: `${path.basename(
                 soruceFile,
-                path.extname(soruceFile)
+                path.extname(soruceFile),
               )}-${x + 1}.jpg`,
               folder: outputPath,
             })
             .on("error", (error) =>
-              console.error(`Thumbnail Encoding Error: ${error.message}`)
+              console.error(`Thumbnail Encoding Error: ${error.message}`),
             )
             .on("end", () => resolve(true));
-        })
+        }),
       );
     }
 

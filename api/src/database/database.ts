@@ -8,7 +8,6 @@ import {
 } from "@prisma/client";
 import prisma from "../lib/prisma";
 
-
 /* PLAYLIST */
 
 export async function getPlaylistsByUserId(id: number) {
@@ -147,7 +146,7 @@ export async function deletePlaylistItemById(id: number) {
     },
   });
   await fixPlaylistPositions(result.playlistId, result.position);
-  
+
   return result;
 }
 
@@ -384,8 +383,8 @@ export async function createVideoFile({
     update: {},
     create: { name: "New", userId: userId ? userId : 1 },
   });
-  const tagArray  = JSON.parse(JSON.parse(tags))
-  const peopleArray  = JSON.parse(JSON.parse(people))
+  const tagArray = JSON.parse(JSON.parse(tags));
+  const peopleArray = JSON.parse(JSON.parse(people));
 
   return await prisma.videoFile.create({
     data: {
@@ -398,30 +397,31 @@ export async function createVideoFile({
       audioCodec: audioCodec,
       size: size,
       tags: {
-        connectOrCreate: tagArray.map((tag: {id: number, name: string}) => {
-          return {
-            where: { videoId_tagId: { videoId: 0, tagId: tag.id } },
-            create: { tagId: tag.id },
-          }
-        }).concat({
-          where: { videoId_tagId: { videoId: 0, tagId: id } },
-          create: { tagId: id },
-        }),
+        connectOrCreate: tagArray
+          .map((tag: { id: number; name: string }) => {
+            return {
+              where: { videoId_tagId: { videoId: 0, tagId: tag.id } },
+              create: { tagId: tag.id },
+            };
+          })
+          .concat({
+            where: { videoId_tagId: { videoId: 0, tagId: id } },
+            create: { tagId: id },
+          }),
       },
       people: {
-        connectOrCreate: peopleArray.map((person: {id: number, name: string}) => {
-          return {
-            where: { videoId_personId: { videoId: 0, personId: person.id } },
-            create: { personId: person.id },
-          }
-        }),
-      }
+        connectOrCreate: peopleArray.map(
+          (person: { id: number; name: string }) => {
+            return {
+              where: { videoId_personId: { videoId: 0, personId: person.id } },
+              create: { personId: person.id },
+            };
+          },
+        ),
+      },
     },
   });
-      
-    
-  };
-
+}
 
 export async function getVideoFileByFilename(filename: string) {
   return await prisma.videoFile.findFirst({ where: { filename: filename } });
@@ -637,6 +637,10 @@ export async function updateCongfiguration(key: string, value: string) {
 
 export async function getAllowSignup() {
   return await _getConfigurationItem("allow_signup");
+}
+
+export async function getMinLength() {
+  return await _getConfigurationItem("min_length");
 }
 
 /*  Play history */

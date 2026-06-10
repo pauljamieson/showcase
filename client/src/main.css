@@ -1440,3 +1440,38 @@ input:-webkit-autofill:active {
     -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
     -webkit-transition-delay: 9999s;
 }
+
+input {
+  color: var(--text-prim);  
+  outline:none;
+  padding: 5px 10px;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.config-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  padding: var(--spacing);
+  width: fit-content;
+}
+
+.config-item {
+  display: flex;
+  gap: var(--spacing);
+  align-items: center;
+  text-align: left;
+  justify-content: space-between;
+  
+}
+
