@@ -6,6 +6,7 @@ function Paginator({ count }: { count: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const limit = useLimitSize();
   const pageCount = Math.ceil(count / +limit);
+  const [goToPage, setGoToPage] = useState("");
   const [oldLimit, setOldLimit] = useState(limit);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ function Paginator({ count }: { count: number }) {
       const page = parseInt(searchParams.get("page") || "1");
       const start = oldLimit * parseInt(searchParams.get("page") || "1");
       console.log(start, page);
-      console.log()
+      console.log();
 
       setOldLimit(limit);
     }
@@ -75,6 +76,14 @@ function Paginator({ count }: { count: number }) {
         break;
     }
   }
+
+  const HandleGoToPage = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (goToPage === "" || +goToPage <= 0 || +goToPage > pageCount) return;
+    searchParams.set("page", goToPage);
+    sessionStorage.setItem("page", goToPage);
+    setSearchParams(searchParams);
+  };
 
   return (
     <div className="pagination-container">
@@ -193,6 +202,17 @@ function Paginator({ count }: { count: number }) {
       )}
       <button onClick={handleClick} name="next">
         &gt;
+      </button>
+      <input
+        type="number"
+        min="1"
+        max={pageCount}
+        placeholder="Go to"
+        value={goToPage}
+        onChange={(e) => setGoToPage(e.target.value)}
+      />
+      <button onClick={HandleGoToPage} name="goto" value={goToPage}>
+        Go
       </button>
     </div>
   );
