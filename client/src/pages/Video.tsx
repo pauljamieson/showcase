@@ -355,8 +355,21 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
 
   // Load volume from localstorage
   useEffect(() => {
+    // Add event listener for fullscreen change to remove fade overlay
+    function onFullScreenChange() {
+      setFade(false);
+    }
+    document.addEventListener("fullscreenchange", onFullScreenChange);
+
+    // Set volume to last saved volume in localstorage
     ref.current!.volume = parseFloat(localStorage.getItem("volume") || "1");
     setVol(parseFloat(localStorage.getItem("volume") || "1"));
+
+    // Cleanup event listener on unmount and remove timer if it exists
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullScreenChange);
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
