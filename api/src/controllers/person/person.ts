@@ -6,10 +6,15 @@ async function POST(req: Request, res: Response) {
     if (!res.locals.isLogged) throw "Not logged in.";
     const { name, videoId }: { name: string; videoId: string } = req.body;
 
-    if (name === null) return res.json({ status: "ok" });
-    if (videoId === null) return res.json({ status: "ok" });
+    if (name === null || name === "") return res.json({ status: "ok" });
+    if (videoId === null || videoId === "") return res.json({ status: "ok" });
 
-    await createPerson(name, +videoId, +res.locals.user);
+    
+    const names = name.split(",").map((n) => n.trim());
+    
+    for (const n of names) {
+      await createPerson(n, +videoId, +res.locals.user);
+    } 
 
     res.json({ status: "success" });
   } catch (error) {

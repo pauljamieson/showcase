@@ -12,7 +12,11 @@ async function POST(req: Request, res: Response) {
     if (videoId === null)
       return res.json({ status: "failure", message: "Video ID is required." });
 
-    await createTag(name, +videoId, +res.locals.user);
+    const tags = name.split(",").map((n) => n.trim());
+
+    for (const t of tags) {
+      await createTag(t, +videoId, +res.locals.user);
+    }
 
     res.json({ status: "success" });
   } catch (error) {
