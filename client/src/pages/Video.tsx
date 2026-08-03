@@ -347,6 +347,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
   const [seeked, setSeeked] = useState<boolean>(false);
   const [isViewed, setIsViewed] = useState<boolean>(false);
   const [vol, setVol] = useState<number>(1);
+  const [overlayMessage, setOverlayMessage] = useState<string>("");
   const [fade, setFade] = useState<boolean>(false);
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(
     null,
@@ -378,45 +379,54 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
   }, [autoPlay]);
 
   const handleWheel = (e: React.WheelEvent<HTMLVideoElement>) => {
-    // Get the distance from the top of the video element to the top of the page
+    // Handle mouse wheel events for volume, speed, and seek changes based on cursor position on video
+    const video = e.currentTarget.getBoundingClientRect();
 
-    let offsetTop = 0;
-    let currElement = e.currentTarget as HTMLElement | null;
-    while (currElement) {
-      offsetTop += currElement.offsetTop;
-      currElement = currElement.offsetParent as HTMLElement | null;
-    }
+    const width = video.width;
+    const offsetX = e.clientX - video.left;
+    const isSpeedChange = offsetX > width * 0.9;
 
-    // Check if the mouse is in the bottom 10% of the video element
-    const isBottomTenPercent =
-      e.clientY - offsetTop > e.currentTarget.clientHeight * 0.9;
+    const height = video.height;
+    const offsetY = e.clientY - video.top;
+    const isVolumeChange = !isSpeedChange && offsetY < height * 0.9;
+    const isSeekChange = !isSpeedChange && offsetY > height * 0.9;
 
-    // If scrolling up and in bottom 10% seek forward, else increase volume
-    if (e.deltaY < 0) {
-      if (isBottomTenPercent) {
-        ref.current!.currentTime = Math.max(ref.current!.currentTime + 5, 0);
-      } else {
-        e.currentTarget.volume = Math.min(e.currentTarget.volume + 0.05, 1);
-      }
-    } else if (e.deltaY > 0) {
-      if (isBottomTenPercent) {
-        ref.current!.currentTime = Math.max(ref.current!.currentTime - 5, 0);
-      } else {
-        e.currentTarget.volume = Math.max(e.currentTarget.volume - 0.05, 0);
-      }
-    }
-    if (!isBottomTenPercent) {
-      setVol(e.currentTarget.volume);
-      setFade(true);
-      if (timer) clearTimeout(timer);
-
-      setTimer(
-        setTimeout(() => {
-          setFade(false);
-        }, 750),
+    if (isSpeedChange) {
+      const speed = e.deltaY < 0 ? 0.25 : -0.25;
+      ref.current!.playbackRate = Math.max(
+        0.25,
+        Math.min(4, ref.current!.playbackRate + speed),
       );
+      overlay(`${ref.current!.playbackRate.toFixed(2)}x`);
+    }
+    if (isSeekChange) {
+      const seek = e.deltaY < 0 ? 5 : -5;
+      ref.current!.currentTime = Math.max(ref.current!.currentTime + seek, 0);
+    }
+
+    if (isVolumeChange) {
+      const volume = e.deltaY < 0 ? 0.05 : -0.05;
+      e.currentTarget.volume = Math.max(
+        0,
+        Math.min(1, e.currentTarget.volume + volume),
+      );
+      overlay(`${formatVolume(e.currentTarget.volume)}`);
+      // set client side volume state to keep for next video session 
+      setVol(e.currentTarget.volume);
     }
   };
+
+  function overlay(message: string) {
+    setOverlayMessage(message);
+    setFade(true);
+    if (timer) clearTimeout(timer);
+
+    setTimer(
+      setTimeout(() => {
+        setFade(false);
+      }, 750),
+    );
+  }
 
   async function handleProgress(e: any) {
     if (isViewed) return;
@@ -500,8 +510,8 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
 
   return (
     <div ref={ref2} className="video-player-wrapper" onClick={handleClick}>
-      <div className={`video-volume-overlay ${fade && "fade-in"} `}>
-        {formatVolume(vol)}
+      <div className={`video-message-overlay ${fade && "fade-in"} `}>
+        {overlayMessage}
       </div>
       <video
         disablePictureInPicture
