@@ -346,7 +346,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
   const [start, setStart] = useState<number>(0);
   const [seeked, setSeeked] = useState<boolean>(false);
   const [isViewed, setIsViewed] = useState<boolean>(false);
-  const [vol, setVol] = useState<number>(1);
+  const [_, setVol] = useState<number>(1);
   const [overlayMessage, setOverlayMessage] = useState<string>("");
   const [fade, setFade] = useState<boolean>(false);
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(
@@ -411,7 +411,7 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
         Math.min(1, e.currentTarget.volume + volume),
       );
       overlay(`${formatVolume(e.currentTarget.volume)}`);
-      // set client side volume state to keep for next video session 
+      // set client side volume state to keep for next video session
       setVol(e.currentTarget.volume);
     }
   };
