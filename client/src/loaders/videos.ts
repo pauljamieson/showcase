@@ -17,7 +17,7 @@ export default async ({ request }: { request: Request }) => {
       method: "get",
       endpoint: "/admin/configuration",
     });
-
+    console.log(data2);
     const maintenanceMode =
       data2.config.find(
         (c: { key: string; value: string }) => c.key === "maintenance_mode",
@@ -41,6 +41,6 @@ export default async ({ request }: { request: Request }) => {
       };
     if (status === "failure") return { data };
   } catch (error: any) {
-    return { status: "failure", data: { reason: "Unknown" , err: error } };
+    return { status: "failure", data: { reason: "Unknown", err: error } };
   }
 };
