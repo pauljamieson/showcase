@@ -41,6 +41,6 @@ export default async ({ request }: { request: Request }) => {
       };
     if (status === "failure") return { data };
   } catch (error: any) {
-    return { status: "failure", data: { reason: "Unknown" } };
+    return { status: "failure", data: { reason: "Unknown" , err: error } };
   }
 };
