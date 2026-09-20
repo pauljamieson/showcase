@@ -54,6 +54,7 @@ export default function Videos() {
   if (!auth.isLoggedIn) return <Navigate to="/login" />;
 
   const data: LoaderData = useLoaderData() as LoaderData;
+  console.log(data);
 
   sessionStorage.setItem(
     "maintenanceMode",
