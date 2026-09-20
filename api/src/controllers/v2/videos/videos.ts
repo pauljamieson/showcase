@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
-import { getVideoFiles, getVideoFilesCount } from "../../database/database";
+import { Prisma, Tag, VideoFile, Person } from "@prisma/client";
+import {
+  deleteVideoFileById,
+  getVideoFiles,
+  getVideoFilesCount,
+} from "../../../database/database_v2";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -57,7 +61,13 @@ async function GET(req: Request, res: Response) {
       } as Prisma.VideoFileWhereInput,
     };
 
-    const files = await getVideoFiles(data);
+    type VideoFileWithRelations = VideoFile & {
+      tags: Array<Tag>;
+      people: Array<Person>;
+      ratings: Array<{ rating: number }>;
+    };
+
+    const files = (await getVideoFiles(data)) as VideoFileWithRelations[];
 
     const ratedFiles = files.map((v) => {
       return {
@@ -104,6 +114,7 @@ async function POST(req: Request, res: Response) {
           people.map((p: string) => {
             return { people: { some: { person: { name: p } } } };
           }),
+
           terms.split(" ").map((word: string) => {
             return { filename: { contains: word, mode: "insensitive" } };
           }),
@@ -124,4 +135,20 @@ async function POST(req: Request, res: Response) {
   }
 }
 
-export default { GET, POST };
+async function DELETE(req: Request, res: Response) {
+  try {
+    const { videoId } = req.body;
+  
+    if (!videoId) {
+      res.json({ status: "failure", message: "ID is required" });
+      return;
+    }
+    await deleteVideoFileById(Number(videoId));
+    res.json({ status: "success" });
+  } catch (error) {
+    console.error(error);
+    res.json({ status: "failure" });
+  }
+}
+
+export default { GET, POST, DELETE };

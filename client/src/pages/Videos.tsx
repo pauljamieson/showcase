@@ -12,11 +12,13 @@ import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
 import SortOrder from "../components/SortOrder";
 import apiRequest, { RequestConfig } from "../lib/api";
-import useLimitSize from "../hooks/useLimitSize";
+//import useLimitSize from "../hooks/useLimitSize";
 
 type LoaderData = {
   files: VideoFile[];
   count: number;
+  maintenanceMode: boolean;
+  showMetadata: boolean;
 };
 
 export type VideoFile = {
@@ -37,13 +39,17 @@ export type VideoFile = {
 };
 
 export type Tag = {
-  id: number;
-  name: string;
+  tag: {
+    id: number;
+    name: string;
+  };
 };
 
 export type Person = {
-  id: number;
-  name: string;
+  person: {
+    id: number;
+    name: string;
+  };
 };
 
 export default function Videos() {
@@ -53,11 +59,15 @@ export default function Videos() {
 
   const data: LoaderData = useLoaderData() as LoaderData;
 
+  sessionStorage.setItem("maintenanceMode", JSON.stringify(data.maintenanceMode));
+  sessionStorage.setItem("showMetadata", JSON.stringify(data.showMetadata));
+
+  /*
   const size = useLimitSize();
   const [firstId, _] = useState<number | null>(
     data.files[0] ? data.files[0].id : null,
-  );
-  console.log(size, firstId);
+  );*/
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   function getSortOrders(sp: URLSearchParams): void {

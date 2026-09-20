@@ -2,6 +2,7 @@ require("./lib/bigint");
 require("./tasks/importFiles");
 require("./tasks/convertFiles");
 import express, { Express, Request, Response } from "express";
+import VideosRouterV2 from "./routes/v2/videos/videos";
 import dotenv from "dotenv";
 import cors from "cors";
 import AuthRouter from "./routes/auth/auth";
@@ -28,7 +29,7 @@ const port: string | undefined = process.env.PORT;
 app.use(
   cors({
     exposedHeaders: ["Authorization"],
-  })
+  }),
 );
 
 app.use(express.urlencoded({ extended: false }));
@@ -51,7 +52,7 @@ app.use("/profile", ProfileRouter);
 app.use("/playlist", PlaylistRouter);
 app.use("/playlists", PlaylistsRouter);
 app.use("/history", HistoryRouter);
-
+app.use("/v2/videos", VideosRouterV2);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");

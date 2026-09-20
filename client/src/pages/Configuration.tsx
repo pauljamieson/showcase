@@ -9,6 +9,15 @@ interface LoaderData {
 
 export default function Configuration() {
   const loaderData = useLoaderData() as LoaderData;
+  const [maintenanceMode, setMaintenanceMode] = useState<boolean>(
+    loaderData.data?.config?.find((c) => c.key === "maintenance_mode")
+      ?.value === "true",
+  );
+
+  const [showMetadata, setShowMetadata] = useState<boolean>(
+    loaderData.data?.config?.find((c) => c.key === "show_metadata")?.value ===
+      "true",
+  );
   const [enableSignups, setEnableSignups] = useState<boolean>(
     loaderData.data?.config?.find((c) => c.key === "allow_signup")?.value ===
       "true",
@@ -21,6 +30,36 @@ export default function Configuration() {
     ),
   );
 
+  const handleItemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    switch (name) {
+      case "maintenance-mode":
+        setMaintenanceMode(checked);
+        apiRequest({
+          endpoint: "/admin/configuration",
+          method: "post",
+          body: {
+            intent: "Edit",
+            key: "maintenance_mode",
+            value: checked ? "true" : "false",
+          },
+        });
+        break;
+      case "show-metadata":
+        setShowMetadata(checked);
+        apiRequest({
+          endpoint: "/admin/configuration",
+          method: "post",
+          body: {
+            intent: "Edit",
+            key: "show_metadata",
+            value: checked ? "true" : "false",
+          },
+        });
+        break;
+    }
+  };
+
   const handleChangeSignups = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setEnableSignups((enableSignups) => !enableSignups);
@@ -30,7 +69,7 @@ export default function Configuration() {
       body: {
         intent: "Edit",
         key: "allow_signup",
-        value: enableSignups ? "false" : "true",
+        value: !enableSignups ? "true" : "false",
       },
     });
   };
@@ -60,7 +99,7 @@ export default function Configuration() {
           <label>Enable Signups</label>
           <input
             type="checkbox"
-            value="enable-signups"
+            name="enable-signups"
             onChange={handleChangeSignups}
             checked={enableSignups}
           />
@@ -73,6 +112,24 @@ export default function Configuration() {
             onChange={handleChangeMinLength}
             min={0}
             max={3600}
+          />
+        </div>
+        <div className="config-item">
+          <label>Maintenance Mode</label>
+          <input
+            type="checkbox"
+            name="maintenance-mode"
+            onChange={handleItemChange}
+            checked={maintenanceMode}
+          />
+        </div>
+        <div className="config-item">
+          <label>Show tags and people</label>
+          <input
+            type="checkbox"
+            name="show-metadata"
+            onChange={handleItemChange}
+            checked={showMetadata}
           />
         </div>
       </div>

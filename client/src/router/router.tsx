@@ -12,6 +12,7 @@ import Incoming from "../pages/Incoming";
 import IncomingAction from "../actions/incoming";
 import IncomingLoader from "../loaders/incoming";
 import Videos from "../pages/Videos";
+import VideosAction from "../actions/videos";
 import VideosLoader from "../loaders/videos";
 import Video from "../pages/Video";
 import VideoLoader from "../loaders/video";
@@ -70,6 +71,7 @@ export const router = createBrowserRouter([
         path: "/videos",
         element: <Videos />,
         loader: VideosLoader,
+        action: VideosAction,
       },
       {
         path: "/video/:id",
