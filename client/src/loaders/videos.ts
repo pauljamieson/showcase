@@ -27,7 +27,7 @@ export default async ({ request }: { request: Request }) => {
 
     const showMetadata =
       data2.config.find(
-        (c: { key: string; value: string }) => c.key === "show_metadata",
+        (c: { key: string; value: string }) => c.key === "meta_data",
       ).value === "true"
         ? true
         : false;
