@@ -29,21 +29,21 @@ type LoaderData = {
 };
 
 export type Tag = {
-  /*id: number;
-  name: string;*/
-  tag: {
+  id: number;
+  name: string;
+  /*tag: {
     id: number;
     name: string;
-  };
+  };*/
 };
 
 export type Person = {
-  /*id: number;
-  name: string;*/
-  person: {
+  id: number;
+  name: string;
+  /*person: {
     id: number;
     name: string;
-  };
+  };*/
 };
 
 export default function History() {

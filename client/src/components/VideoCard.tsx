@@ -87,7 +87,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
               <span>Tags: </span>
               {videoFile.tags.map((tag, i, arr) => (
                 <span key={i}>
-                  {tag.tag.name}
+                  {tag.name}
                   {i < arr.length - 1 && ", "}
                 </span>
               ))}
@@ -99,7 +99,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
               <span>People: </span>
               {videoFile.people.map((person, i, arr) => (
                 <span key={i}>
-                  {person.person.name}
+                  {person.name}
                   {i < arr.length - 1 && ", "}
                 </span>
               ))}

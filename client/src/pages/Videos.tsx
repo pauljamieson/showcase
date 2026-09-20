@@ -39,17 +39,13 @@ export type VideoFile = {
 };
 
 export type Tag = {
-  tag: {
-    id: number;
-    name: string;
-  };
+  id: number;
+  name: string;
 };
 
 export type Person = {
-  person: {
-    id: number;
-    name: string;
-  };
+  id: number;
+  name: string;
 };
 
 export default function Videos() {
@@ -59,7 +55,10 @@ export default function Videos() {
 
   const data: LoaderData = useLoaderData() as LoaderData;
 
-  sessionStorage.setItem("maintenanceMode", JSON.stringify(data.maintenanceMode));
+  sessionStorage.setItem(
+    "maintenanceMode",
+    JSON.stringify(data.maintenanceMode),
+  );
   sessionStorage.setItem("showMetadata", JSON.stringify(data.showMetadata));
 
   /*
