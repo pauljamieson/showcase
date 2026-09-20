@@ -25,13 +25,8 @@ export default async ({ request }: { request: Request }) => {
         ? true
         : false;
 
-    const { status: __, data: data3 } = await apiRequest({
-      method: "get",
-      endpoint: "/admin/configuration",
-    });
-
     const showMetadata =
-      data3.config.find(
+      data2.config.find(
         (c: { key: string; value: string }) => c.key === "show_metadata",
       ).value === "true"
         ? true
