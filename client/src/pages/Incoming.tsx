@@ -199,17 +199,23 @@ function TagModal() {
       <div className="modal-container">
         <span>Tags</span>
         <div className="active-tags">
-          {activeTags.map((t: Tag, idx: number, arr: Tag[]) => (
-            <span
-              onClick={handleRemoveTag}
-              key={t.id}
-              id={t.id.toString()}
-              className="active-tag"
-            >
-              {t.name}
-              {idx < arr.length - 1 && ","}
-            </span>
-          ))}
+          {activeTags.map(
+            (
+              t: { id: number; name: string },
+              idx: number,
+              arr: { id: number; name: string }[],
+            ) => (
+              <span
+                onClick={handleRemoveTag}
+                key={t.id}
+                id={t.id.toString()}
+                className="active-tag"
+              >
+                {t.name}
+                {idx < arr.length - 1 && ","}
+              </span>
+            ),
+          )}
         </div>
         <form className="modal-form" onSubmit={handleSubmit}>
           <input
@@ -329,7 +335,8 @@ function PersonModal() {
   const handleRemovePerson = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
     const newArr = activePeople.filter(
-      (p: Person) => p.id !== parseInt(e.currentTarget.id),
+      (p: { id: number; name: string }) =>
+        p.id !== parseInt(e.currentTarget.id),
     );
     setActivePeople(newArr);
   };
@@ -339,17 +346,23 @@ function PersonModal() {
       <div className="modal-container">
         <span>People</span>
         <div className="active-people">
-          {activePeople.map((p: Person, idx: number, arr: Person[]) => (
-            <span
-              onClick={handleRemovePerson}
-              key={p.id}
-              id={p.id.toString()}
-              className="active-person"
-            >
-              {p.name}
-              {idx < arr.length - 1 && ","}
-            </span>
-          ))}
+          {activePeople.map(
+            (
+              p: { id: number; name: string },
+              idx: number,
+              arr: { person: Person }[],
+            ) => (
+              <span
+                onClick={handleRemovePerson}
+                key={p.id}
+                id={p.id.toString()}
+                className="active-person"
+              >
+                {p.name}
+                {idx < arr.length - 1 && ","}
+              </span>
+            ),
+          )}
         </div>
         <form className="modal-form" onSubmit={handleSubmit}>
           <input
