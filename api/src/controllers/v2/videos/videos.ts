@@ -25,17 +25,10 @@ async function GET(req: Request, res: Response) {
       skip: +page * +limit - +limit,
       take: +limit,
       include: {
-        tags: {
-          orderBy: { tag: { name: "asc" } },
-          select: {
-            tag: true,
-          },
-        },
+        tags: { include: { tag: true }, orderBy: { tag: { name: "asc" } } },
         people: {
+          include: { person: true },
           orderBy: { person: { name: "asc" } },
-          select: {
-            person: true,
-          },
         },
         ratings: true,
       } as Prisma.VideoFileInclude,
@@ -67,7 +60,10 @@ async function GET(req: Request, res: Response) {
       ratings: Array<{ rating: number }>;
     };
 
+    console.log(JSON.stringify(data));
+
     const files = (await getVideoFiles(data)) as VideoFileWithRelations[];
+    const a: VideoFile = files[0];
 
     const ratedFiles = files.map((v) => {
       return {
@@ -78,7 +74,7 @@ async function GET(req: Request, res: Response) {
         ),
       };
     });
-
+    console.log(JSON.stringify(ratedFiles));
     const countWhere = {
       AND: [
         tags.map((t) => {
@@ -138,7 +134,7 @@ async function POST(req: Request, res: Response) {
 async function DELETE(req: Request, res: Response) {
   try {
     const { videoId } = req.body;
-  
+
     if (!videoId) {
       res.json({ status: "failure", message: "ID is required" });
       return;

@@ -15,7 +15,7 @@ export default function Configuration() {
   );
 
   const [showMetadata, setShowMetadata] = useState<boolean>(
-    loaderData.data?.config?.find((c) => c.key === "show_metadata")?.value ===
+    loaderData.data?.config?.find((c) => c.key === "meta_data")?.value ===
       "true",
   );
   const [enableSignups, setEnableSignups] = useState<boolean>(
@@ -52,7 +52,7 @@ export default function Configuration() {
           method: "post",
           body: {
             intent: "Edit",
-            key: "show_metadata",
+            key: "meta_data",
             value: checked ? "true" : "false",
           },
         });

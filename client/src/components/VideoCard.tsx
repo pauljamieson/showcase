@@ -78,16 +78,18 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
             {videoFile.views} views
           </span>
         </div>
-        
+
         <div
-          hidden={!JSON.parse(sessionStorage.getItem("showMetadata") || "false")}
+          hidden={
+            !JSON.parse(sessionStorage.getItem("showMetadata") || "false")
+          }
         >
           {videoFile.tags && videoFile.tags.length > 0 && (
             <>
               <span>Tags: </span>
               {videoFile.tags.map((tag, i, arr) => (
                 <span key={i}>
-                  {tag.name}
+                  {tag.tag.name}
                   {i < arr.length - 1 && ", "}
                 </span>
               ))}
@@ -99,7 +101,7 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
               <span>People: </span>
               {videoFile.people.map((person, i, arr) => (
                 <span key={i}>
-                  {person.name}
+                  {person.person.name}
                   {i < arr.length - 1 && ", "}
                 </span>
               ))}
@@ -107,11 +109,11 @@ export default function VideoCard({ videoFile }: { videoFile: VideoFile }) {
           )}
         </div>
       </Link>
-      <br/>
+      <br />
       <div
-        hidden={!JSON.parse(
-          sessionStorage.getItem("maintenanceMode") || "false",
-        )}
+        hidden={
+          !JSON.parse(sessionStorage.getItem("maintenanceMode") || "false")
+        }
       >
         <Form method="delete">
           <input type="hidden" name="videoId" value={videoFile.id} />

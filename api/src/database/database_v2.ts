@@ -13,7 +13,7 @@ export async function getVideoFiles({
   include?: Prisma.VideoFileInclude;
   orderBy?: Prisma.VideoFileOrderByWithRelationInput;
   where?: Prisma.VideoFileWhereInput;
-  select?: Prisma.VideoFileSelect;
+  // select?: Prisma.VideoFileSelect;
 }): Promise<VideoFile[]> {
   return await prisma.videoFile.findMany({
     skip,
