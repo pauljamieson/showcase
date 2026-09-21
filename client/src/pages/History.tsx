@@ -31,19 +31,19 @@ type LoaderData = {
 export type Tag = {
   id: number;
   name: string;
-  /*tag: {
+  tag: {
     id: number;
     name: string;
-  };*/
+  };
 };
 
 export type Person = {
   id: number;
   name: string;
-  /*person: {
+  person: {
     id: number;
     name: string;
-  };*/
+  };
 };
 
 export default function History() {
