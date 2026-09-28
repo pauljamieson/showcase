@@ -384,10 +384,9 @@ function VideoPlayer({ video, queue, autoPlay = false }: VideoPlayer) {
 
     const width = video.width;
     const offsetX = e.clientX - video.left;
-    const isSpeedChange = offsetX > width * 0.9;
-
-    const height = video.height;
     const offsetY = e.clientY - video.top;
+    const height = video.height;
+    const isSpeedChange = offsetX > width * 0.9 && offsetY < height * 0.9;
     const isVolumeChange = !isSpeedChange && offsetY < height * 0.9;
     const isSeekChange = !isSpeedChange && offsetY > height * 0.9;
 
