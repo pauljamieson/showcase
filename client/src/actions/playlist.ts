@@ -17,7 +17,7 @@ export default async ({ request }: { request: Request }) => {
     for (const item of data.playlist.playlistItems) {
       fileData.push(`#EXTINF:${item.video.duration},${item.video.filename}`);
       fileData.push(
-        `file://S:\\app_data\\showcase\\videos\\${Math.floor(item.video.id / 1000)}\\${item.video.id % 1000}\\4${item.video.filename}`,
+        `file://S:\\app_data\\showcase\\videos\\${Math.floor(item.video.id / 1000)}\\${item.video.id % 1000}\\${item.video.filename}`,
       );
     }
   
