@@ -5,19 +5,23 @@ export default async ({ request }: { request: Request }) => {
   const body = {
     intent: formData.get("intent") as string,
     id: formData.get("id") as string,
-    name: formData.get("name") as string,
-    newName: formData.get("newName") as string,
-    migrateId: formData.get("migrateId") as string,
   };
 
   try {
     const { status, data, error } = await apiRequest({
-      method: "post",
-      endpoint: "/playlist/tag/",
-      body,
+      endpoint: `/playlist/${body.id}`,
+      method: "get",
     });
 
-    return { status, data, error };
+    let fileData: string[] = ["#EXTM3U"];
+    for (const item of data.playlist.playlistItems) {
+      fileData.push(`#EXTINF:${item.video.duration},${item.video.filename}`);
+      fileData.push(
+        `file://S:\\app_data\\showcase\\videos\\${Math.floor(item.video.id / 1000)}\\${item.video.id % 1000}\\4${item.video.filename}`,
+      );
+    }
+  
+    return { status, data: fileData.join("\n"), error };
   } catch (error: any) {
     console.error(error);
     return { status: "failure", error };

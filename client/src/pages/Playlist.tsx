@@ -1,4 +1,10 @@
-import { useLoaderData, useSearchParams, Link } from "react-router-dom";
+import {
+  useLoaderData,
+  useSearchParams,
+  Link,
+  Form,
+  useActionData,
+} from "react-router-dom";
 import { formatDuration } from "../lib/formats";
 import apiRequest from "../lib/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -85,6 +91,8 @@ export default function Playlist() {
 }
 
 function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
+  const actionData: { status: string; data: string; error: string } =
+    useActionData() as { status: string; data: string; error: string };
   const videoFile = playlist.playlistItems[0]?.video;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     videoFile.id / 1000,
@@ -92,40 +100,65 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
   const filename = videoFile.filename.slice(
     videoFile.filename.lastIndexOf("/") + 1,
   );
+
+  useEffect(() => {
+    if (actionData?.status === "success") {
+      // If previous page was videos page go back with last search active
+      // Otherwise go back to root of videos
+      const blob = new Blob([actionData.data], { type: "text/plain" });
+      const fileURL = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = fileURL;
+      a.download = `${playlist.name}.m3u`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }, [actionData]);
+
   return (
-    <Link
-      to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}`}
-    >
-      <div className="playlist-titlecard-container">
-        <div className="playlist-titlecard-img ">
-          <img
-            id="playlist-thumb"
-            alt="image"
-            src={`${filePath}/thumbs/${encodeURIComponent(
-              filename.slice(0, filename.lastIndexOf(".")),
-            )}-3.jpg`}
-          />
-        </div>
-        <div className="playlist-info-container">
-          <span className="txt-lg">Name: {playlist?.name}</span>
-          <div className="flex-col">
-            <span className="txt-sm">
-              {playlist.playlistItems.length} Videos (
-              {formatDuration(
-                playlist.playlistItems.reduce(
-                  (a, v) => a + v.video.duration,
-                  0,
-                ),
-              )}
-              )
-            </span>
-            <span className="txt-sm">
-              Updated: {new Date(playlist?.updatedAt).toLocaleString()}
-            </span>
+    <>
+      <Link
+        to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}`}
+      >
+        <div className="playlist-titlecard-container">
+          <div className="playlist-titlecard-img ">
+            <img
+              id="playlist-thumb"
+              alt="image"
+              src={`${filePath}/thumbs/${encodeURIComponent(
+                filename.slice(0, filename.lastIndexOf(".")),
+              )}-3.jpg`}
+            />
+          </div>
+          <div className="playlist-info-container">
+            <span className="txt-lg">Name: {playlist?.name}</span>
+            <div className="flex-col">
+              <span className="txt-sm">
+                {playlist.playlistItems.length} Videos (
+                {formatDuration(
+                  playlist.playlistItems.reduce(
+                    (a, v) => a + v.video.duration,
+                    0,
+                  ),
+                )}
+                )
+              </span>
+              <span className="txt-sm">
+                Updated: {new Date(playlist?.updatedAt).toLocaleString()}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      <Form method="post">
+        <button type="submit" className="btn" name="intent" value="Export">
+          Export
+        </button>
+        <input type="hidden" name="id" value={playlist.id} />
+      </Form>
+    </>
   );
 }
 
