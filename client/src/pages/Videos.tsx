@@ -183,7 +183,7 @@ function AdvanceSearch() {
       endpoint: "/videos",
       body,
     };
-    apiRequest(data).then(({ status, data, error }) => {
+    apiRequest(data).then(({ status, error }) => {
       if (error) return console.error(error);
       if (status === "success") {
         showToast({
