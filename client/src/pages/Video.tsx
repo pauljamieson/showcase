@@ -69,7 +69,7 @@ function Video() {
           queue={queue}
           autoPlay={state?.autoPlay ? true : false}
         />
-        <VideoInfo video={video} />
+        <VideoInfo video={video} queue={queue} />
         <AdminBar id={video.id.toString()} />
       </div>
       <div className="video-queue-items-container">
@@ -157,7 +157,7 @@ function StarBar({ rating, id }: StarBar) {
   );
 }
 
-function VideoInfo({ video }: { video: VideoData }) {
+function VideoInfo({ video, queue }: { video: VideoData; queue: VideoQueue }) {
   const size = useFileSize(video.size);
   const navigate = useNavigate();
   const { pathname, state } = useLocation();
@@ -170,7 +170,30 @@ function VideoInfo({ video }: { video: VideoData }) {
       state: { search: state?.search },
     });
   }
-  ``;
+  function handleClick2(e: React.BaseSyntheticEvent) {
+    const pos = parseInt(searchParams.get("position") || "1");
+    if (e.target.name === "next") {
+      const lastItem = queue.items.length;
+      if (pos < lastItem) {
+        const nextVideo = queue.items[pos];
+        searchParams.set("position", (pos + 1).toString());
+        navigate(`/video/${nextVideo.id}?${searchParams.toString()}`, {
+          state: { autoPlay: true },
+        });
+      }
+    }
+    if (e.target.name === "previous") {
+      const pos = parseInt(searchParams.get("position") || "1");
+      if (pos > 1) {
+        const prevVideo = queue.items[pos - 2];
+        searchParams.set("position", (pos - 1).toString());
+        navigate(`/video/${prevVideo.id}?${searchParams.toString()}`, {
+          state: { autoPlay: true },
+        });
+      }
+    }
+  }
+
   return (
     <div className="video-info-container">
       <span className="video-title txt-lg txt-bold">{video.filename}</span>
@@ -205,6 +228,20 @@ function VideoInfo({ video }: { video: VideoData }) {
         <button className="btn btn-sm" name="playlist" onClick={handleClick}>
           Playlist
         </button>
+        {searchParams.get("playlist") && (
+          <>
+            <button
+              className="btn btn-sm"
+              name="previous"
+              onClick={handleClick2}
+            >
+              Previous
+            </button>
+            <button className="btn btn-sm" name="next" onClick={handleClick2}>
+              Next
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
