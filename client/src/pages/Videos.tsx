@@ -152,7 +152,8 @@ function AdvanceSearch() {
     const terms = searchParams.get("search") || "";
     const people = searchParams.getAll("people");
     const tags = searchParams.getAll("tags");
-    const body = { terms, people, tags };
+    const intent = "lucky";
+    const body = { terms, people, tags, intent };
 
     const data: RequestConfig = {
       method: "post",
@@ -168,6 +169,26 @@ function AdvanceSearch() {
     });
   }
 
+  function handleClick2() {
+    const terms = searchParams.get("search") || "";
+    const people = searchParams.getAll("people");
+    const tags = searchParams.getAll("tags");
+    const intent = "playlist";
+    const body = { terms, people, tags, intent };
+
+    const data: RequestConfig = {
+      method: "post",
+      endpoint: "/videos",
+      body,
+    };
+    apiRequest(data).then(({ status, data, error }) => {
+      if (error) return console.error(error);
+      if (status === "success") {
+        console.log("Playlist created successfully", data);
+      }
+    });
+  }
+
   return (
     <div className={`advanced-search-container callapsible ${opened}`}>
       <div className="search-bar">
@@ -175,6 +196,9 @@ function AdvanceSearch() {
         <div>
           <button className="btn lucky-btn" onClick={handleClick}>
             I'm Feeling Lucky
+          </button>
+          <button className="btn lucky-btn" onClick={handleClick2}>
+            Make Playlist
           </button>
         </div>
       </div>

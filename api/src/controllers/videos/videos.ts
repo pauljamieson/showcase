@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { Prisma } from "@prisma/client";
-import { getVideoFiles, getVideoFilesCount } from "../../database/database";
+import {
+  getVideoFiles,
+  getVideoFilesCount,
+  createPlaylist,
+  createPlaylistItem,
+} from "../../database/database";
 
 async function GET(req: Request, res: Response) {
   try {
@@ -94,7 +99,10 @@ async function GET(req: Request, res: Response) {
 
 async function POST(req: Request, res: Response) {
   try {
-    const { terms, people, tags } = req.body;
+    if (!res.locals.isLogged) throw "Not logged in.";
+    const userId = +res.locals.user;
+    const { terms, people, tags, intent } = req.body;
+
     const data = {
       where: {
         AND: [
@@ -112,12 +120,31 @@ async function POST(req: Request, res: Response) {
     };
     const count: number = await getVideoFilesCount(data.where);
     const randomVideo = Math.floor(Math.random() * count + 1);
-    const videoFiles = await getVideoFiles({
-      where: data.where,
-      skip: randomVideo,
-      take: 1,
-    });
-    res.json({ status: "success", data: { id: videoFiles[0].id } });
+    if (intent === "lucky") {
+      // Handle lucky intent
+      const videoFiles = await getVideoFiles({
+        where: data.where,
+        skip: randomVideo,
+        take: 1,
+      });
+      res.json({ status: "success", data: { id: videoFiles[0].id } });
+    }
+    if (intent === "playlist") {
+      // Handle playlist intent
+      const name = `Playlist ${new Date().toISOString()}`;
+      const { id } = await createPlaylist(name, userId);
+      const videoFiles = await getVideoFiles({
+        where: data.where,
+      });
+      for (const video of videoFiles) {
+        await createPlaylistItem(id, video.id);
+      }
+
+      res.json({
+        status: "success",
+        data: { playlist: videoFiles.map((v) => v.id) },
+      });
+    }
   } catch (error) {
     console.error(error);
     res.json({ status: "failure" });
