@@ -12,6 +12,7 @@ import PersonSearch from "../components/PersonSearch";
 import TagSearch from "../components/TagSearch";
 import SortOrder from "../components/SortOrder";
 import apiRequest, { RequestConfig } from "../lib/api";
+import { useToast } from "../hooks/useToast";
 //import useLimitSize from "../hooks/useLimitSize";
 
 type LoaderData = {
@@ -131,6 +132,7 @@ function AdvanceSearch() {
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [opened, setOpened] = useState<string>("");
+  const { showToast } = useToast();
 
   const orders: any[] = [
     { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
@@ -184,7 +186,11 @@ function AdvanceSearch() {
     apiRequest(data).then(({ status, data, error }) => {
       if (error) return console.error(error);
       if (status === "success") {
-        console.log("Playlist created successfully", data);
+        showToast({
+          message: "Playlist created successfully",
+          type: "success",
+          duration: 3000,
+        });
       }
     });
   }
