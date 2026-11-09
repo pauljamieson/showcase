@@ -41,6 +41,7 @@ import ConfigurationLoader from "../loaders/configuration";
 import History from "../pages/History";
 import HistoryLoader from "../loaders/history";
 
+
 export const router = createBrowserRouter([
   {
     path: "/",

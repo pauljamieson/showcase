@@ -6,6 +6,19 @@ export default async ({ request }: { request: Request }) => {
     intent: formData.get("intent") as string,
     id: formData.get("id") as string,
   };
+  if (body.intent === "delete") {
+    try {
+      const { status, data, error } = await apiRequest({
+        endpoint: `/v2/playlist/${body.id}`,
+        method: "delete",
+      });
+      
+      return { status, data: { ...data, intent: body.intent }, error };
+    } catch (error: any) {
+      console.error(error);
+      return { status: "failure", error };
+    }
+  }
 
   try {
     const { status, data, error } = await apiRequest({
@@ -21,7 +34,11 @@ export default async ({ request }: { request: Request }) => {
       );
     }
 
-    return { status, data: fileData.join("\n"), error };
+    return {
+      status,
+      data: { data: fileData.join("\n"), intent: body.intent },
+      error,
+    };
   } catch (error: any) {
     console.error(error);
     return { status: "failure", error };

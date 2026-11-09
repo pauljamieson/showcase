@@ -4,23 +4,25 @@ import {
   Link,
   Form,
   useActionData,
+  useNavigate,
 } from "react-router-dom";
 import { formatDuration } from "../lib/formats";
-import apiRequest from "../lib/api";
+import apiRequest, { RequestConfig } from "../lib/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 /* import all the icons in Free Solid, Free Regular, and Brands styles */
-import { fas } from "@fortawesome/free-solid-svg-icons";
+import { fas, faPen } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import React, { useEffect, useState } from "react";
+import { debounce } from "../lib/tools";
 
 library.add(fas, far, fab);
 
 interface Playlist {
   id: number;
-  name: String;
+  name: string;
   userId: number;
   playlistItems: PlaylistItem[];
   createdAt: Date;
@@ -91,8 +93,18 @@ export default function Playlist() {
 }
 
 function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
-  const actionData: { status: string; data: string; error: string } =
-    useActionData() as { status: string; data: string; error: string };
+  const navigate = useNavigate();
+  const actionData: {
+    status: string;
+    data: { intent: string; data: string };
+    error: string;
+  } = useActionData() as {
+    status: string;
+    data: { intent: string; data: string };
+    error: string;
+  };
+  const [playlistName, setPlaylistName] = useState(playlist.name);
+  const [readOnly, setReadOnly] = useState(true);
   const videoFile = playlist.playlistItems[0]?.video;
   const filePath = `${import.meta.env.VITE_API_URL}/${Math.floor(
     videoFile.id / 1000,
@@ -102,10 +114,13 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
   );
 
   useEffect(() => {
-    if (actionData?.status === "success") {
+    if (
+      actionData?.status === "success" &&
+      actionData?.data?.intent === "export"
+    ) {
       // If previous page was videos page go back with last search active
       // Otherwise go back to root of videos
-      const blob = new Blob([actionData.data], { type: "text/plain" });
+      const blob = new Blob([actionData.data.data], { type: "text/plain" });
       const fileURL = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = fileURL;
@@ -114,14 +129,40 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
       a.click();
       document.body.removeChild(a);
     }
+    if (
+      actionData?.status === "success" &&
+      actionData?.data?.intent === "delete"
+    ) {
+      // Handle playlist deletion
+
+      navigate("/playlists");
+    }
   }, [actionData]);
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPlaylistName(e.target.value);
+    debounce(() => {
+      // Handle debounced name change logic here
+      const config: RequestConfig = {
+        method: "put",
+        endpoint: `/v2/playlist/${playlist.id}`,
+        body: { name: e.target.value },
+      };
+      apiRequest(config)
+        .then((response) => {
+          console.log(`Playlist name updated was: ${response.status}`);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }, 300)();
+  };
   return (
     <>
-      <Link
-        to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}`}
-      >
-        <div className="playlist-titlecard-container">
+      <div className="playlist-titlecard-container">
+        <Link
+          to={`/video/${playlist.playlistItems[0].videoId}?playlist=${playlist.id}`}
+        >
           <div className="playlist-titlecard-img ">
             <img
               id="playlist-thumb"
@@ -131,30 +172,47 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
               )}-3.jpg`}
             />
           </div>
-          <div className="playlist-info-container">
-            <span className="txt-lg">Name: {playlist?.name}</span>
-            <div className="flex-col">
-              <span className="txt-sm">
-                {playlist.playlistItems.length} Videos (
-                {formatDuration(
-                  playlist.playlistItems.reduce(
-                    (a, v) => a + v.video.duration,
-                    0,
-                  ),
-                )}
-                )
-              </span>
-              <span className="txt-sm">
-                Updated: {new Date(playlist?.updatedAt).toLocaleString()}
-              </span>
-            </div>
+        </Link>
+        <div className="playlist-info-container">
+          <span className="txt-lg">
+            Name:{" "}
+            <input
+              className="list-name"
+              value={playlistName}
+              placeholder="Untitled Playlist"
+              readOnly={readOnly}
+              onChange={handleNameChange}
+            ></input>
+            <FontAwesomeIcon
+              onClick={() => setReadOnly(!readOnly)}
+              icon={faPen}
+            />
+          </span>
+
+          <div className="flex-col">
+            <span className="txt-sm">
+              {playlist.playlistItems.length} Videos (
+              {formatDuration(
+                playlist.playlistItems.reduce(
+                  (a, v) => a + v.video.duration,
+                  0,
+                ),
+              )}
+              )
+            </span>
+            <span className="txt-sm">
+              Updated: {new Date(playlist?.updatedAt).toLocaleString()}
+            </span>
           </div>
         </div>
-      </Link>
+      </div>
 
       <Form method="post">
         <button type="submit" className="btn" name="intent" value="Export">
           Export
+        </button>
+        <button type="submit" className="btn" name="intent" value="delete">
+          Delete
         </button>
         <input type="hidden" name="id" value={playlist.id} />
       </Form>

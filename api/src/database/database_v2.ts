@@ -104,3 +104,23 @@ export async function deletePlaylistItem(
   await fixPlaylistPositions(result.playlistId, result.position);
   return {};
 }
+
+
+// Delete a playlist by its ID and remove all associated playlist items
+export async function deletePlaylistById(playlistId: number) {
+  // delete all playlist items
+  await prisma.playlistItem.deleteMany({
+    where: { playlistId },
+  });
+  // delete the playlist
+  await prisma.playlist.delete({
+    where: { id: playlistId },
+  });
+}
+
+export async function updatePlaylistName(playlistId: number, name: string) {
+  return await prisma.playlist.update({
+    where: { id: playlistId },
+    data: { name },
+  });
+}

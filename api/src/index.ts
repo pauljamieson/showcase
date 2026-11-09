@@ -3,6 +3,7 @@ require("./tasks/importFiles");
 require("./tasks/convertFiles");
 import express, { Express, Request, Response } from "express";
 import VideosRouterV2 from "./routes/v2/videos/videos";
+import PlaylistRouterV2 from "./routes/v2/playlist/playlist";
 import dotenv from "dotenv";
 import cors from "cors";
 import AuthRouter from "./routes/auth/auth";
@@ -53,6 +54,7 @@ app.use("/playlist", PlaylistRouter);
 app.use("/playlists", PlaylistsRouter);
 app.use("/history", HistoryRouter);
 app.use("/v2/videos", VideosRouterV2);
+app.use("/v2/playlist", PlaylistRouterV2);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");

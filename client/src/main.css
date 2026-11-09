@@ -974,9 +974,7 @@ img:has(~ #playall-text:hover) {
 
 .playlist-titlecard-container {
   display: flex;
-
   gap: var(--spacing);
-  margin: auto;
 }
 
 .playlist-titlecard-img {
@@ -1475,3 +1473,11 @@ input::-webkit-inner-spin-button {
   
 }
 
+.list-name{
+  outline:none;
+  border:none;
+  background: inherit;
+  field-sizing: content;
+  padding: 5px 5px;
+  font-size: var(--font-size);
+}
