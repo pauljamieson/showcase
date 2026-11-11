@@ -171,29 +171,6 @@ function AdvanceSearch() {
     });
   }
 
-  function handleClick2() {
-    const terms = searchParams.get("search") || "";
-    const people = searchParams.getAll("people");
-    const tags = searchParams.getAll("tags");
-    const intent = "playlist";
-    const body = { terms, people, tags, intent };
-
-    const data: RequestConfig = {
-      method: "post",
-      endpoint: "/videos",
-      body,
-    };
-    apiRequest(data).then(({ status, error }) => {
-      if (error) return console.error(error);
-      if (status === "success") {
-        showToast({
-          message: "Playlist created successfully",
-          type: "success",
-          duration: 3000,
-        });
-      }
-    });
-  }
 
   return (
     <div className={`advanced-search-container callapsible ${opened}`}>
