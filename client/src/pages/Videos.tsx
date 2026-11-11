@@ -132,7 +132,6 @@ function AdvanceSearch() {
   const navigate = useNavigate();
   const [searchParams, _] = useSearchParams();
   const [opened, setOpened] = useState<string>("");
-  const { showToast } = useToast();
 
   const orders: any[] = [
     { name: "order", options: ["Oldest", "Newest"], alwaysOn: true },
