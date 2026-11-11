@@ -203,7 +203,15 @@ function AdvanceSearch() {
           <button className="btn lucky-btn" onClick={handleClick}>
             I'm Feeling Lucky
           </button>
-          <button className="btn lucky-btn" onClick={handleClick2}>
+          <button
+            type="button"
+            className="btn lucky-btn"
+            onClick={() =>
+              (
+                document.getElementById("modal-playlist") as HTMLDialogElement
+              )?.showModal()
+            }
+          >
             Make Playlist
           </button>
         </div>
@@ -215,6 +223,109 @@ function AdvanceSearch() {
         <SortOrder {...orders[3]} />
         <SortOrder {...orders[4]} />
       </div>
+      <PlaylistModal />
     </div>
+  );
+}
+
+function PlaylistModal() {
+  const { showToast } = useToast();
+
+  const [input, setInput] = useState("");
+  const [searchParams] = useSearchParams();
+  const [active, setActive] = useState(false);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    const { value } = e.target;
+    setInput(value);
+  }
+
+  function handleClose(e: any) {
+    e.preventDefault();
+    setInput("");
+    (document.getElementById("modal-playlist") as HTMLDialogElement)?.close();
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (input.length === 0) {
+      showToast({
+        message: "Playlist name cannot be empty",
+        type: "error",
+        duration: 3000,
+      });
+      return;
+    }
+    if (!active && input.length > 0) {
+      setActive(true);
+      const terms = searchParams.get("search") || "";
+      const people = searchParams.getAll("people");
+      const tags = searchParams.getAll("tags");
+      const intent = "playlist";
+      const body = { terms, people, tags, intent, name: input };
+
+      const data: RequestConfig = {
+        method: "post",
+        endpoint: "/videos",
+        body,
+      };
+      apiRequest(data).then(({ status, error }) => {
+        if (error) {
+          showToast({
+            message: "Failed to create playlist",
+            type: "error",
+            duration: 3000,
+          });
+          return console.error(error);
+        }
+        if (status === "success") {
+          showToast({
+            message: "Playlist created successfully",
+            type: "success",
+            duration: 3000,
+          });
+        }
+        setActive(false);
+        setInput("");
+        (
+          document.getElementById("modal-playlist") as HTMLDialogElement
+        )?.close();
+      });
+    }
+  }
+
+  return (
+    <dialog id="modal-playlist" className="incoming-modal">
+      <div className="modal-container">
+        <span>Playlist Name :</span>
+
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <input
+            className="search-input"
+            type="text"
+            list="tags"
+            name="tag-name"
+            value={input}
+            onChange={handleChange}
+            autoComplete="off"
+          />
+
+          <div className="btn-bar">
+            <button className="btn" type="submit" value="Add">
+              Create
+            </button>
+            <button
+              className="btn"
+              name="intent"
+              value="close"
+              onClick={handleClose}
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </dialog>
   );
 }

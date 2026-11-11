@@ -12,7 +12,7 @@ export default async ({ request }: { request: Request }) => {
         endpoint: `/v2/playlist/${body.id}`,
         method: "delete",
       });
-      
+
       return { status, data: { ...data, intent: body.intent }, error };
     } catch (error: any) {
       console.error(error);
@@ -25,7 +25,7 @@ export default async ({ request }: { request: Request }) => {
       endpoint: `/playlist/${body.id}`,
       method: "get",
     });
-
+    
     let fileData: string[] = ["#EXTM3U"];
     for (const item of data.playlist.playlistItems) {
       fileData.push(`#EXTINF:${item.video.duration},${item.video.filename}`);
@@ -33,7 +33,7 @@ export default async ({ request }: { request: Request }) => {
         `file:///S:\\app_data\\showcase\\videos\\${Math.floor(item.video.id / 1000)}\\${item.video.id % 1000}\\${item.video.filename}`,
       );
     }
-
+    
     return {
       status,
       data: { data: fileData.join("\n"), intent: body.intent },

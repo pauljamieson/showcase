@@ -116,10 +116,11 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
   useEffect(() => {
     if (
       actionData?.status === "success" &&
-      actionData?.data?.intent === "export"
+      actionData?.data?.intent.toLowerCase() === "export"
     ) {
       // If previous page was videos page go back with last search active
       // Otherwise go back to root of videos
+
       const blob = new Blob([actionData.data.data], { type: "text/plain" });
       const fileURL = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -149,9 +150,7 @@ function PlaylistTitleCard({ playlist }: { playlist: Playlist }) {
         body: { name: e.target.value },
       };
       apiRequest(config)
-        .then((response) => {
-          console.log(`Playlist name updated was: ${response.status}`);
-        })
+        .then(() => {})
         .catch((err) => {
           console.error(err);
         });

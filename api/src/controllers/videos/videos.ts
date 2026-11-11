@@ -101,7 +101,7 @@ async function POST(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
     const userId = +res.locals.user;
-    const { terms, people, tags, intent } = req.body;
+    const { terms, people, tags, intent, name } = req.body;
 
     const data = {
       where: {
@@ -131,7 +131,7 @@ async function POST(req: Request, res: Response) {
     }
     if (intent === "playlist") {
       // Handle playlist intent
-      const name = `Playlist ${new Date().toISOString()}`;
+
       const { id } = await createPlaylist(name, userId);
       const videoFiles = await getVideoFiles({
         where: data.where,
