@@ -20,7 +20,7 @@ type LoaderData = {
 export default function AdminTag() {
   const [input, setInput] = useState<string>("");
   const { tags, count } = useLoaderData() as LoaderData;
-  console.log(tags, count);
+  
   // Debounce timer
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(
     undefined,

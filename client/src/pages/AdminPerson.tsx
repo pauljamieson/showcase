@@ -11,13 +11,16 @@ type LoaderData = {
       name: string;
       userId: number;
       creator: { displayname: string };
+      _count: { videoFiles: number };
     },
   ];
+  count: number;
 };
 
 export default function AdminPerson() {
-  const { people } = useLoaderData() as LoaderData;
   const [input, setInput] = useState<string>("");
+  const { people, count } = useLoaderData() as LoaderData;
+
   // Debounce timer
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -37,6 +40,13 @@ export default function AdminPerson() {
     setTimer(TO);
   }, [input]);
 
+  const handleGoToPage = (page: number) => {
+    if (page < 1) page = 1;
+    if (page > Math.ceil(count / 10)) page = Math.ceil(count / 10);
+    searchParams.set("page", page.toString());
+    setSearchParams(searchParams);
+  };
+
   return (
     <div className="admin-person-page">
       <div className="admin-search">
@@ -47,6 +57,55 @@ export default function AdminPerson() {
           placeholder="Search people"
           className="search-input"
         />
+      </div>
+      <div className="pagination-container">
+        <button
+          onClick={() =>
+            handleGoToPage(
+              searchParams.has("page")
+                ? parseInt(searchParams.get("page") || "1") - 1
+                : 1,
+            )
+          }
+        >
+          &lt;
+        </button>
+        {parseInt(searchParams.get("page") || "1") >= 3 && (
+          <button onClick={() => handleGoToPage(1)}>1</button>
+        )}
+
+        {Array.from({ length: Math.ceil(count / 10) }, (_, i) => i + 1)
+          .filter(
+            (page) =>
+              page - parseInt(searchParams.get("page") || "1") <= 1 &&
+              parseInt(searchParams.get("page") || "1") - page <= 1,
+          )
+          .map((page) => (
+            <button
+              key={page}
+              className={`goto ${searchParams.get("page") === page.toString() ? "active" : ""}`}
+              onClick={() => handleGoToPage(page)}
+            >
+              {page}
+            </button>
+          ))}
+        {parseInt(searchParams.get("page") || "1") <=
+          Math.ceil(count / 10) - 2 && (
+          <button onClick={() => handleGoToPage(Math.ceil(count / 10))}>
+            {Math.ceil(count / 10)}
+          </button>
+        )}
+        <button
+          onClick={() =>
+            handleGoToPage(
+              searchParams.has("page")
+                ? parseInt(searchParams.get("page") || "1") + 1
+                : 2,
+            )
+          }
+        >
+          &gt;
+        </button>
       </div>
       {people.length > 0 ? (
         people.map((val) => <Row key={UUID()} {...val} />)
@@ -65,11 +124,13 @@ function Row({
   id,
   name,
   creator: { displayname },
+  _count: { videoFiles },
 }: {
   id: number;
   name: string;
   userId: number;
   creator: { displayname: string };
+  _count: { videoFiles: number };
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -88,6 +149,7 @@ function Row({
   return (
     <>
       <div className="edit-container" key={UUID()}>
+        <div className=" ">{videoFiles} - </div>
         <div className="edit-text">
           <div>{name}</div>
           <div className="half-text">Creator: {displayname}</div>

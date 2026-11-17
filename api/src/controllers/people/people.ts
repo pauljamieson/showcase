@@ -1,32 +1,41 @@
 import { Request, Response } from "express";
-import { getPeople } from "../../database/database";
-import { Prisma } from "@prisma/client";
+import { prisma } from "../../lib/prisma";
 
 async function GET(req: Request, res: Response) {
   try {
     if (!res.locals.isLogged) throw "Not logged in.";
+
     const terms = (req.query.terms as string) || "";
-    const query = {
+    const skip = req.query.page
+      ? (parseInt(req.query.page as string) - 1) * 10
+      : 0;
+    const result = await prisma.person.findMany({
       select: {
         id: true,
         name: true,
         userId: true,
         creator: { select: { displayname: true } },
+        _count: true,
       },
       where: {
         AND: terms.split(" ").map((word) => {
           return { name: { contains: word, mode: "insensitive" } };
         }),
-      } as Prisma.PersonWhereInput,
-      take: 10,
-      orderBy: {
-        name: Prisma.SortOrder.asc,
       },
-    };
-
-    const result = await getPeople(query);
-
-    res.json({ status: "success", data: { people: result } });
+      take: 10,
+      skip: skip,
+      orderBy: {
+        videoFiles: { _count: "desc" },
+      },
+    });
+    const count = await prisma.person.count({
+      where: {
+        AND: terms.split(" ").map((word) => {
+          return { name: { contains: word, mode: "insensitive" } };
+        }),
+      },
+    });
+    res.json({ status: "success", data: { people: result, count } });
   } catch (error) {
     console.error(error);
     res.json({ status: "failure", error });

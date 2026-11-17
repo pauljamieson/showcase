@@ -8,10 +8,10 @@ export default async ({ request }: { request: Request }) => {
       endpoint: "/people",
       searchParams: url.searchParams,
     });
-    if (status === "success") return { people: data.people };
+    if (status === "success") return { people: data.people, count: data.count };
     throw "Failed request to api.";
   } catch (error: any) {
     console.error(error);
-    return { people: [] };
+    return { people: [], count: 0 };
   }
 };
