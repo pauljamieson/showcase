@@ -33,8 +33,6 @@ function Paginator({ count }: { count: number }) {
     if (limit !== oldLimit) {
       const page = parseInt(searchParams.get("page") || "1");
       const start = oldLimit * parseInt(searchParams.get("page") || "1");
-      console.log(start, page);
-      console.log();
 
       setOldLimit(limit);
     }

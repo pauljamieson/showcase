@@ -1481,3 +1481,22 @@ input::-webkit-inner-spin-button {
   padding: 5px 5px;
   font-size: var(--font-size);
 }
+
+.admin-count {
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+  background-color: var(--btn-prim);
+  color: inherit;
+  padding: 2px 5px;
+  border: 1px solid var(--border-color1);
+  border-radius: 50%;
+  vertical-align: middle;
+  text-align: center;
+
+  
+}
+
+* {
+  box-sizing: border-box;
+}

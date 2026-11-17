@@ -8,10 +8,10 @@ export default async ({ request }: { request: Request }) => {
       endpoint: "/tags/",
       searchParams: url.searchParams,
     });
-    if (status === "success") return { tags: data.tags };
+    if (status === "success") return { tags: data.tags, count: data.count };
     throw "Failed request to api.";
   } catch (error: any) {
     console.error(error);
-    return { tags: [] };
+    return { tags: [], count: 0 };
   }
 };

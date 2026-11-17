@@ -11,14 +11,16 @@ type LoaderData = {
       name: string;
       userId: number;
       creator: { displayname: string };
+      _count: { videoFiles: number };
     },
   ];
+  count: number;
 };
 
 export default function AdminTag() {
   const [input, setInput] = useState<string>("");
-  const { tags } = useLoaderData() as LoaderData;
-
+  const { tags, count } = useLoaderData() as LoaderData;
+  console.log(tags, count);
   // Debounce timer
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -38,6 +40,13 @@ export default function AdminTag() {
     setTimer(TO);
   }, [input]);
 
+  const handleGoToPage = (page: number) => {
+    if (page < 1) page = 1;
+    if (page > Math.ceil(count / 10)) page = Math.ceil(count / 10);
+    searchParams.set("page", page.toString());
+    setSearchParams(searchParams);
+  };
+
   return (
     <div className="admin-tag-page">
       <div className="admin-search">
@@ -48,6 +57,43 @@ export default function AdminTag() {
           placeholder="Search tags"
           className="search-input"
         />
+      </div>
+      <div className="pagination-container">
+        <button
+          onClick={() =>
+            handleGoToPage(
+              searchParams.has("page")
+                ? parseInt(searchParams.get("page") || "1") - 1
+                : 1,
+            )
+          }
+        >
+          &lt;
+        </button>
+
+        {Array.from({ length: Math.ceil(count / 10) }, (_, i) => i + 1).map(
+          (page) => (
+            <button
+              key={page}
+              className={`goto ${searchParams.get("page") === page.toString() ? "active" : ""}`}
+              onClick={() => handleGoToPage(page)}
+            >
+              {page}
+            </button>
+          ),
+        )}
+
+        <button
+          onClick={() =>
+            handleGoToPage(
+              searchParams.has("page")
+                ? parseInt(searchParams.get("page") || "1") + 1
+                : 2,
+            )
+          }
+        >
+          &gt;
+        </button>
       </div>
       {tags.length > 0 ? (
         tags.map((val) => <Row key={UUID()} {...val} />)
@@ -71,11 +117,13 @@ function Row({
   id,
   name,
   creator: { displayname },
+  _count: { videoFiles },
 }: {
   id: number;
   name: string;
   userId: number;
   creator: { displayname: string };
+  _count: { videoFiles: number };
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -94,6 +142,7 @@ function Row({
   return (
     <>
       <div className="edit-container">
+        <div className=" ">{videoFiles} - </div>
         <div className="edit-text">
           <div>{name}</div>
           <div className="half-text">Creator: {displayname}</div>
