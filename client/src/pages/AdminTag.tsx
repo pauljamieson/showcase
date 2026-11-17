@@ -70,9 +70,17 @@ export default function AdminTag() {
         >
           &lt;
         </button>
+        {parseInt(searchParams.get("page") || "1") >= 3 && (
+          <button onClick={() => handleGoToPage(1)}>1</button>
+        )}
 
-        {Array.from({ length: Math.ceil(count / 10) }, (_, i) => i + 1).map(
-          (page) => (
+        {Array.from({ length: Math.ceil(count / 10) }, (_, i) => i + 1)
+          .filter(
+            (page) =>
+              page - parseInt(searchParams.get("page") || "1") <= 1 &&
+              parseInt(searchParams.get("page") || "1") - page <= 1,
+          )
+          .map((page) => (
             <button
               key={page}
               className={`goto ${searchParams.get("page") === page.toString() ? "active" : ""}`}
@@ -80,9 +88,10 @@ export default function AdminTag() {
             >
               {page}
             </button>
-          ),
+          ))}
+        {parseInt(searchParams.get("page") || "1") <= Math.ceil(count / 10) - 2 && (
+          <button onClick={() => handleGoToPage(Math.ceil(count / 10))}>{Math.ceil(count / 10)}</button>
         )}
-
         <button
           onClick={() =>
             handleGoToPage(
