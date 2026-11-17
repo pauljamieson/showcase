@@ -31,8 +31,8 @@ function Paginator({ count }: { count: number }) {
 
   useEffect(() => {
     if (limit !== oldLimit) {
-      const page = parseInt(searchParams.get("page") || "1");
-      const start = oldLimit * parseInt(searchParams.get("page") || "1");
+      //const page = parseInt(searchParams.get("page") || "1");
+      //const start = oldLimit * parseInt(searchParams.get("page") || "1");
 
       setOldLimit(limit);
     }
